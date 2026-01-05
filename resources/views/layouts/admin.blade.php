@@ -122,6 +122,37 @@
         .button.is-primary:hover {
             background: #4f46e5;
         }
+        
+        /* Fix dropdown menu */
+        .dropdown-menu {
+            min-width: 180px;
+        }
+        
+        .dropdown-content {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+        
+        .dropdown-item {
+            color: #374151 !important;
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .dropdown-item:hover {
+            background: #f3f4f6 !important;
+            color: var(--primary) !important;
+        }
+        
+        .dropdown-item i {
+            color: #6b7280;
+        }
+        
+        .dropdown-divider {
+            background-color: #e5e7eb;
+            margin: 0.25rem 0;
+        }
     </style>
     @yield('styles')
 </head>

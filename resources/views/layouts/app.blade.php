@@ -166,6 +166,34 @@
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #a1a1a1; }
+        
+        /* Fix navbar dropdown */
+        .navbar-dropdown {
+            background: white !important;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            border-top: 2px solid var(--primary);
+        }
+        
+        .navbar-dropdown .navbar-item {
+            color: #374151 !important;
+            font-weight: 400;
+        }
+        
+        .navbar-dropdown .navbar-item:hover {
+            background: #f3f4f6 !important;
+            color: var(--primary) !important;
+        }
+        
+        .navbar-dropdown .navbar-item i {
+            color: #6b7280;
+            width: 18px;
+        }
+        
+        .navbar-divider {
+            background-color: #e5e7eb;
+            margin: 0.25rem 0;
+        }
     </style>
     
     @yield('styles')
