@@ -194,6 +194,18 @@
             background-color: #e5e7eb;
             margin: 0.25rem 0;
         }
+        
+        /* Fix navbar dropdown trigger when hoverable */
+        .navbar-item.has-dropdown:hover .navbar-link,
+        .navbar-item.has-dropdown.is-active .navbar-link {
+            background: white !important;
+            color: var(--primary) !important;
+            border-radius: 6px;
+        }
+        
+        .navbar-item.has-dropdown:hover .navbar-link::after {
+            border-color: var(--primary) !important;
+        }
     </style>
     
     @yield('styles')
