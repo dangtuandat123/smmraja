@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Services\ExchangeRateService;
 
 class Service extends Model
 {
@@ -61,13 +62,14 @@ class Service extends Model
 
     /**
      * Calculate price in VND based on api_rate and markup
+     * Uses realtime exchange rate
      * 
-     * @param float|null $exchangeRate VND per USD
+     * @param float|null $exchangeRate VND per USD (if null, fetches realtime)
      * @return float Price per 1000 in VND
      */
     public function calculatePriceVnd(?float $exchangeRate = null): float
     {
-        $exchangeRate = $exchangeRate ?? (float) config('services.smmraja.exchange_rate', 25000);
+        $exchangeRate = $exchangeRate ?? ExchangeRateService::getRate();
         
         // api_rate is price per 1000 in USD
         // Apply markup percentage

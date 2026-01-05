@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Service;
 use App\Models\Setting;
 use App\Services\SmmRajaService;
+use App\Services\ExchangeRateService;
 use Illuminate\Http\Request;
 use Exception;
 
@@ -89,7 +90,7 @@ class ServiceController extends Controller
 
         $categoryId = $request->category_id;
         $markupPercent = (float) $request->markup_percent;
-        $exchangeRate = (float) config('services.smmraja.exchange_rate', 25000);
+        $exchangeRate = ExchangeRateService::getRate();
 
         try {
             $apiServices = $this->smmService->getServices();
@@ -155,7 +156,7 @@ class ServiceController extends Controller
             return back()->withErrors(['error' => 'Không thể lấy dữ liệu API: ' . $e->getMessage()]);
         }
 
-        $exchangeRate = (float) config('services.smmraja.exchange_rate', 25000);
+        $exchangeRate = ExchangeRateService::getRate();
         $updateCount = 0;
 
         foreach ($apiServices as $apiService) {
@@ -206,7 +207,7 @@ class ServiceController extends Controller
         $service->fill($validated);
         
         // Recalculate price if markup changed
-        $exchangeRate = (float) config('services.smmraja.exchange_rate', 25000);
+        $exchangeRate = ExchangeRateService::getRate();
         $service->price_vnd = $service->calculatePriceVnd($exchangeRate);
         
         $service->save();

@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Service;
 use App\Models\Transaction;
 use App\Services\SmmRajaService;
+use App\Services\ExchangeRateService;
 use Illuminate\Http\Request;
 use Exception;
 
@@ -39,7 +40,10 @@ class DashboardController extends Controller
             ->limit(10)
             ->get();
 
-        return view('admin.dashboard', compact('stats', 'recentOrders', 'recentTransactions'));
+        // Get exchange rate info
+        $exchangeRate = ExchangeRateService::getRate();
+
+        return view('admin.dashboard', compact('stats', 'recentOrders', 'recentTransactions', 'exchangeRate'));
     }
 
     /**
@@ -53,6 +57,47 @@ class DashboardController extends Controller
                 'success' => true,
                 'balance' => $balance['balance'] ?? 0,
                 'currency' => $balance['currency'] ?? 'USD',
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Get exchange rate (API endpoint)
+     */
+    public function exchangeRate()
+    {
+        try {
+            $rate = ExchangeRateService::getRate();
+            return response()->json([
+                'success' => true,
+                'rate' => $rate,
+                'formatted' => number_format($rate, 0, ',', '.'),
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Refresh exchange rate from API
+     */
+    public function refreshExchangeRate()
+    {
+        try {
+            $rate = ExchangeRateService::refresh();
+            return response()->json([
+                'success' => true,
+                'rate' => $rate,
+                'formatted' => number_format($rate, 0, ',', '.'),
+                'message' => 'Tỷ giá đã được cập nhật!',
             ]);
         } catch (Exception $e) {
             return response()->json([

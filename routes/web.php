@@ -85,4 +85,8 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
     
     // API Balance check
     Route::get('/api-balance', [AdminDashboardController::class, 'apiBalance'])->name('api.balance');
+    
+    // Exchange rate
+    Route::get('/exchange-rate', [AdminDashboardController::class, 'exchangeRate'])->name('exchangeRate');
+    Route::post('/exchange-rate/refresh', [AdminDashboardController::class, 'refreshExchangeRate'])->name('exchangeRate.refresh');
 });

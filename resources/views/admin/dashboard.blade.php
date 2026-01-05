@@ -59,6 +59,33 @@
     </div>
 </div>
 
+<!-- Exchange Rate Card -->
+<div class="card mb-5" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white;">
+    <div class="card-content">
+        <div class="columns is-vcentered">
+            <div class="column">
+                <div class="is-flex is-align-items-center">
+                    <span class="icon is-large mr-3">
+                        <i class="fas fa-exchange-alt fa-2x"></i>
+                    </span>
+                    <div>
+                        <p class="is-size-7 has-text-white-ter mb-1">Tỷ giá USD/VND (Realtime)</p>
+                        <p class="is-size-3 has-text-weight-bold" id="exchangeRateValue">
+                            1 USD = {{ number_format($exchangeRate, 0, ',', '.') }} VND
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="column is-narrow">
+                <button class="button is-white is-outlined" id="refreshRateBtn" onclick="refreshExchangeRate()">
+                    <span class="icon"><i class="fas fa-sync-alt" id="refreshIcon"></i></span>
+                    <span>Cập nhật</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="columns">
     <!-- Recent Orders -->
     <div class="column is-8">
@@ -156,4 +183,43 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+function refreshExchangeRate() {
+    const btn = document.getElementById('refreshRateBtn');
+    const icon = document.getElementById('refreshIcon');
+    const valueEl = document.getElementById('exchangeRateValue');
+    
+    btn.classList.add('is-loading');
+    icon.classList.add('fa-spin');
+    
+    fetch('{{ route("admin.exchangeRate.refresh") }}', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            valueEl.textContent = '1 USD = ' + data.formatted + ' VND';
+            // Flash success
+            valueEl.style.color = '#fef08a';
+            setTimeout(() => valueEl.style.color = 'white', 500);
+        } else {
+            alert('Lỗi: ' + data.error);
+        }
+    })
+    .catch(err => {
+        alert('Không thể cập nhật tỷ giá');
+    })
+    .finally(() => {
+        btn.classList.remove('is-loading');
+        icon.classList.remove('fa-spin');
+    });
+}
+</script>
 @endsection
