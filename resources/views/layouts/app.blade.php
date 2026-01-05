@@ -206,6 +206,235 @@
         .navbar-item.has-dropdown:hover .navbar-link::after {
             border-color: var(--primary) !important;
         }
+        
+        /* ========== RESPONSIVE MOBILE ========== */
+        @media screen and (max-width: 768px) {
+            /* Navbar mobile */
+            .navbar-menu {
+                background: var(--gradient);
+                padding: 1rem;
+                border-radius: 0 0 12px 12px;
+                box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+            }
+            
+            .navbar-menu.is-active {
+                display: block;
+            }
+            
+            .navbar-item, .navbar-link {
+                padding: 0.75rem 1rem;
+                border-radius: 8px;
+            }
+            
+            .navbar-dropdown {
+                background: white !important;
+                border: none !important;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+                padding: 0.5rem;
+                border-radius: 8px;
+                margin-top: 0.5rem;
+            }
+            
+            .navbar-dropdown .navbar-item {
+                color: #374151 !important;
+                padding: 0.6rem 1rem;
+                border-radius: 6px;
+            }
+            
+            .navbar-dropdown .navbar-item:hover {
+                background: #f3f4f6 !important;
+                color: var(--primary) !important;
+            }
+            
+            .navbar-dropdown .navbar-item i {
+                color: #6b7280;
+            }
+            
+            .navbar-divider {
+                background: #e5e7eb;
+                margin: 0.25rem 0;
+            }
+            
+            .navbar-item.has-dropdown:hover .navbar-link,
+            .navbar-item.has-dropdown.is-active .navbar-link {
+                background: rgba(255,255,255,0.15) !important;
+                color: white !important;
+            }
+            
+            /* Hero section */
+            .hero-body {
+                padding: 2rem 1rem;
+            }
+            
+            .hero .title.is-1 {
+                font-size: 2rem !important;
+            }
+            
+            .hero .subtitle {
+                font-size: 1rem !important;
+            }
+            
+            /* Section padding */
+            .section {
+                padding: 2rem 1rem;
+            }
+            
+            /* Cards */
+            .card {
+                border-radius: 12px;
+                margin-bottom: 1rem;
+            }
+            
+            .card-content {
+                padding: 1rem;
+            }
+            
+            /* Stat cards */
+            .stat-card {
+                padding: 1rem;
+                margin-bottom: 0.75rem;
+            }
+            
+            .stat-card .value {
+                font-size: 1.5rem;
+            }
+            
+            .stat-card .icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.25rem;
+            }
+            
+            /* Tables responsive */
+            .table-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .table {
+                font-size: 0.85rem;
+            }
+            
+            .table th, .table td {
+                padding: 0.5rem;
+                white-space: nowrap;
+            }
+            
+            /* Buttons */
+            .buttons .button {
+                margin-bottom: 0.5rem;
+            }
+            
+            .button.is-fullwidth-mobile {
+                width: 100%;
+            }
+            
+            /* Forms */
+            .columns.is-multiline .column {
+                padding: 0.5rem;
+            }
+            
+            .field {
+                margin-bottom: 1rem;
+            }
+            
+            /* Balance display */
+            .balance-display {
+                font-size: 0.85rem;
+                padding: 0.4rem 0.75rem;
+            }
+            
+            /* Level on mobile */
+            .level {
+                flex-direction: column;
+            }
+            
+            .level-left, .level-right {
+                margin-bottom: 0.75rem;
+            }
+            
+            /* Tabs scrollable */
+            .tabs ul {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .tabs li {
+                flex-shrink: 0;
+            }
+            
+            /* Footer */
+            .footer {
+                padding: 2rem 1rem;
+            }
+            
+            .footer .columns {
+                text-align: center;
+            }
+            
+            .footer .column {
+                margin-bottom: 1.5rem;
+            }
+            
+            /* Order form columns */
+            .column.is-7, .column.is-5,
+            .column.is-8, .column.is-4,
+            .column.is-6 {
+                width: 100%;
+            }
+            
+            /* Price tag */
+            .price-tag {
+                font-size: 0.75rem;
+                padding: 0.2rem 0.5rem;
+            }
+            
+            /* Title sizes */
+            .title.is-3 {
+                font-size: 1.5rem !important;
+            }
+            
+            .title.is-4 {
+                font-size: 1.25rem !important;
+            }
+            
+            /* Menu sidebar (services page) */
+            .menu-list a {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* Small phones */
+        @media screen and (max-width: 480px) {
+            .navbar-brand .navbar-item strong {
+                font-size: 1.2rem !important;
+            }
+            
+            .hero .title.is-1 {
+                font-size: 1.75rem !important;
+            }
+            
+            .stat-card .value {
+                font-size: 1.25rem;
+            }
+            
+            .table {
+                font-size: 0.8rem;
+            }
+            
+            .button {
+                font-size: 0.85rem;
+            }
+        }
+        
+        /* Tablet */
+        @media screen and (min-width: 769px) and (max-width: 1023px) {
+            .column.is-3 {
+                width: 50%;
+            }
+        }
     </style>
     
     @yield('styles')

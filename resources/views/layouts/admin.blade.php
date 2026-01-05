@@ -153,6 +153,126 @@
             background-color: #e5e7eb;
             margin: 0.25rem 0;
         }
+        
+        /* ========== ADMIN RESPONSIVE ========== */
+        @media screen and (max-width: 1023px) {
+            .admin-sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            
+            .admin-sidebar.is-active {
+                transform: translateX(0);
+            }
+            
+            .admin-content {
+                margin-left: 0;
+            }
+            
+            .admin-header {
+                padding: 1rem;
+            }
+            
+            .admin-main {
+                padding: 1rem;
+            }
+            
+            .stat-box {
+                padding: 1rem;
+                margin-bottom: 0.75rem;
+            }
+            
+            .stat-box .value {
+                font-size: 1.5rem;
+            }
+            
+            .table-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .table {
+                font-size: 0.85rem;
+            }
+            
+            .table th, .table td {
+                padding: 0.5rem;
+                white-space: nowrap;
+            }
+            
+            .columns .column.is-3,
+            .columns .column.is-4,
+            .columns .column.is-6,
+            .columns .column.is-8 {
+                width: 100%;
+            }
+            
+            .level {
+                flex-direction: column;
+            }
+            
+            .level-left, .level-right {
+                margin-bottom: 0.75rem;
+                width: 100%;
+            }
+            
+            .title.is-4, .title.is-5 {
+                font-size: 1.1rem !important;
+            }
+            
+            .tabs ul {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+            }
+            
+            .tabs li {
+                flex-shrink: 0;
+            }
+        }
+        
+        @media screen and (max-width: 768px) {
+            .card-header-title {
+                font-size: 0.9rem;
+            }
+            
+            .buttons.are-small .button {
+                padding: 0.25rem 0.5rem;
+            }
+        }
+        
+        /* Sidebar toggle button */
+        .sidebar-toggle {
+            display: none;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 1rem;
+        }
+        
+        @media screen and (max-width: 1023px) {
+            .sidebar-toggle {
+                display: inline-flex;
+            }
+        }
+        
+        /* Overlay for mobile sidebar */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 99;
+        }
+        
+        .sidebar-overlay.is-active {
+            display: block;
+        }
     </style>
     @yield('styles')
 </head>
@@ -224,10 +344,16 @@
         </aside>
     </aside>
     
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    
     <!-- Main Content -->
     <div class="admin-content">
         <header class="admin-header">
-            <div>
+            <div class="is-flex is-align-items-center">
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
                 <h1 class="title is-5 mb-0">@yield('title', 'Admin')</h1>
             </div>
             <div class="is-flex is-align-items-center">
@@ -304,6 +430,25 @@
                 document.getElementById('apiBalance').innerHTML = 
                     '<i class="fas fa-database has-text-warning"></i> API: N/A';
             });
+        
+        // Mobile sidebar toggle
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.querySelector('.admin-sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('is-active');
+                overlay.classList.toggle('is-active');
+            });
+        }
+        
+        if (overlay) {
+            overlay.addEventListener('click', () => {
+                sidebar.classList.remove('is-active');
+                overlay.classList.remove('is-active');
+            });
+        }
     </script>
     @yield('scripts')
 </body>
