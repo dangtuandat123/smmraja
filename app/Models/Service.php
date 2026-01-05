@@ -67,7 +67,7 @@ class Service extends Model
      */
     public function calculatePriceVnd(?float $exchangeRate = null): float
     {
-        $exchangeRate = $exchangeRate ?? (float) config('app.usd_to_vnd_rate', 25000);
+        $exchangeRate = $exchangeRate ?? (float) config('services.smmraja.exchange_rate', 25000);
         
         // api_rate is price per 1000 in USD
         // Apply markup percentage
