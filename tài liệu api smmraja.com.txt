@@ -1,0 +1,443 @@
+# Tài liệu API SMMRaja v3 cho Dev
+
+Tài liệu này chuẩn hoá cách gọi API SMMRaja (v3) theo dạng dễ code: base URL, chuẩn request POST, các `action` hỗ trợ, mapping tham số khi tạo đơn theo từng `type`, cùng ví dụ cURL/JS/PHP và checklist xử lý lỗi để tránh sai khi triển khai.
+
+---
+
+## Tổng quan API SMMRaja v3
+
+API của SMMRaja dùng **HTTP POST** và trả về **JSON**. Endpoint duy nhất là:
+
+```txt
+POST https://www.smmraja.com/api/v3
+```
+
+Mọi request đều cần **API key** của bạn thông qua tham số `key`. Các thao tác được điều khiển bằng tham số `action` (ví dụ: `services`, `add`, `status`, `balance`, `refill`, `cancel`). ([SMM Raja][1])
+
+---
+
+## Quy ước request và response
+
+### Request format
+
+Trang tài liệu chỉ nêu “POST” và “JSON response”, không mô tả explicit `Content-Type`. Trong thực tế các SMM panel dạng này thường nhận **form-encoded** (`application/x-www-form-urlencoded`) hoặc multipart. Vì tài liệu không chốt, bạn nên gửi theo form-encoded để tương thích rộng. ([SMM Raja][1])
+
+Mẫu request tối thiểu:
+
+```txt
+key=<YOUR_API_KEY>
+action=<ACTION_NAME>
+...các tham số khác theo action...
+```
+
+### Response format
+
+* Thành công: trả JSON object hoặc JSON array tùy action.
+* Thất bại: thường trả JSON có khóa `error`.
+
+Ví dụ lỗi “Invalid API key”: ([SMM Raja][1])
+
+```json
+{ "error": "Invalid API key" }
+```
+
+---
+
+## Action `services` (lấy danh sách dịch vụ)
+
+### Request
+
+```txt
+POST /api/v3
+key=<YOUR_API_KEY>
+action=services
+```
+
+Tài liệu mô tả đúng 2 tham số: `key`, `action=services`. ([SMM Raja][1])
+
+### Response
+
+Response là **mảng dịch vụ**; mỗi phần tử có các trường sau (theo ví dụ của tài liệu): ([SMM Raja][1])
+
+* `service` (number): ID dịch vụ (dùng cho `action=add`)
+* `name` (string): tên dịch vụ
+* `type` (string): loại dịch vụ (quyết định bộ tham số khi `add`)
+* `category` (string)
+* `description` (string)
+* `rate` (string/number): đơn giá (đơn vị tính phụ thuộc panel)
+* `min`, `max` (string/number): giới hạn
+* `refill` (boolean): có hỗ trợ refill hay không
+* `cancel` (boolean): có hỗ trợ cancel hay không
+* `subscription` (boolean): có phải gói subscription hay không
+* `extra_parameter` (object): metadata như `drop_rate`, `start_time`, `speed`, `reliability`
+
+Lưu ý: ví dụ JSON trên trang có vài lỗi dấu phẩy/quote (không parse được). Khi code, bạn hãy tin vào **schema**, không tin vào tính hợp lệ của snippet. ([SMM Raja][1])
+
+---
+
+## Action `add` (tạo đơn hàng)
+
+### Nguyên tắc
+
+Khi tạo đơn, bắt buộc có:
+
+* `key`
+* `action=add`
+* `service` (Service ID lấy từ `services`)
+
+Các tham số còn lại phụ thuộc vào `type` của dịch vụ. Trang tài liệu liệt kê nhiều “gói tham số” tương ứng với các loại như: **Default, Custom Comments, Mentions..., Poll, Comment Replies, Invites from Groups, Package Subscriptions**. ([SMM Raja][1])
+
+### Mapping tham số theo nhóm (đúng theo tài liệu)
+
+Dưới đây là các bộ tham số **được ghi trên trang** (mình ghi lại theo dạng “Required/Optional” để dev dễ dùng). ([SMM Raja][1])
+
+#### 1) Default
+
+**Required**
+
+* `link` (Link to page)
+* `quantity` (Needed quantity)
+
+**Optional**
+
+* `runs` (Runs to deliver)
+* `interval` (Interval in minutes)
+
+([SMM Raja][1])
+
+#### 2) Custom Comments
+
+**Required**
+
+* `link`
+* `comments` (Danh sách comment, tách bằng `\r\n` hoặc `\n`)
+
+([SMM Raja][1])
+
+#### 3) Mentions with Hashtags (dạng 1 hashtag)
+
+**Required**
+
+* `link`
+* `quantity`
+* `hashtag` (Hashtag để scrape usernames)
+
+([SMM Raja][1])
+
+#### 4) Mentions with Hashtags (danh sách hashtags + usernames)
+
+**Required**
+
+* `link`
+* `quantity`
+* `hashtags` (list, tách bằng `\r\n` hoặc `\n`)
+* `usernames` (list, tách bằng `\r\n` hoặc `\n`)
+
+([SMM Raja][1])
+
+#### 5) Mentions (chỉ có `link`)
+
+Tài liệu có một bộ tham số chỉ gồm:
+
+* `link`
+
+Không ghi thêm `quantity/usernames`. Vì thiếu ngữ cảnh “bộ này ứng với type nào”, bạn nên **dò `type` từ `services`**, rồi thử đúng bộ tham số mà panel yêu cầu. ([SMM Raja][1])
+
+#### 6) Mentions Custom List / Mentions Hashtag (dạng usernames list)
+
+**Required**
+
+* `link`
+* `quantity`
+* `usernames` (list, tách bằng `\r\n` hoặc `\n`)
+
+([SMM Raja][1])
+
+#### 7) Mentions User Followers
+
+**Required**
+
+* `link`
+* `quantity`
+* `username` (URL để scrape followers)
+
+([SMM Raja][1])
+
+#### 8) Mentions (dạng usernames list – lặp)
+
+Tài liệu lặp lại một bộ:
+
+* `link`
+* `quantity`
+* `usernames`
+
+Có thể là 2 loại dịch vụ khác nhau dùng cùng bộ tham số. Khi implement, chỉ cần build đúng payload theo `type`. ([SMM Raja][1])
+
+#### 9) Mentions Media Likers
+
+**Required**
+
+* `link`
+* `quantity`
+* `media` (Media URL để scrape likers)
+
+([SMM Raja][1])
+
+#### 10) Custom Comments Package (bộ comments – lặp)
+
+**Required**
+
+* `link`
+* `comments` (tách bằng `\r\n` hoặc `\n`)
+
+([SMM Raja][1])
+
+#### 11) Comment Likes
+
+**Required**
+
+* `link`
+* `quantity`
+* `username` (Username của chủ comment)
+
+([SMM Raja][1])
+
+#### 12) Poll
+
+**Required**
+
+* `link`
+* `quantity`
+* `answer_number` (Answer number of the poll)
+
+([SMM Raja][1])
+
+#### 13) Comment Replies
+
+**Required**
+
+* `link`
+* `username` (Username)
+* `comments` (list, tách bằng `\r\n` hoặc `\n`)
+
+([SMM Raja][1])
+
+#### 14) Invites from Groups
+
+**Required**
+
+* `link`
+* `quantity`
+* `groups` (list, tách bằng `\r\n` hoặc `\n`)
+
+([SMM Raja][1])
+
+#### 15) Package Subscriptions
+
+**Required**
+
+* `username`
+* `min` (Quantity min)
+* `max` (Quantity max)
+* `delay` (phút; tài liệu liệt kê các giá trị hợp lệ)
+
+**Optional**
+
+* `posts` (giới hạn số bài mới; nếu không set thì “unlimited number of posts”)
+* `expiry` (Format `d/m/Y`)
+
+([SMM Raja][1])
+
+### Response (thành công)
+
+```json
+{ "order": 1000000 }
+```
+
+([SMM Raja][1])
+
+### Response (lỗi thường gặp khi add)
+
+* `Invalid API key`
+* `Missing link`
+* `Invalid service ID`
+* `Missing quantity`
+
+([SMM Raja][1])
+
+---
+
+## Action `status` (trạng thái đơn hàng)
+
+### 1) Trạng thái 1 đơn
+
+**Request**
+
+```txt
+key=<YOUR_API_KEY>
+action=status
+order=<ORDER_ID>
+```
+
+([SMM Raja][1])
+
+**Response**
+
+Các field được tài liệu nêu: `charge`, `start_count`, `status`, `remains`, `currency`. ([SMM Raja][1])
+Giá trị `status` theo tài liệu: `Partial|Completed|Processing|Pending|Refunded|Canceled`. ([SMM Raja][1])
+
+### 2) Trạng thái nhiều đơn
+
+Tài liệu ghi tham số là `order` nhưng mô tả “Order IDs separated by comma”. Đây rất dễ là typo (chuẩn phổ biến thường là `orders`). Vì bạn muốn “code lại chắc”, hãy implement fallback: **thử `orders` trước**, nếu API báo thiếu/không nhận thì chuyển sang `order`. ([SMM Raja][1])
+
+Response là object map theo order id; mỗi id trả status hoặc `error` như “Incorrect order ID”. ([SMM Raja][1])
+
+---
+
+## Action `balance` (lấy số dư)
+
+**Request**
+
+```txt
+key=<YOUR_API_KEY>
+action=balance
+```
+
+**Response**
+
+```json
+{ "balance": "100.84292", "currency": "USD" }
+```
+
+([SMM Raja][1])
+
+---
+
+## Action `refill` (yêu cầu refill)
+
+**Request**
+
+```txt
+key=<YOUR_API_KEY>
+action=refill
+order=<ORDER_ID>
+```
+
+**Response (thành công)**
+
+```json
+{ "success": "Your order will be refill asap. Thank you for patience." }
+```
+
+([SMM Raja][1])
+
+**Response (lỗi)**: `Invalid API key`, `Order ID not Found`. ([SMM Raja][1])
+
+---
+
+## Action `cancel` (yêu cầu hủy)
+
+**Request**
+
+```txt
+key=<YOUR_API_KEY>
+action=cancel
+order=<ORDER_ID>
+```
+
+**Response (thành công)**
+
+```json
+{ "success": "Your order will be cancel asap. Thank you for patience." }
+```
+
+([SMM Raja][1])
+
+**Response (lỗi)**: `Invalid API key`, `Order ID not Found`. ([SMM Raja][1])
+
+---
+
+## Ví dụ request mẫu (cURL / Node.js / PHP)
+
+### cURL (form-encoded)
+
+```bash
+curl -X POST "https://www.smmraja.com/api/v3" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  --data-urlencode "key=YOUR_API_KEY" \
+  --data-urlencode "action=services"
+```
+
+### Node.js (fetch)
+
+```js
+const url = "https://www.smmraja.com/api/v3";
+
+async function callApi(payload) {
+  const body = new URLSearchParams(payload);
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body,
+  });
+
+  const data = await res.json();
+
+  // Chuẩn xử lý lỗi theo docs: nếu có "error" => fail
+  if (data && typeof data === "object" && "error" in data) {
+    throw new Error(data.error);
+  }
+  return data;
+}
+
+// Example: get services
+callApi({ key: process.env.SMMRAJA_KEY, action: "services" })
+  .then(console.log)
+  .catch(console.error);
+```
+
+### PHP (cURL)
+
+```php
+<?php
+$url = "https://www.smmraja.com/api/v3";
+$payload = http_build_query([
+  "key" => getenv("SMMRAJA_KEY"),
+  "action" => "balance",
+]);
+
+$ch = curl_init($url);
+curl_setopt_array($ch, [
+  CURLOPT_POST => true,
+  CURLOPT_POSTFIELDS => $payload,
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_HTTPHEADER => ["Content-Type: application/x-www-form-urlencoded"],
+]);
+
+$raw = curl_exec($ch);
+if ($raw === false) {
+  throw new Exception("cURL error: " . curl_error($ch));
+}
+curl_close($ch);
+
+$data = json_decode($raw, true);
+if (isset($data["error"])) {
+  throw new Exception("API error: " . $data["error"]);
+}
+
+print_r($data);
+```
+
+---
+
+## Checklist để code “không toang” khi tích hợp
+
+1. Luôn gọi `services` trước, lấy `service` + `type`, rồi mới build payload `add`. ([SMM Raja][1])
+2. Với các field list (`comments`, `usernames`, `hashtags`, `groups`), join bằng `\n` (hoặc `\r\n`) đúng như tài liệu. ([SMM Raja][1])
+3. Không dựa vào HTTP status để bắt lỗi; hãy kiểm tra JSON có khóa `error`. ([SMM Raja][1])
+4. Với “multiple status”, implement hỗ trợ cả `orders` và `order` (do tài liệu đang mâu thuẫn cách đặt tên). ([SMM Raja][1])
+
+Nếu bạn muốn, mình có thể chuyển toàn bộ nội dung này thành **OpenAPI 3.0 YAML** (1 endpoint `/api/v3` với schema theo `action`) để bạn generate client SDK nhanh.
+
+[1]: https://www.smmraja.com/api/?page=api "SMM Panel API Documentation - SMM Raja"
