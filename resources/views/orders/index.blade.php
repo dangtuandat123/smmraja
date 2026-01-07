@@ -59,6 +59,8 @@
                                     <th>Dịch vụ</th>
                                     <th>Link</th>
                                     <th>Số lượng</th>
+                                    <th>Start</th>
+                                    <th>Còn lại</th>
                                     <th>Giá</th>
                                     <th>Trạng thái</th>
                                     <th>Ngày tạo</th>
@@ -84,6 +86,8 @@
                                             </a>
                                         </td>
                                         <td>{{ number_format($order->quantity) }}</td>
+                                        <td>{{ $order->start_count ? number_format($order->start_count) : '-' }}</td>
+                                        <td>{{ $order->remains !== null ? number_format($order->remains) : '-' }}</td>
                                         <td>{{ number_format($order->total_price, 0, ',', '.') }}đ</td>
                                         <td>
                                             <span class="tag is-{{ $order->status_color }}">

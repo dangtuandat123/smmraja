@@ -76,51 +76,53 @@ class SyncOrderStatus extends Command
             // Debug
             if ($this->output->isVerbose()) {
                 $this->newLine();
-                $this->info("Order #{$order->id}: API status={$statusData['status']}, mapped={$newStatus}, current={$oldStatus}");
+                $this->info("Order #{$order->id}: API status={$statusData['status']}, start_count={$statusData['start_count']}, remains={$statusData['remains']}");
             }
             
-            if (!$newStatus || $newStatus === $oldStatus) {
-                $bar->advance();
-                continue;
+            // Always update start_count and remains from API
+            $updateData = [
+                'start_count' => isset($statusData['start_count']) ? (int) $statusData['start_count'] : $order->start_count,
+                'remains' => isset($statusData['remains']) ? (int) $statusData['remains'] : $order->remains,
+                'api_charge' => isset($statusData['charge']) ? (float) $statusData['charge'] : $order->api_charge,
+            ];
+            
+            // Update status if changed
+            $statusChanged = $newStatus && $newStatus !== $oldStatus;
+            if ($statusChanged) {
+                $updateData['status'] = $newStatus;
+                $updatedCount++;
+            
+                // Count by status type
+                match($newStatus) {
+                    'completed' => $completedCount++,
+                    'partial' => $partialCount++,
+                    'canceled', 'refunded' => $canceledCount++,
+                    default => null,
+                };
+                
+                // Send notification for important status changes
+                if (in_array($newStatus, ['completed', 'partial', 'canceled', 'refunded'])) {
+                    Notification::orderStatusChanged(
+                        $order->user_id,
+                        $order->id,
+                        $newStatus
+                    );
+                }
+                
+                // Auto-refund when API returns canceled/refunded/partial status
+                if (in_array($newStatus, ['canceled', 'refunded', 'partial'])) {
+                    $this->handleRefund($order, $statusData);
+                }
+                
+                Log::info('Order status updated', [
+                    'order_id' => $order->id,
+                    'old_status' => $oldStatus,
+                    'new_status' => $newStatus,
+                ]);
             }
             
-            // Update order
-            $order->update([
-                'status' => $newStatus,
-                'start_count' => $statusData['start_count'] ?? $order->start_count,
-                'remains' => $statusData['remains'] ?? $order->remains,
-                'api_charge' => $statusData['charge'] ?? $order->api_charge,
-            ]);
-            
-            $updatedCount++;
-            
-            // Count by status type
-            match($newStatus) {
-                'completed' => $completedCount++,
-                'partial' => $partialCount++,
-                'canceled', 'refunded' => $canceledCount++,
-                default => null,
-            };
-            
-            // Send notification for important status changes
-            if (in_array($newStatus, ['completed', 'partial', 'canceled', 'refunded'])) {
-                Notification::orderStatusChanged(
-                    $order->user_id,
-                    $order->id,
-                    $newStatus
-                );
-            }
-            
-            // Auto-refund when API returns canceled/refunded/partial status
-            if (in_array($newStatus, ['canceled', 'refunded', 'partial']) && $oldStatus !== $newStatus) {
-                $this->handleRefund($order, $statusData);
-            }
-            
-            Log::info('Order status updated', [
-                'order_id' => $order->id,
-                'old_status' => $oldStatus,
-                'new_status' => $newStatus,
-            ]);
+            // Always update order with latest API data
+            $order->update($updateData);
             
             $bar->advance();
         }
