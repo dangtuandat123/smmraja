@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\Service;
+use App\Models\Notification;
 use App\Services\SmmRajaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -137,6 +138,13 @@ class OrderController extends Controller
             }
 
             DB::commit();
+
+            // Send notification
+            Notification::orderCreated(
+                auth()->id(),
+                $order->id,
+                $service->name
+            );
 
             return redirect()->route('orders.show', $order)
                 ->with('success', 'Đặt hàng thành công! Mã đơn hàng: #' . $order->id);

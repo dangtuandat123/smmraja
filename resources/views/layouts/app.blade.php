@@ -207,6 +207,143 @@
             border-color: var(--primary) !important;
         }
         
+        /* ========== NOTIFICATION STYLES ========== */
+        .notification-bell {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            position: relative;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .notification-bell .icon {
+            margin: 0 !important;
+        }
+        
+        .notification-bell:hover {
+            background: rgba(255,255,255,0.25);
+            transform: scale(1.05);
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ef4444;
+            color: white;
+            font-size: 0.65rem;
+            font-weight: 600;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .notification-menu {
+            width: 320px;
+            max-width: 90vw;
+        }
+        
+        .notification-menu .dropdown-content {
+            padding: 0;
+            max-height: 400px;
+            overflow: hidden;
+        }
+        
+        .notification-header {
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f9fafb;
+        }
+        
+        .notification-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .notification-item {
+            display: flex;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #f3f4f6;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .notification-item:hover {
+            background: #f9fafb;
+        }
+        
+        .notification-item.unread {
+            background: #eff6ff;
+        }
+        
+        .notification-item .icon-wrap {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.75rem;
+            flex-shrink: 0;
+        }
+        
+        .notification-item .icon-wrap.is-success { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+        .notification-item .icon-wrap.is-info { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+        .notification-item .icon-wrap.is-warning { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+        .notification-item .icon-wrap.is-danger { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+        .notification-item .icon-wrap.is-primary { background: rgba(99, 102, 241, 0.1); color: #6366f1; }
+        
+        .notification-item .content {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .notification-item .title-text {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #1f2937;
+            margin-bottom: 2px;
+        }
+        
+        .notification-item .message-text {
+            font-size: 0.8rem;
+            color: #6b7280;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .notification-item .time-text {
+            font-size: 0.7rem;
+            color: #9ca3af;
+            margin-top: 2px;
+        }
+        
+        .notification-empty {
+            padding: 2rem 1rem;
+            text-align: center;
+            color: #9ca3af;
+        }
+        
         /* ========== RESPONSIVE MOBILE ========== */
         @media screen and (max-width: 768px) {
             /* Navbar mobile */
@@ -481,6 +618,32 @@
                             </span>
                         </div>
                         
+                        <!-- Notification Bell -->
+                        <div class="navbar-item">
+                            <div class="dropdown is-right" id="notificationDropdown">
+                                <div class="dropdown-trigger">
+                                    <button class="button notification-bell" aria-haspopup="true" aria-controls="notification-menu" onclick="toggleNotifications()">
+                                        <span class="icon">
+                                            <i class="fas fa-bell"></i>
+                                        </span>
+                                        <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
+                                    </button>
+                                </div>
+                                <div class="dropdown-menu notification-menu" id="notification-menu" role="menu">
+                                    <div class="dropdown-content">
+                                        <div class="notification-header">
+                                            <strong>Thông báo</strong>
+                                            <a href="#" onclick="markAllAsRead()" class="is-size-7">Đọc tất cả</a>
+                                        </div>
+                                        <hr class="dropdown-divider">
+                                        <div id="notificationList" class="notification-list">
+                                            <p class="has-text-centered has-text-grey py-4">Đang tải...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
                         <div class="navbar-item has-dropdown is-hoverable">
                             <a class="navbar-link">
                                 <i class="fas fa-user-circle mr-1"></i>
@@ -625,6 +788,116 @@
                 });
             });
         });
+        
+        @auth
+        // ========== NOTIFICATION SYSTEM ==========
+        let notificationDropdownOpen = false;
+        
+        function toggleNotifications() {
+            const dropdown = document.getElementById('notificationDropdown');
+            notificationDropdownOpen = !notificationDropdownOpen;
+            
+            if (notificationDropdownOpen) {
+                dropdown.classList.add('is-active');
+                loadNotifications();
+            } else {
+                dropdown.classList.remove('is-active');
+            }
+        }
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('notificationDropdown');
+            if (dropdown && !dropdown.contains(e.target)) {
+                dropdown.classList.remove('is-active');
+                notificationDropdownOpen = false;
+            }
+        });
+        
+        function loadNotifications() {
+            fetch('{{ route("notifications.index") }}')
+                .then(res => res.json())
+                .then(data => {
+                    renderNotifications(data.notifications);
+                    updateBadge(data.unread_count);
+                })
+                .catch(err => console.error('Failed to load notifications', err));
+        }
+        
+        function renderNotifications(notifications) {
+            const list = document.getElementById('notificationList');
+            
+            if (!notifications || notifications.length === 0) {
+                list.innerHTML = '<div class="notification-empty"><i class="fas fa-bell-slash mb-2"></i><br>Chưa có thông báo</div>';
+                return;
+            }
+            
+            list.innerHTML = notifications.map(n => `
+                <div class="notification-item ${n.is_read ? '' : 'unread'}" onclick="goToNotification(${n.id}, '${n.link || ''}')">
+                    <div class="icon-wrap is-${n.color}">
+                        <i class="fas ${n.icon}"></i>
+                    </div>
+                    <div class="content">
+                        <div class="title-text">${n.title}</div>
+                        <div class="message-text">${n.message}</div>
+                        <div class="time-text">${n.time_ago}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function updateBadge(count) {
+            const badge = document.getElementById('notificationBadge');
+            if (count > 0) {
+                badge.textContent = count > 99 ? '99+' : count;
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+        
+        function goToNotification(id, link) {
+            // Mark as read
+            fetch(`/notifications/${id}/read`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                }
+            }).then(() => {
+                if (link) {
+                    window.location.href = link;
+                } else {
+                    loadNotifications();
+                }
+            });
+        }
+        
+        function markAllAsRead() {
+            event.preventDefault();
+            fetch('{{ route("notifications.markAllAsRead") }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                }
+            }).then(() => {
+                loadNotifications();
+            });
+        }
+        
+        // Poll for new notifications every 30 seconds
+        function pollNotifications() {
+            fetch('{{ route("notifications.unreadCount") }}')
+                .then(res => res.json())
+                .then(data => updateBadge(data.unread_count))
+                .catch(err => {});
+        }
+        
+        // Initial load
+        pollNotifications();
+        
+        // Poll every 30 seconds
+        setInterval(pollNotifications, 30000);
+        @endauth
     </script>
     
     @yield('scripts')
