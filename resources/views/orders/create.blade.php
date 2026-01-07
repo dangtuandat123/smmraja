@@ -162,33 +162,30 @@
                                     <p class="has-text-weight-semibold" id="summaryServiceName">-</p>
                                 </div>
                                 
-                                <div class="level is-mobile">
-                                    <div class="level-left">
-                                        <span class="has-text-grey">Giá/1000:</span>
-                                    </div>
-                                    <div class="level-right">
-                                        <span id="summaryPrice">0</span> VND
-                                    </div>
-                                </div>
+                                <table class="table is-fullwidth is-narrow" style="background: transparent;">
+                                    <tbody>
+                                        <tr>
+                                            <td class="has-text-grey" style="border: none; padding-left: 0;">Giá/1000:</td>
+                                            <td class="has-text-right has-text-weight-semibold" style="border: none; padding-right: 0;">
+                                                <span id="summaryPrice">0</span> <small class="has-text-grey">VND</small>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="has-text-grey" style="border: none; padding-left: 0;">Số lượng:</td>
+                                            <td class="has-text-right has-text-weight-semibold" style="border: none; padding-right: 0;">
+                                                <span id="summaryQuantity">0</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                                 
-                                <div class="level is-mobile">
-                                    <div class="level-left">
-                                        <span class="has-text-grey">Số lượng:</span>
-                                    </div>
-                                    <div class="level-right">
-                                        <span id="summaryQuantity">0</span>
-                                    </div>
-                                </div>
+                                <hr style="margin: 0.75rem 0;">
                                 
-                                <hr>
-                                
-                                <div class="level is-mobile">
-                                    <div class="level-left">
-                                        <strong>Tổng tiền:</strong>
-                                    </div>
-                                    <div class="level-right">
-                                        <span class="title is-4 has-text-primary" id="summaryTotal">0</span>
-                                        <span class="ml-1">VND</span>
+                                <div class="is-flex is-justify-content-space-between is-align-items-center">
+                                    <strong class="is-size-5">Tổng tiền:</strong>
+                                    <div class="has-text-right">
+                                        <span class="title is-3 has-text-primary mb-0" id="summaryTotal">0</span>
+                                        <span class="is-size-6 has-text-grey ml-1">VND</span>
                                     </div>
                                 </div>
                             </div>

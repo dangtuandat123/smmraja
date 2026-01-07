@@ -15,6 +15,7 @@ class ServiceController extends Controller
     {
         $categorySlug = $request->get('category');
         $search = $request->get('search');
+        $sort = $request->get('sort', 'default');
 
         $categories = Category::active()
             ->ordered()
@@ -24,8 +25,7 @@ class ServiceController extends Controller
             ->get();
 
         $servicesQuery = Service::active()
-            ->with('category')
-            ->ordered();
+            ->with('category');
 
         if ($categorySlug) {
             $servicesQuery->whereHas('category', function ($query) use ($categorySlug) {
@@ -40,9 +40,28 @@ class ServiceController extends Controller
             });
         }
 
-        $services = $servicesQuery->paginate(20);
+        // Apply sorting
+        switch ($sort) {
+            case 'price_asc':
+                $servicesQuery->orderBy('price_vnd', 'asc');
+                break;
+            case 'price_desc':
+                $servicesQuery->orderBy('price_vnd', 'desc');
+                break;
+            case 'name_asc':
+                $servicesQuery->orderBy('name', 'asc');
+                break;
+            case 'newest':
+                $servicesQuery->orderBy('created_at', 'desc');
+                break;
+            default:
+                $servicesQuery->ordered();
+                break;
+        }
 
-        return view('services.index', compact('categories', 'services', 'categorySlug', 'search'));
+        $services = $servicesQuery->paginate(20)->appends($request->query());
+
+        return view('services.index', compact('categories', 'services', 'categorySlug', 'search', 'sort'));
     }
 
     /**
