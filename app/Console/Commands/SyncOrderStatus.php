@@ -41,6 +41,11 @@ class SyncOrderStatus extends Command
             return 1;
         }
         
+        // Debug: show API response
+        if ($this->output->isVerbose()) {
+            $this->info("API Response: " . json_encode($statuses, JSON_PRETTY_PRINT));
+        }
+        
         $updatedCount = 0;
         $completedCount = 0;
         $partialCount = 0;
@@ -55,7 +60,10 @@ class SyncOrderStatus extends Command
                 continue;
             }
             
-            $statusData = $statuses[$order->api_order_id] ?? null;
+            // Handle both single order response and multiple orders response
+            // Single: {"status":"...", "start_count":"...", ...}
+            // Multiple: {"order_id":{"status":"...", ...}, ...}
+            $statusData = $statuses[$order->api_order_id] ?? ($statuses['status'] ?? null ? $statuses : null);
             
             if (!$statusData || isset($statusData['error'])) {
                 $bar->advance();
@@ -64,6 +72,12 @@ class SyncOrderStatus extends Command
             
             $newStatus = $smmService->mapStatus($statusData['status'] ?? '');
             $oldStatus = $order->status;
+            
+            // Debug
+            if ($this->output->isVerbose()) {
+                $this->newLine();
+                $this->info("Order #{$order->id}: API status={$statusData['status']}, mapped={$newStatus}, current={$oldStatus}");
+            }
             
             if (!$newStatus || $newStatus === $oldStatus) {
                 $bar->advance();
