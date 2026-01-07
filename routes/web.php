@@ -81,6 +81,9 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
     // Orders
     Route::resource('orders', AdminOrderController::class)->only(['index', 'show']);
     Route::post('/orders/check-status', [AdminOrderController::class, 'checkStatus'])->name('orders.checkStatus');
+    Route::get('/orders/refunds', [AdminOrderController::class, 'refunds'])->name('orders.refunds');
+    Route::post('/orders/{order}/approve-refund', [AdminOrderController::class, 'approveRefund'])->name('orders.approveRefund');
+    Route::post('/orders/{order}/reject-refund', [AdminOrderController::class, 'rejectRefund'])->name('orders.rejectRefund');
     
     // Users
     Route::resource('users', AdminUserController::class);

@@ -129,4 +129,84 @@ class OrderController extends Controller
 
         return back()->with('success', "Đã cập nhật trạng thái {$updated} đơn hàng.");
     }
+    
+    /**
+     * Show refund pending orders
+     */
+    public function refunds()
+    {
+        $orders = Order::with(['user', 'service.category'])
+            ->whereIn('status', ['cancel_pending', 'partial', 'canceled'])
+            ->latest()
+            ->paginate(20);
+            
+        $counts = [
+            'cancel_pending' => Order::where('status', 'cancel_pending')->count(),
+            'partial' => Order::where('status', 'partial')->count(),
+            'canceled' => Order::where('status', 'canceled')->count(),
+        ];
+        
+        return view('admin.orders.refunds', compact('orders', 'counts'));
+    }
+    
+    /**
+     * Approve refund for an order
+     */
+    public function approveRefund(Request $request, Order $order)
+    {
+        if (!in_array($order->status, ['cancel_pending', 'partial', 'canceled'])) {
+            return back()->withErrors(['error' => 'Đơn hàng này không trong trạng thái cần hoàn tiền.']);
+        }
+        
+        $refundType = $request->get('refund_type', 'full'); // full or partial
+        $refundAmount = 0;
+        
+        if ($refundType === 'full') {
+            $refundAmount = $order->total_price;
+        } else {
+            // Partial refund based on remains or custom amount
+            $remains = $order->remains ?? 0;
+            if ($remains > 0) {
+                $refundAmount = $order->price_per_unit * $remains;
+            } else {
+                $refundAmount = (float) $request->get('refund_amount', 0);
+            }
+        }
+        
+        if ($refundAmount <= 0) {
+            return back()->withErrors(['error' => 'Số tiền hoàn không hợp lệ.']);
+        }
+        
+        // Add balance to user
+        $user = $order->user;
+        $user->addBalance(
+            $refundAmount,
+            'refund',
+            "Hoàn tiền đơn hàng #{$order->id}",
+            $order->id
+        );
+        
+        // Update order status
+        $order->update(['status' => 'refunded']);
+        
+        // Send notification
+        \App\Models\Notification::depositSuccess($user->id, $refundAmount);
+        
+        return back()->with('success', "Đã hoàn " . number_format($refundAmount, 0) . " VND cho đơn hàng #{$order->id}.");
+    }
+    
+    /**
+     * Reject refund (mark as canceled without refund)
+     */
+    public function rejectRefund(Order $order)
+    {
+        if ($order->status !== 'cancel_pending') {
+            return back()->withErrors(['error' => 'Đơn hàng này không trong trạng thái chờ hoàn tiền.']);
+        }
+        
+        $order->update(['status' => 'canceled']);
+        
+        return back()->with('success', "Đã từ chối hoàn tiền cho đơn hàng #{$order->id}.");
+    }
 }
+

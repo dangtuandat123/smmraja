@@ -97,7 +97,7 @@ class SyncOrderStatus extends Command
                 );
             }
             
-            // Handle refund for canceled/partial orders
+            // Auto-refund when API returns canceled/refunded/partial status
             if (in_array($newStatus, ['canceled', 'refunded', 'partial']) && $oldStatus !== $newStatus) {
                 $this->handleRefund($order, $statusData);
             }

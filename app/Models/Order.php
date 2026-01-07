@@ -44,6 +44,7 @@ class Order extends Model
     const STATUS_IN_PROGRESS = 'in_progress';
     const STATUS_COMPLETED = 'completed';
     const STATUS_PARTIAL = 'partial';
+    const STATUS_CANCEL_PENDING = 'cancel_pending';
     const STATUS_CANCELED = 'canceled';
     const STATUS_REFUNDED = 'refunded';
     const STATUS_ERROR = 'error';
@@ -75,6 +76,7 @@ class Order extends Model
             'in_progress' => 'Đang chạy',
             'completed' => 'Hoàn thành',
             'partial' => 'Hoàn thành một phần',
+            'cancel_pending' => 'Chờ hoàn tiền',
             'canceled' => 'Đã hủy',
             'refunded' => 'Đã hoàn tiền',
             'error' => 'Lỗi',
