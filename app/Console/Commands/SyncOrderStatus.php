@@ -111,7 +111,7 @@ class SyncOrderStatus extends Command
                 
                 // Auto-refund when API returns canceled/refunded/partial status
                 if (in_array($newStatus, ['canceled', 'refunded', 'partial'])) {
-                    $this->handleRefund($order, $statusData);
+                    $this->handleRefund($order, $newStatus, $statusData);
                 }
                 
                 Log::info('Order status updated', [
@@ -149,14 +149,14 @@ class SyncOrderStatus extends Command
     /**
      * Handle refund for canceled/partial orders
      */
-    protected function handleRefund(Order $order, array $statusData): void
+    protected function handleRefund(Order $order, string $newStatus, array $statusData): void
     {
         $refundAmount = 0;
         
-        if ($order->status === 'canceled' || $order->status === 'refunded') {
+        if ($newStatus === 'canceled' || $newStatus === 'refunded') {
             // Full refund
             $refundAmount = $order->total_price;
-        } elseif ($order->status === 'partial') {
+        } elseif ($newStatus === 'partial') {
             // Partial refund based on remains
             $remains = (int) ($statusData['remains'] ?? 0);
             if ($remains > 0) {
@@ -169,7 +169,7 @@ class SyncOrderStatus extends Command
             $user->addBalance(
                 $refundAmount,
                 'refund',
-                "Hoàn tiền đơn hàng #{$order->id} ({$order->status})",
+                "Hoàn tiền đơn hàng #{$order->id} ({$newStatus})",
                 $order->id
             );
             

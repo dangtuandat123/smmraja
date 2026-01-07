@@ -60,15 +60,9 @@
                                         {{ number_format($order->total_price, 0, ',', '.') }} VND
                                     </td>
                                 </tr>
-                                @if($order->api_order_id)
+                                @if($order->start_count !== null)
                                     <tr>
-                                        <th>API Order ID</th>
-                                        <td>{{ $order->api_order_id }}</td>
-                                    </tr>
-                                @endif
-                                @if($order->start_count)
-                                    <tr>
-                                        <th>Start Count</th>
+                                        <th>Số ban đầu</th>
                                         <td>{{ number_format($order->start_count) }}</td>
                                     </tr>
                                 @endif
