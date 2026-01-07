@@ -340,5 +340,30 @@
     }
     
     document.getElementById('linkInput').addEventListener('input', updateTotal);
+    
+    // Auto-select service if passed via URL
+    const preSelectedServiceId = {{ $selectedService ?? 'null' }};
+    
+    if (preSelectedServiceId) {
+        // Find which category contains this service
+        for (const category of categories) {
+            const service = category.services?.find(s => s.id == preSelectedServiceId);
+            if (service) {
+                // Select the category
+                document.getElementById('categorySelect').value = category.id;
+                
+                // Trigger change event to populate services
+                document.getElementById('categorySelect').dispatchEvent(new Event('change'));
+                
+                // Wait for DOM update then select the service
+                setTimeout(() => {
+                    document.getElementById('serviceSelect').value = preSelectedServiceId;
+                    document.getElementById('serviceSelect').dispatchEvent(new Event('change'));
+                }, 100);
+                
+                break;
+            }
+        }
+    }
 </script>
 @endsection
