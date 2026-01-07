@@ -5,8 +5,11 @@
 @section('content')
 <section class="section">
     <div class="container">
-        <h1 class="title is-3">
-            <i class="fas fa-cart-plus has-text-primary"></i> Đặt hàng mới
+        <h1 class="title is-3 mb-5">
+            <span class="icon-text">
+                <span class="icon has-text-primary"><i class="fas fa-cart-plus"></i></span>
+                <span>Đặt hàng mới</span>
+            </span>
         </h1>
         
         <form method="POST" action="{{ route('orders.store') }}" id="orderForm">
@@ -16,11 +19,19 @@
                 <!-- Left Column - Order Form -->
                 <div class="column is-7">
                     <div class="card">
+                        <div class="card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            <p class="card-header-title has-text-white">
+                                <i class="fas fa-edit mr-2"></i> Thông tin đặt hàng
+                            </p>
+                        </div>
                         <div class="card-content">
                             <!-- Category Selection -->
                             <div class="field">
                                 <label class="label">
-                                    <i class="fas fa-folder has-text-primary"></i> Danh mục
+                                    <span class="icon-text">
+                                        <span class="icon has-text-primary"><i class="fas fa-folder"></i></span>
+                                        <span>Danh mục</span>
+                                    </span>
                                 </label>
                                 <div class="control">
                                     <div class="dropdown searchable-dropdown is-fullwidth" id="categoryDropdown">
@@ -55,7 +66,10 @@
                             <!-- Service Selection -->
                             <div class="field">
                                 <label class="label">
-                                    <i class="fas fa-cog has-text-info"></i> Dịch vụ
+                                    <span class="icon-text">
+                                        <span class="icon has-text-info"><i class="fas fa-cog"></i></span>
+                                        <span>Dịch vụ</span>
+                                    </span>
                                 </label>
                                 <div class="control">
                                     <div class="dropdown searchable-dropdown is-fullwidth" id="serviceDropdown">
@@ -84,14 +98,20 @@
                             </div>
                             
                             <!-- Service Description -->
-                            <div id="serviceDescription" class="notification is-light" style="display: none;">
-                                <p id="serviceDescText"></p>
+                            <div id="serviceDescription" class="notification is-info is-light" style="display: none;">
+                                <div class="is-flex is-align-items-start">
+                                    <span class="icon has-text-info mr-2"><i class="fas fa-info-circle"></i></span>
+                                    <p id="serviceDescText" class="is-size-7"></p>
+                                </div>
                             </div>
                             
                             <!-- Link Input -->
                             <div class="field">
                                 <label class="label">
-                                    <i class="fas fa-link has-text-success"></i> Link
+                                    <span class="icon-text">
+                                        <span class="icon has-text-success"><i class="fas fa-link"></i></span>
+                                        <span>Link</span>
+                                    </span>
                                 </label>
                                 <div class="control has-icons-left">
                                     <input class="input is-medium" 
@@ -111,7 +131,10 @@
                             <!-- Quantity Input -->
                             <div class="field" id="quantityField">
                                 <label class="label">
-                                    <i class="fas fa-sort-numeric-up has-text-warning"></i> Số lượng
+                                    <span class="icon-text">
+                                        <span class="icon has-text-warning"><i class="fas fa-sort-numeric-up"></i></span>
+                                        <span>Số lượng</span>
+                                    </span>
                                 </label>
                                 <div class="control">
                                     <input class="input is-medium" 
@@ -135,21 +158,22 @@
                 <!-- Right Column - Order Summary -->
                 <div class="column is-5">
                     <div class="card" style="position: sticky; top: 1rem;">
-                        <div class="card-header">
-                            <p class="card-header-title">
+                        <div class="card-header" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+                            <p class="card-header-title has-text-white">
                                 <i class="fas fa-receipt mr-2"></i> Thông tin đơn hàng
                             </p>
                         </div>
                         <div class="card-content">
                             <!-- Balance -->
-                            <div class="level is-mobile mb-4">
-                                <div class="level-left">
-                                    <span class="has-text-grey">Số dư hiện tại:</span>
-                                </div>
-                                <div class="level-right">
-                                    <span class="has-text-weight-bold has-text-success">
-                                        {{ number_format(auth()->user()->balance, 0, ',', '.') }} VND
+                            <div class="notification is-success is-light mb-4">
+                                <div class="is-flex is-justify-content-space-between is-align-items-center">
+                                    <span class="icon-text">
+                                        <span class="icon"><i class="fas fa-wallet"></i></span>
+                                        <span>Số dư hiện tại</span>
                                     </span>
+                                    <strong class="is-size-5">
+                                        {{ number_format(auth()->user()->balance, 0, ',', '.') }} <small>VND</small>
+                                    </strong>
                                 </div>
                             </div>
                             
@@ -158,48 +182,59 @@
                             <!-- Service Info -->
                             <div id="orderSummary" style="display: none;">
                                 <div class="mb-4">
-                                    <p class="is-size-7 has-text-grey">Dịch vụ</p>
+                                    <p class="is-size-7 has-text-grey mb-1">
+                                        <i class="fas fa-cog mr-1"></i> Dịch vụ đã chọn
+                                    </p>
                                     <p class="has-text-weight-semibold" id="summaryServiceName">-</p>
                                 </div>
                                 
-                                <table class="table is-fullwidth is-narrow" style="background: transparent;">
-                                    <tbody>
-                                        <tr>
-                                            <td class="has-text-grey" style="border: none; padding-left: 0;">Giá/1000:</td>
-                                            <td class="has-text-right has-text-weight-semibold" style="border: none; padding-right: 0;">
-                                                <span id="summaryPrice">0</span> <small class="has-text-grey">VND</small>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="has-text-grey" style="border: none; padding-left: 0;">Số lượng:</td>
-                                            <td class="has-text-right has-text-weight-semibold" style="border: none; padding-right: 0;">
+                                <div class="columns is-mobile mb-2">
+                                    <div class="column">
+                                        <div class="has-background-light p-3 has-text-centered" style="border-radius: 8px;">
+                                            <p class="is-size-7 has-text-grey mb-1">
+                                                <i class="fas fa-tag"></i> Giá/1000
+                                            </p>
+                                            <p class="has-text-weight-bold has-text-primary">
+                                                <span id="summaryPrice">0</span> <small>VND</small>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="column">
+                                        <div class="has-background-light p-3 has-text-centered" style="border-radius: 8px;">
+                                            <p class="is-size-7 has-text-grey mb-1">
+                                                <i class="fas fa-sort-numeric-up"></i> Số lượng
+                                            </p>
+                                            <p class="has-text-weight-bold has-text-info">
                                                 <span id="summaryQuantity">0</span>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
                                 
-                                <hr style="margin: 0.75rem 0;">
-                                
-                                <div class="is-flex is-justify-content-space-between is-align-items-center">
-                                    <strong class="is-size-5">Tổng tiền:</strong>
-                                    <div class="has-text-right">
-                                        <span class="title is-3 has-text-primary mb-0" id="summaryTotal">0</span>
-                                        <span class="is-size-6 has-text-grey ml-1">VND</span>
+                                <div class="notification is-primary is-light mt-4">
+                                    <div class="is-flex is-justify-content-space-between is-align-items-center">
+                                        <span class="icon-text">
+                                            <span class="icon"><i class="fas fa-money-bill-wave"></i></span>
+                                            <span class="has-text-weight-bold">Tổng tiền</span>
+                                        </span>
+                                        <div class="has-text-right">
+                                            <span class="title is-4 has-text-primary mb-0" id="summaryTotal">0</span>
+                                            <span class="is-size-6 has-text-grey ml-1">VND</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             
-                            <div id="noServiceSelected" class="has-text-centered py-4">
-                                <span class="icon is-large has-text-grey-light">
-                                    <i class="fas fa-hand-pointer fa-2x"></i>
+                            <div id="noServiceSelected" class="has-text-centered py-5">
+                                <span class="icon is-large has-text-grey-lighter">
+                                    <i class="fas fa-shopping-basket fa-3x"></i>
                                 </span>
-                                <p class="has-text-grey mt-2">Vui lòng chọn dịch vụ</p>
+                                <p class="has-text-grey mt-3">Vui lòng chọn dịch vụ để xem thông tin</p>
                             </div>
                             
-                            <button type="submit" class="button is-primary is-medium is-fullwidth mt-4" id="submitBtn" disabled>
-                                <span class="icon"><i class="fas fa-check"></i></span>
-                                <span>Đặt hàng</span>
+                            <button type="submit" class="button is-primary is-medium is-fullwidth mt-4" id="submitBtn" disabled style="border-radius: 8px;">
+                                <span class="icon"><i class="fas fa-shopping-cart"></i></span>
+                                <span>Đặt hàng ngay</span>
                             </button>
                         </div>
                     </div>

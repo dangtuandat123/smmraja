@@ -12,45 +12,32 @@
         <div class="columns">
             <!-- Sidebar -->
             <div class="column is-3-desktop is-12-mobile">
-                <!-- Mobile: Dropdown Category -->
-                <div class="is-hidden-desktop mb-4">
-                    <div class="field">
-                        <div class="control has-icons-left is-expanded">
-                            <div class="select is-fullwidth is-medium">
-                                <select id="mobileCategorySelect">
-                                    <option value="" data-category="" {{ !$categorySlug ? 'selected' : '' }}>
-                                        📋 Tất cả danh mục
-                                    </option>
-                                    @foreach($categories as $category)
-                                        <option value="{{ $category->slug }}" data-category="{{ $category->slug }}" 
-                                                {{ $categorySlug == $category->slug ? 'selected' : '' }}>
-                                            {{ $category->name }} ({{ $category->services_count }})
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
+                <!-- Mobile: All filters -->
+                <div class="is-hidden-desktop mb-3">
+                    <!-- Mobile Category Dropdown -->
+                    <div class="field mb-2">
+                        <label class="label is-small has-text-grey mb-1">Danh mục</label>
+                        <div id="mobileCategoryDropdown" class="custom-dropdown"></div>
+                    </div>
+                    
+                    <!-- Mobile Search -->
+                    <input type="hidden" id="mobileCategoryInput" value="{{ $categorySlug }}">
+                    <input type="hidden" id="mobileSortInput" value="{{ $sort }}">
+                    <div class="field mb-2">
+                        <label class="label is-small has-text-grey mb-1">Tìm kiếm</label>
+                        <div class="control has-icons-left">
+                            <input class="input" type="text" id="mobileSearchInput"
+                                   placeholder="Tìm dịch vụ..." value="{{ $search }}">
                             <span class="icon is-left">
-                                <i class="fas fa-layer-group"></i>
+                                <i class="fas fa-search"></i>
                             </span>
                         </div>
                     </div>
                     
-                    <!-- Mobile Search & Sort -->
-                    <div class="mb-2">
-                        <input type="hidden" id="mobileCategoryInput" value="{{ $categorySlug }}">
-                        <input type="hidden" id="mobileSortInput" value="{{ $sort }}">
-                        <div class="field mb-2">
-                            <div class="control has-icons-left">
-                                <input class="input" type="text" id="mobileSearchInput"
-                                       placeholder="Tìm dịch vụ..." value="{{ $search }}">
-                                <span class="icon is-left">
-                                    <i class="fas fa-search"></i>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="field">
-                            <div id="mobileSortDropdown" class="custom-dropdown"></div>
-                        </div>
+                    <!-- Mobile Sort Dropdown -->
+                    <div class="field">
+                        <label class="label is-small has-text-grey mb-1">Sắp xếp theo</label>
+                        <div id="mobileSortDropdown" class="custom-dropdown"></div>
                     </div>
                 </div>
                 
@@ -446,12 +433,31 @@
         });
     }
     
-    // Mobile dropdown
+    // Mobile sort dropdown
     const mobileSortContainer = document.getElementById('mobileSortDropdown');
     if (mobileSortContainer) {
         new CustomDropdown(mobileSortContainer, sortOptions, currentSort, (value) => {
             document.getElementById('mobileSortInput').value = value;
             loadServicesAjax(value);
+        });
+    }
+    
+    // Category options for mobile dropdown
+    const categoryOptions = [
+        { value: '', label: 'Tất cả danh mục', icon: 'fa-th-large' },
+        @foreach($categories as $category)
+        { value: '{{ $category->slug }}', label: '{{ $category->name }} ({{ $category->services_count }})', icon: '{{ $category->icon ?? "fa-folder" }}' },
+        @endforeach
+    ];
+    
+    const currentCategory = '{{ $categorySlug }}';
+    
+    // Mobile category dropdown
+    const mobileCatContainer = document.getElementById('mobileCategoryDropdown');
+    if (mobileCatContainer) {
+        new CustomDropdown(mobileCatContainer, categoryOptions, currentCategory, (value) => {
+            document.getElementById('mobileCategoryInput').value = value;
+            loadCategoryAjax(value);
         });
     }
     
@@ -575,15 +581,6 @@
             loadCategoryAjax(category);
         });
     });
-    
-    // Mobile category dropdown
-    const mobileCatSelect = document.getElementById('mobileCategorySelect');
-    if (mobileCatSelect) {
-        mobileCatSelect.addEventListener('change', () => {
-            const category = mobileCatSelect.value || '';
-            loadCategoryAjax(category);
-        });
-    }
     
     // Debounce function
     function debounce(func, wait) {
