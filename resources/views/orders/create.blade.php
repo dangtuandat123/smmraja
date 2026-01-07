@@ -261,6 +261,14 @@
         background: white;
         border: 1px solid #dbdbdb;
         font-weight: normal;
+        overflow: hidden;
+    }
+    .searchable-dropdown .dropdown-btn .selected-text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        flex: 1;
+        max-width: calc(100% - 30px);
     }
     .searchable-dropdown .dropdown-btn:hover {
         border-color: #b5b5b5;

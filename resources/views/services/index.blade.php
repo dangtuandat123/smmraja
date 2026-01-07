@@ -321,9 +321,20 @@
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
     }
-    .custom-dropdown .dropdown-item .icon {
+    .custom-dropdown .dropdown-item > .icon {
         margin-right: 0.5rem;
         width: 1.2rem;
+        height: auto;
+    }
+    
+    /* Fix pagination styling */
+    .pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .pagination-previous,
+    .pagination-next {
+        flex-grow: 0 !important;
     }
 </style>
 @endsection
