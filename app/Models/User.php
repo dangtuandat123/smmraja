@@ -104,11 +104,11 @@ class User extends Authenticatable
     }
 
     /**
-     * Check if user has enough balance
+     * Check if user has enough balance (uses floor for integer comparison)
      */
-    public function hasBalance(float $amount): bool
+    public function hasBalance(int $amount): bool
     {
-        return $this->balance >= $amount;
+        return floor($this->balance) >= $amount;
     }
 
     /**

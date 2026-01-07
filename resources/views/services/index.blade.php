@@ -89,10 +89,10 @@
                                             @endif
                                             <div class="mt-1">
                                                 @if($service->refill)
-                                                    <span class="tag is-success is-small">Refill</span>
+                                                    <span class="tag is-success is-small">Bảo hành</span>
                                                 @endif
                                                 @if($service->cancel)
-                                                    <span class="tag is-info is-small">Cancel</span>
+                                                    <span class="tag is-info is-small">Có thể hủy</span>
                                                 @endif
                                             </div>
                                         </td>

@@ -112,9 +112,9 @@
                             <form action="{{ route('orders.refill', $order) }}" method="POST" class="mb-3">
                                 @csrf
                                 <button type="submit" class="button is-info is-fullwidth" 
-                                        onclick="return confirm('Bạn có chắc muốn yêu cầu refill?')">
-                                    <span class="icon"><i class="fas fa-redo"></i></span>
-                                    <span>Yêu cầu Refill</span>
+                                        onclick="return confirm('Bạn có chắc muốn yêu cầu bảo hành đơn hàng này?')">
+                                    <span class="icon"><i class="fas fa-shield-alt"></i></span>
+                                    <span>Yêu cầu Bảo hành</span>
                                 </button>
                             </form>
                         @endif

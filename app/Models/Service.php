@@ -65,9 +65,9 @@ class Service extends Model
      * Uses realtime exchange rate
      * 
      * @param float|null $exchangeRate VND per USD (if null, fetches realtime)
-     * @return float Price per 1000 in VND
+     * @return int Price per 1000 in VND (integer)
      */
-    public function calculatePriceVnd(?float $exchangeRate = null): float
+    public function calculatePriceVnd(?float $exchangeRate = null): int
     {
         $exchangeRate = $exchangeRate ?? ExchangeRateService::getRate();
         
@@ -75,7 +75,7 @@ class Service extends Model
         // Apply markup percentage
         $priceUsd = $this->api_rate * (1 + $this->markup_percent / 100);
         
-        return round($priceUsd * $exchangeRate, 2);
+        return (int) round($priceUsd * $exchangeRate);
     }
 
     /**
@@ -91,12 +91,12 @@ class Service extends Model
      * Calculate order total for given quantity
      * 
      * @param int $quantity
-     * @return float Total in VND
+     * @return int Total in VND (integer)
      */
-    public function calculateOrderTotal(int $quantity): float
+    public function calculateOrderTotal(int $quantity): int
     {
-        // price_vnd is per 1000
-        return round(($this->price_vnd / 1000) * $quantity, 2);
+        // price_vnd is per 1000, round to integer
+        return (int) round(($this->price_vnd / 1000) * $quantity);
     }
 
     /**

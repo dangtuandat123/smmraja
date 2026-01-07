@@ -498,7 +498,7 @@
             const items = category.services.map(s => ({
                 value: s.id,
                 text: s.name,
-                price: Number(s.price_vnd).toLocaleString('vi-VN') + 'đ/1000'
+                price: Math.round(s.price_vnd).toLocaleString('vi-VN') + 'đ/1000'
             }));
             serviceDropdown.setItems(items);
             serviceDropdown.enable();
@@ -514,15 +514,28 @@
         selectedService = servicesMap[serviceId];
         if (!selectedService) return;
         
-        // Update description
+        // Update description with badges
         const descEl = document.getElementById('serviceDescription');
         const descText = document.getElementById('serviceDescText');
-        if (selectedService.description) {
-            descText.innerHTML = `<strong>${selectedService.name}</strong><br>${selectedService.description}`;
-            descEl.style.display = 'block';
-        } else {
-            descEl.style.display = 'none';
+        
+        let badges = '';
+        if (selectedService.refill) {
+            badges += '<span class="tag is-success is-small mr-1">Bảo hành</span>';
         }
+        if (selectedService.cancel) {
+            badges += '<span class="tag is-info is-small">Có thể hủy</span>';
+        }
+        
+        let descHtml = `<strong>${selectedService.name}</strong>`;
+        if (badges) {
+            descHtml += `<br><div class="mt-1">${badges}</div>`;
+        }
+        if (selectedService.description) {
+            descHtml += `<br><span class="has-text-grey">${selectedService.description}</span>`;
+        }
+        
+        descText.innerHTML = descHtml;
+        descEl.style.display = 'block';
         
         // Update quantity help
         document.getElementById('quantityHelp').textContent = `Min: ${selectedService.min.toLocaleString()} - Max: ${selectedService.max.toLocaleString()}`;
@@ -534,7 +547,7 @@
         document.getElementById('noServiceSelected').style.display = 'none';
         document.getElementById('orderSummary').style.display = 'block';
         document.getElementById('summaryServiceName').textContent = selectedService.name;
-        document.getElementById('summaryPrice').textContent = Number(selectedService.price_vnd).toLocaleString('vi-VN');
+        document.getElementById('summaryPrice').textContent = Math.round(selectedService.price_vnd).toLocaleString('vi-VN');
         
         // Generate extra fields based on type
         generateExtraFields(selectedService.type);
