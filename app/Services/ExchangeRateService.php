@@ -5,6 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use App\Models\Setting;
 use Exception;
 
 class ExchangeRateService
@@ -22,7 +23,15 @@ class ExchangeRateService
     /**
      * Default rate if API fails
      */
-    const DEFAULT_RATE = 25000;
+    const DEFAULT_RATE = 27000;
+
+    /**
+     * Get default rate from database or constant
+     */
+    protected static function getDefaultRate(): float
+    {
+        return (float) (Setting::get('exchange_rate') ?: self::DEFAULT_RATE);
+    }
 
     /**
      * Get current USD to VND exchange rate
@@ -65,9 +74,10 @@ class ExchangeRateService
             }
         }
 
-        // Fallback to default
-        Log::warning('Using default exchange rate', ['rate' => self::DEFAULT_RATE]);
-        return self::DEFAULT_RATE;
+        // Fallback to database or default
+        $fallbackRate = self::getDefaultRate();
+        Log::warning('Using fallback exchange rate', ['rate' => $fallbackRate]);
+        return $fallbackRate;
     }
 
     /**

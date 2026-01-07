@@ -17,8 +17,11 @@ class SmmRajaService
 
     public function __construct()
     {
-        $this->apiUrl = config('services.smmraja.url', 'https://www.smmraja.com/api/v3');
-        $this->apiKey = config('services.smmraja.key', '');
+        // Read from database first, fallback to config/env
+        $this->apiUrl = Setting::get('smmraja_api_url') 
+            ?: config('services.smmraja.url', 'https://www.smmraja.com/api/v3');
+        $this->apiKey = Setting::get('smmraja_api_key') 
+            ?: config('services.smmraja.key', '');
     }
 
     /**

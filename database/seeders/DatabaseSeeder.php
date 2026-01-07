@@ -42,12 +42,18 @@ class DatabaseSeeder extends Seeder
         $defaultSettings = [
             // General
             ['key' => 'site_name', 'value' => 'SMM Panel', 'type' => 'text', 'group' => 'general', 'label' => 'Tên website'],
-            ['key' => 'exchange_rate', 'value' => '25000', 'type' => 'number', 'group' => 'general', 'label' => 'Tỷ giá USD/VND'],
+            ['key' => 'exchange_rate', 'value' => '27000', 'type' => 'number', 'group' => 'general', 'label' => 'Tỷ giá USD/VND'],
+            
+            // API Settings
+            ['key' => 'smmraja_api_url', 'value' => 'https://www.smmraja.com/api/v3', 'type' => 'text', 'group' => 'api', 'label' => 'SMM Raja API URL'],
+            ['key' => 'smmraja_api_key', 'value' => '', 'type' => 'password', 'group' => 'api', 'label' => 'SMM Raja API Key'],
+            ['key' => 'wallet_api_key', 'value' => '', 'type' => 'password', 'group' => 'api', 'label' => 'Wallet API Key'],
             
             // Payment
             ['key' => 'vietqr_bank_id', 'value' => '970416', 'type' => 'text', 'group' => 'payment', 'label' => 'VietQR Bank ID'],
             ['key' => 'vietqr_account_number', 'value' => '', 'type' => 'text', 'group' => 'payment', 'label' => 'Số tài khoản'],
             ['key' => 'vietqr_account_name', 'value' => '', 'type' => 'text', 'group' => 'payment', 'label' => 'Tên chủ TK'],
+            ['key' => 'vietqr_template', 'value' => 'rdXzPHV', 'type' => 'text', 'group' => 'payment', 'label' => 'VietQR Template'],
             ['key' => 'min_deposit', 'value' => '10000', 'type' => 'number', 'group' => 'payment', 'label' => 'Nạp tối thiểu'],
             
             // SEO

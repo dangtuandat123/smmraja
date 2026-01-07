@@ -8,6 +8,7 @@
 <div class="tabs">
     <ul>
         <li class="is-active" data-tab="general"><a>Chung</a></li>
+        <li data-tab="api"><a>API</a></li>
         <li data-tab="payment"><a>Thanh toán</a></li>
         <li data-tab="seo"><a>SEO</a></li>
         <li data-tab="contact"><a>Liên hệ</a></li>
@@ -35,6 +36,48 @@
                 <div class="field">
                     <label class="label">Tỷ giá USD/VND</label>
                     <input class="input" type="number" name="exchange_rate" value="{{ $settings['general']['exchange_rate'] ?? 25000 }}">
+                </div>
+                
+                <button type="submit" class="button is-primary"><i class="fas fa-save mr-2"></i> Lưu cài đặt</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- API -->
+<div id="tab-api" class="tab-content" style="display: none;">
+    <div class="card">
+        <div class="card-content">
+            <form method="POST" action="{{ route('admin.settings.update') }}">
+                @csrf
+                <input type="hidden" name="group" value="api">
+                
+                <div class="notification is-warning is-light">
+                    <strong><i class="fas fa-exclamation-triangle mr-2"></i>Bảo mật:</strong> 
+                    Các API Key sẽ được bảo mật trong database. Không chia sẻ thông tin này.
+                </div>
+                
+                <h4 class="title is-5 mt-4">SMM Raja API</h4>
+                
+                <div class="field">
+                    <label class="label">API URL</label>
+                    <input class="input" type="text" name="smmraja_api_url" value="{{ $settings['api']['smmraja_api_url'] ?? 'https://www.smmraja.com/api/v3' }}" placeholder="https://www.smmraja.com/api/v3">
+                </div>
+                
+                <div class="field">
+                    <label class="label">API Key</label>
+                    <input class="input" type="password" name="smmraja_api_key" value="{{ $settings['api']['smmraja_api_key'] ?? '' }}" placeholder="Nhập API Key của SMM Raja">
+                    <p class="help">Lấy API Key từ trang SMM Raja của bạn</p>
+                </div>
+                
+                <hr>
+                
+                <h4 class="title is-5">Wallet API</h4>
+                
+                <div class="field">
+                    <label class="label">Wallet API Key</label>
+                    <input class="input" type="password" name="wallet_api_key" value="{{ $settings['api']['wallet_api_key'] ?? '' }}" placeholder="API Key cho webhook nạp tiền tự động">
+                    <p class="help">Dùng để xác thực các request cộng/trừ tiền từ bên ngoài (ví dụ: webhook ngân hàng)</p>
                 </div>
                 
                 <button type="submit" class="button is-primary"><i class="fas fa-save mr-2"></i> Lưu cài đặt</button>

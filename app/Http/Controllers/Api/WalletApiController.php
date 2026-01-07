@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Notification;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 
 class WalletApiController extends Controller
@@ -99,9 +100,9 @@ class WalletApiController extends Controller
      */
     public function adjustWithApiKey(Request $request)
     {
-        // Validate API Key
+        // Validate API Key - read from database first, fallback to env
         $apiKey = $request->header('X-API-Key') ?? $request->get('api_key');
-        $validApiKey = config('services.wallet_api.key', env('WALLET_API_KEY'));
+        $validApiKey = Setting::get('wallet_api_key') ?: config('services.wallet_api.key', env('WALLET_API_KEY'));
 
         if (empty($validApiKey) || $apiKey !== $validApiKey) {
             return response()->json([
