@@ -154,13 +154,13 @@ class SyncOrderStatus extends Command
         $refundAmount = 0;
         
         if ($newStatus === 'canceled' || $newStatus === 'refunded') {
-            // Full refund
-            $refundAmount = $order->total_price;
+            // Full refund - total_price is already integer
+            $refundAmount = (int) $order->total_price;
         } elseif ($newStatus === 'partial') {
-            // Partial refund based on remains
+            // Partial refund based on remains - round to integer
             $remains = (int) ($statusData['remains'] ?? 0);
             if ($remains > 0) {
-                $refundAmount = $order->price_per_unit * $remains;
+                $refundAmount = (int) round($order->price_per_unit * $remains);
             }
         }
         
