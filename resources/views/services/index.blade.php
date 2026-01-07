@@ -36,26 +36,22 @@
                     </div>
                     
                     <!-- Mobile Search & Sort -->
-                    <form action="{{ route('services.index') }}" method="GET" class="mb-2" id="mobileSearchForm">
-                        @if($categorySlug)
-                            <input type="hidden" name="category" value="{{ $categorySlug }}">
-                        @endif
-                        <input type="hidden" name="sort" id="mobileSortInput" value="{{ $sort }}">
-                        <div class="field has-addons mb-2">
-                            <div class="control is-expanded">
-                                <input class="input" type="text" name="search" 
+                    <div class="mb-2">
+                        <input type="hidden" id="mobileCategoryInput" value="{{ $categorySlug }}">
+                        <input type="hidden" id="mobileSortInput" value="{{ $sort }}">
+                        <div class="field mb-2">
+                            <div class="control has-icons-left">
+                                <input class="input" type="text" id="mobileSearchInput"
                                        placeholder="Tìm dịch vụ..." value="{{ $search }}">
-                            </div>
-                            <div class="control">
-                                <button type="submit" class="button is-primary">
+                                <span class="icon is-left">
                                     <i class="fas fa-search"></i>
-                                </button>
+                                </span>
                             </div>
                         </div>
                         <div class="field">
                             <div id="mobileSortDropdown" class="custom-dropdown"></div>
                         </div>
-                    </form>
+                    </div>
                 </div>
                 
                 <!-- Desktop: Sidebar Card -->
@@ -104,29 +100,29 @@
                     <div class="card mt-4">
                         <div class="card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
                             <p class="card-header-title has-text-white">
-                                <i class="fas fa-search mr-2"></i> Tìm kiếm
+                                <i class="fas fa-filter mr-2"></i> Bộ lọc
                             </p>
                         </div>
                         <div class="card-content" style="padding: 1rem;">
-                            <form action="{{ route('services.index') }}" method="GET" id="desktopSearchForm">
-                                @if($categorySlug)
-                                    <input type="hidden" name="category" value="{{ $categorySlug }}">
-                                @endif
-                                <input type="hidden" name="sort" id="desktopSortInput" value="{{ $sort }}">
-                                <div class="field">
-                                    <div class="control">
-                                        <input class="input" type="text" name="search" 
-                                               placeholder="Nhập tên dịch vụ..." value="{{ $search }}">
-                                    </div>
+                            <input type="hidden" id="desktopCategoryInput" value="{{ $categorySlug }}">
+                            <input type="hidden" id="desktopSortInput" value="{{ $sort }}">
+                            <div class="field">
+                                <label class="label is-small has-text-grey">Tìm kiếm</label>
+                                <div class="control has-icons-left has-icons-right">
+                                    <input class="input" type="text" id="desktopSearchInput"
+                                           placeholder="Nhập tên dịch vụ..." value="{{ $search }}">
+                                    <span class="icon is-left">
+                                        <i class="fas fa-search"></i>
+                                    </span>
+                                    <span class="icon is-right" id="searchLoading" style="display: none;">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                    </span>
                                 </div>
-                                <div class="field">
-                                    <label class="label is-small has-text-grey">Sắp xếp theo</label>
-                                    <div id="desktopSortDropdown" class="custom-dropdown"></div>
-                                </div>
-                                <button type="submit" class="button is-primary is-fullwidth">
-                                    <i class="fas fa-search mr-2"></i> Tìm kiếm
-                                </button>
-                            </form>
+                            </div>
+                            <div class="field">
+                                <label class="label is-small has-text-grey">Sắp xếp theo</label>
+                                <div id="desktopSortDropdown" class="custom-dropdown"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -586,6 +582,97 @@
         mobileCatSelect.addEventListener('change', () => {
             const category = mobileCatSelect.value || '';
             loadCategoryAjax(category);
+        });
+    }
+    
+    // Debounce function
+    function debounce(func, wait) {
+        let timeout;
+        return function(...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), wait);
+        };
+    }
+    
+    // AJAX search function
+    function loadSearchAjax(searchValue) {
+        const url = new URL(window.location.origin + '/services');
+        
+        // Get current category
+        const category = document.getElementById('desktopCategoryInput')?.value || 
+                         document.getElementById('mobileCategoryInput')?.value || '';
+        if (category) {
+            url.searchParams.set('category', category);
+        }
+        
+        // Get current sort
+        const sort = document.getElementById('desktopSortInput')?.value || 
+                     document.getElementById('mobileSortInput')?.value || 'default';
+        if (sort && sort !== 'default') {
+            url.searchParams.set('sort', sort);
+        }
+        
+        // Add search
+        if (searchValue) {
+            url.searchParams.set('search', searchValue);
+        }
+        
+        // Update URL
+        window.history.pushState({}, '', url);
+        
+        // Show loading
+        const container = document.getElementById('servicesContainer');
+        const loadingIcon = document.getElementById('searchLoading');
+        if (container) {
+            container.style.opacity = '0.5';
+            container.style.pointerEvents = 'none';
+        }
+        if (loadingIcon) {
+            loadingIcon.style.display = 'flex';
+        }
+        
+        // Fetch
+        fetch(url.toString(), {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(response => response.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const newContent = doc.getElementById('servicesContainer');
+            if (newContent && container) {
+                container.innerHTML = newContent.innerHTML;
+            }
+            if (container) {
+                container.style.opacity = '1';
+                container.style.pointerEvents = 'auto';
+            }
+            if (loadingIcon) {
+                loadingIcon.style.display = 'none';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            if (loadingIcon) loadingIcon.style.display = 'none';
+        });
+    }
+    
+    // Debounced search (300ms delay)
+    const debouncedSearch = debounce(loadSearchAjax, 300);
+    
+    // Desktop search input
+    const desktopSearch = document.getElementById('desktopSearchInput');
+    if (desktopSearch) {
+        desktopSearch.addEventListener('input', (e) => {
+            debouncedSearch(e.target.value);
+        });
+    }
+    
+    // Mobile search input
+    const mobileSearch = document.getElementById('mobileSearchInput');
+    if (mobileSearch) {
+        mobileSearch.addEventListener('input', (e) => {
+            debouncedSearch(e.target.value);
         });
     }
 </script>
