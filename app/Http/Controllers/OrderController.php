@@ -47,7 +47,7 @@ class OrderController extends Controller
         $request->validate([
             'service_id' => ['required', 'exists:services,id'],
             'link' => ['required', 'url'],
-            'quantity' => ['required_unless:service_type,package', 'integer', 'min:1'],
+            'quantity' => ['required', 'integer', 'min:1'],
         ], [
             'service_id.required' => 'Vui lòng chọn dịch vụ.',
             'service_id.exists' => 'Dịch vụ không tồn tại.',

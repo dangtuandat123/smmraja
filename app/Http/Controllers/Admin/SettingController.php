@@ -61,8 +61,9 @@ class SettingController extends Controller
                 'maintenance_mode' => ['type' => 'boolean', 'label' => 'Chế độ bảo trì'],
             ],
             'api' => [
-                'smmraja_api_key' => ['type' => 'text', 'label' => 'SMM Raja API Key'],
                 'smmraja_api_url' => ['type' => 'text', 'label' => 'SMM Raja API URL'],
+                'smmraja_api_key' => ['type' => 'password', 'label' => 'SMM Raja API Key'],
+                'wallet_api_key' => ['type' => 'password', 'label' => 'Wallet API Key'],
             ],
             'seo' => [
                 'meta_title' => ['type' => 'text', 'label' => 'Meta Title'],

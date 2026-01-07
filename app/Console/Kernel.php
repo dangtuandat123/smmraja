@@ -12,7 +12,16 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // Sync service prices from API every hour
+        $schedule->command('services:sync-prices')
+            ->hourly()
+            ->withoutOverlapping()
+            ->runInBackground();
+        
+        // Refresh exchange rate every 30 minutes
+        $schedule->call(function () {
+            \App\Services\ExchangeRateService::refresh();
+        })->everyThirtyMinutes();
     }
 
     /**

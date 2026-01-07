@@ -117,19 +117,28 @@ class SmmRajaService
     }
 
     /**
-     * Verify API price hasn't increased beyond safe threshold
-     * This prevents losses when API prices change
+     * Verify API service exists and price is valid
+     * This prevents losses when API prices change or services are removed
      */
     protected function verifyApiPrice(Service $service): void
     {
         $apiService = $this->getServiceById($service->api_service_id);
 
+        // Check if service still exists on API
         if (!$apiService) {
-            throw new Exception('Service not found in API');
+            // Mark service as unavailable
+            $service->update(['is_active' => false]);
+            Log::warning('Service no longer exists in API', [
+                'service_id' => $service->id,
+                'api_service_id' => $service->api_service_id,
+            ]);
+            throw new Exception('Dịch vụ này hiện không khả dụng trên hệ thống. Vui lòng chọn dịch vụ khác.');
         }
 
         $currentApiRate = (float) $apiService['rate'];
         $storedApiRate = (float) $service->api_rate;
+        $apiMin = (int) ($apiService['min'] ?? 1);
+        $apiMax = (int) ($apiService['max'] ?? 1000000);
 
         // If API rate increased by more than 20%, block the order
         if ($currentApiRate > $storedApiRate * 1.2) {
@@ -141,9 +150,21 @@ class SmmRajaService
             throw new Exception('Giá dịch vụ đã thay đổi. Vui lòng thử lại sau.');
         }
 
-        // Update stored rate if changed (within acceptable range)
+        // Update service with latest API data
+        $needsUpdate = false;
+        
         if ($currentApiRate != $storedApiRate) {
             $service->api_rate = $currentApiRate;
+            $needsUpdate = true;
+        }
+        
+        if ($apiMin != $service->min || $apiMax != $service->max) {
+            $service->min = $apiMin;
+            $service->max = $apiMax;
+            $needsUpdate = true;
+        }
+        
+        if ($needsUpdate) {
             $service->updatePriceVnd();
         }
     }

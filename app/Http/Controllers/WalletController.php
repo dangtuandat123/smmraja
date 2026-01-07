@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Transaction;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 
 class WalletController extends Controller
@@ -14,11 +15,11 @@ class WalletController extends Controller
     {
         $user = auth()->user();
         
-        // Build VietQR URL
-        $bankId = config('services.vietqr.bank_id');
-        $accountNumber = config('services.vietqr.account_number');
-        $accountName = config('services.vietqr.account_name');
-        $template = config('services.vietqr.template');
+        // Build VietQR URL - read from database first, fallback to config
+        $bankId = Setting::get('vietqr_bank_id') ?: config('services.vietqr.bank_id');
+        $accountNumber = Setting::get('vietqr_account_number') ?: config('services.vietqr.account_number');
+        $accountName = Setting::get('vietqr_account_name') ?: config('services.vietqr.account_name');
+        $template = Setting::get('vietqr_template') ?: config('services.vietqr.template', 'rdXzPHV');
         
         $transferContent = "TTGR {$user->id} NAP";
         

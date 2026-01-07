@@ -72,8 +72,9 @@ class ServiceController extends Controller
         }
 
         $existingServiceIds = Service::pluck('api_service_id')->toArray();
+        $exchangeRate = ExchangeRateService::getRate();
 
-        return view('admin.services.import', compact('categories', 'groupedServices', 'existingServiceIds'));
+        return view('admin.services.import', compact('categories', 'groupedServices', 'existingServiceIds', 'exchangeRate'));
     }
 
     /**
