@@ -18,6 +18,12 @@ class Kernel extends ConsoleKernel
             ->withoutOverlapping()
             ->runInBackground();
         
+        // Sync order status from API every 5 minutes
+        $schedule->command('orders:sync-status')
+            ->everyFiveMinutes()
+            ->withoutOverlapping()
+            ->runInBackground();
+        
         // Refresh exchange rate every 30 minutes
         $schedule->call(function () {
             \App\Services\ExchangeRateService::refresh();
