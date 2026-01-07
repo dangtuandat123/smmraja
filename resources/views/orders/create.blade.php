@@ -23,15 +23,32 @@
                                     <i class="fas fa-folder has-text-primary"></i> Danh mục
                                 </label>
                                 <div class="control">
-                                    <select id="categorySelect" class="tom-select-category" placeholder="Tìm và chọn danh mục...">
-                                        <option value="">-- Chọn danh mục --</option>
-                                        @foreach($categories as $category)
-                                            <option value="{{ $category->id }}" 
-                                                {{ $selectedCategory == $category->id ? 'selected' : '' }}>
-                                                {{ $category->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                    <div class="dropdown searchable-dropdown is-fullwidth" id="categoryDropdown">
+                                        <div class="dropdown-trigger is-fullwidth">
+                                            <button type="button" class="button is-fullwidth is-medium dropdown-btn" aria-haspopup="true">
+                                                <span class="selected-text">-- Chọn danh mục --</span>
+                                                <span class="icon is-small">
+                                                    <i class="fas fa-angle-down"></i>
+                                                </span>
+                                            </button>
+                                        </div>
+                                        <div class="dropdown-menu is-fullwidth" role="menu">
+                                            <div class="dropdown-content">
+                                                <div class="dropdown-search">
+                                                    <input class="input" type="text" placeholder="Tìm danh mục...">
+                                                </div>
+                                                <hr class="dropdown-divider">
+                                                <div class="dropdown-items">
+                                                    @foreach($categories as $category)
+                                                        <a href="#" class="dropdown-item" data-value="{{ $category->id }}">
+                                                            {{ $category->name }}
+                                                        </a>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="category_id" id="categoryInput">
                                 </div>
                             </div>
                             
@@ -41,9 +58,28 @@
                                     <i class="fas fa-cog has-text-info"></i> Dịch vụ
                                 </label>
                                 <div class="control">
-                                    <select name="service_id" id="serviceSelect" class="tom-select-service" placeholder="Tìm và chọn dịch vụ...">
-                                        <option value="">-- Chọn dịch vụ --</option>
-                                    </select>
+                                    <div class="dropdown searchable-dropdown is-fullwidth" id="serviceDropdown">
+                                        <div class="dropdown-trigger is-fullwidth">
+                                            <button type="button" class="button is-fullwidth is-medium dropdown-btn" aria-haspopup="true" disabled>
+                                                <span class="selected-text">-- Chọn dịch vụ --</span>
+                                                <span class="icon is-small">
+                                                    <i class="fas fa-angle-down"></i>
+                                                </span>
+                                            </button>
+                                        </div>
+                                        <div class="dropdown-menu is-fullwidth" role="menu">
+                                            <div class="dropdown-content">
+                                                <div class="dropdown-search">
+                                                    <input class="input" type="text" placeholder="Tìm dịch vụ...">
+                                                </div>
+                                                <hr class="dropdown-divider">
+                                                <div class="dropdown-items">
+                                                    <!-- Populated by JS -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="service_id" id="serviceInput" required>
                                 </div>
                             </div>
                             
@@ -177,139 +213,296 @@
 </section>
 @endsection
 
-@section('scripts')
+@section('styles')
 <style>
-    /* Tom Select customization for Bulma - Full Reset */
-    .ts-wrapper {
+    /* Searchable Dropdown Styles */
+    .searchable-dropdown {
         width: 100%;
-        font-family: inherit;
     }
-    .ts-wrapper * {
-        box-sizing: border-box;
+    .searchable-dropdown .dropdown-trigger {
+        width: 100%;
     }
-    .ts-wrapper .ts-control {
-        border: 1px solid #dbdbdb !important;
-        border-radius: 6px !important;
-        padding: 0.625em 1em !important;
-        font-size: 1rem !important;
-        min-height: 2.75em !important;
-        background: white !important;
-        box-shadow: inset 0 0.0625em 0.125em rgba(10,10,10,.05) !important;
-        display: flex !important;
-        align-items: center !important;
+    .searchable-dropdown .dropdown-btn {
+        width: 100%;
+        justify-content: space-between;
+        text-align: left;
+        background: white;
+        border: 1px solid #dbdbdb;
+        font-weight: normal;
     }
-    .ts-wrapper .ts-control input {
-        font-size: 1rem !important;
+    .searchable-dropdown .dropdown-btn:hover {
+        border-color: #b5b5b5;
     }
-    .ts-wrapper.focus .ts-control {
-        border-color: #6366f1 !important;
-        box-shadow: 0 0 0 0.125em rgba(99,102,241,.25) !important;
-        outline: none !important;
+    .searchable-dropdown .dropdown-btn:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 0.125em rgba(99,102,241,.25);
     }
-    .ts-wrapper .ts-dropdown {
-        border: 1px solid #dbdbdb !important;
-        border-radius: 6px !important;
-        box-shadow: 0 8px 16px rgba(10,10,10,.1) !important;
-        margin-top: 4px !important;
-        background: white !important;
-        z-index: 1000 !important;
+    .searchable-dropdown .dropdown-menu {
+        width: 100%;
+        padding-top: 0;
     }
-    .ts-wrapper .ts-dropdown-content {
-        max-height: 300px !important;
-        overflow-y: auto !important;
+    .searchable-dropdown .dropdown-content {
+        max-height: 350px;
+        overflow: hidden;
+        padding: 0;
     }
-    .ts-wrapper .ts-dropdown .option {
-        padding: 0.75em 1em !important;
-        cursor: pointer !important;
-        color: #363636 !important;
+    .searchable-dropdown .dropdown-search {
+        padding: 0.75rem;
+        position: sticky;
+        top: 0;
+        background: white;
+        z-index: 1;
     }
-    .ts-wrapper .ts-dropdown .option.active {
-        background: #6366f1 !important;
-        color: white !important;
+    .searchable-dropdown .dropdown-search input {
+        width: 100%;
     }
-    .ts-wrapper .ts-dropdown .option:hover:not(.active) {
-        background: #f5f5ff !important;
-        color: #6366f1 !important;
+    .searchable-dropdown .dropdown-items {
+        max-height: 250px;
+        overflow-y: auto;
+        padding: 0.5rem 0;
     }
-    .ts-wrapper .ts-dropdown .option .price {
+    .searchable-dropdown .dropdown-item {
+        padding: 0.75rem 1rem;
+        white-space: normal;
+        line-height: 1.4;
+    }
+    .searchable-dropdown .dropdown-item:hover {
+        background: #f5f5ff;
+        color: #6366f1;
+    }
+    .searchable-dropdown .dropdown-item.is-active {
+        background: #6366f1;
+        color: white;
+    }
+    .searchable-dropdown .dropdown-item .price {
         float: right;
         font-weight: 600;
         color: #10b981;
     }
-    .ts-wrapper .ts-dropdown .option.active .price {
+    .searchable-dropdown .dropdown-item.is-active .price {
         color: #a7f3d0;
     }
-    /* Remove any Bulma notification conflicts */
-    .ts-wrapper .notification {
-        all: unset;
+    .searchable-dropdown .dropdown-divider {
+        margin: 0;
+    }
+    .searchable-dropdown .no-results {
+        padding: 1rem;
+        text-align: center;
+        color: #7a7a7a;
     }
 </style>
+@endsection
 
+@section('scripts')
 <script>
     const categories = @json($categories);
     let selectedService = null;
     const userBalance = {{ auth()->user()->balance }};
-    let categoryTomSelect, serviceTomSelect;
     
-    // Build all services map for quick lookup
+    // Build services map
     const servicesMap = {};
     categories.forEach(cat => {
         (cat.services || []).forEach(s => {
             servicesMap[s.id] = { ...s, category_id: cat.id };
         });
     });
+
+    // Searchable Dropdown Class
+    class SearchableDropdown {
+        constructor(element, options = {}) {
+            this.element = element;
+            this.options = options;
+            this.button = element.querySelector('.dropdown-btn');
+            this.selectedText = element.querySelector('.selected-text');
+            this.searchInput = element.querySelector('.dropdown-search input');
+            this.itemsContainer = element.querySelector('.dropdown-items');
+            this.hiddenInput = options.hiddenInput;
+            this.value = null;
+            
+            this.init();
+        }
+        
+        init() {
+            // Toggle dropdown
+            this.button.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (!this.button.disabled) {
+                    this.toggle();
+                }
+            });
+            
+            // Search filter
+            this.searchInput.addEventListener('input', () => {
+                this.filter(this.searchInput.value);
+            });
+            
+            // Close on click outside
+            document.addEventListener('click', (e) => {
+                if (!this.element.contains(e.target)) {
+                    this.close();
+                }
+            });
+            
+            // Item click
+            this.itemsContainer.addEventListener('click', (e) => {
+                const item = e.target.closest('.dropdown-item');
+                if (item) {
+                    e.preventDefault();
+                    this.select(item.dataset.value, item.textContent.trim());
+                }
+            });
+        }
+        
+        toggle() {
+            this.element.classList.toggle('is-active');
+            if (this.element.classList.contains('is-active')) {
+                setTimeout(() => this.searchInput.focus(), 50);
+            }
+        }
+        
+        open() {
+            this.element.classList.add('is-active');
+            setTimeout(() => this.searchInput.focus(), 50);
+        }
+        
+        close() {
+            this.element.classList.remove('is-active');
+            this.searchInput.value = '';
+            this.filter('');
+        }
+        
+        filter(query) {
+            const items = this.itemsContainer.querySelectorAll('.dropdown-item');
+            const q = query.toLowerCase();
+            let found = false;
+            
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    item.style.display = '';
+                    found = true;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            // Show no results message
+            let noResults = this.itemsContainer.querySelector('.no-results');
+            if (!found) {
+                if (!noResults) {
+                    noResults = document.createElement('div');
+                    noResults.className = 'no-results';
+                    noResults.textContent = 'Không tìm thấy';
+                    this.itemsContainer.appendChild(noResults);
+                }
+                noResults.style.display = '';
+            } else if (noResults) {
+                noResults.style.display = 'none';
+            }
+        }
+        
+        select(value, text) {
+            this.value = value;
+            // Extract only the service name, remove price if exists
+            let displayText = text.replace(/\d+[.,]\d+.*đ.*$/g, '').trim();
+            if (!displayText) displayText = text.split('\n')[0].trim();
+            this.selectedText.textContent = displayText;
+            
+            console.log('Selected:', value, 'Text:', displayText);
+            
+            if (this.hiddenInput) {
+                this.hiddenInput.value = value;
+            }
+            
+            // Remove active from all, add to selected
+            this.itemsContainer.querySelectorAll('.dropdown-item').forEach(item => {
+                item.classList.remove('is-active');
+                if (item.dataset.value == value) {
+                    item.classList.add('is-active');
+                }
+            });
+            
+            this.close();
+            
+            if (this.options.onChange) {
+                this.options.onChange(value);
+            }
+        }
+        
+        setItems(items) {
+            this.itemsContainer.innerHTML = items.map(item => `
+                <a href="#" class="dropdown-item" data-value="${item.value}">
+                    ${item.text}
+                    ${item.price ? `<span class="price">${item.price}</span>` : ''}
+                </a>
+            `).join('');
+        }
+        
+        setValue(value) {
+            const item = this.itemsContainer.querySelector(`[data-value="${value}"]`);
+            if (item) {
+                this.select(value, item.textContent);
+            }
+        }
+        
+        enable() {
+            this.button.disabled = false;
+        }
+        
+        disable() {
+            this.button.disabled = true;
+        }
+        
+        clear() {
+            this.value = null;
+            this.selectedText.textContent = this.options.placeholder || '-- Chọn --';
+            if (this.hiddenInput) {
+                this.hiddenInput.value = '';
+            }
+            this.itemsContainer.querySelectorAll('.dropdown-item').forEach(item => {
+                item.classList.remove('is-active');
+            });
+        }
+    }
     
-    // Initialize Tom Select for Category
-    categoryTomSelect = new TomSelect('#categorySelect', {
-        placeholder: 'Tìm và chọn danh mục...',
-        allowEmptyOption: true,
+    // Initialize Category Dropdown
+    const categoryDropdown = new SearchableDropdown(document.getElementById('categoryDropdown'), {
+        hiddenInput: document.getElementById('categoryInput'),
+        placeholder: '-- Chọn danh mục --',
         onChange: function(categoryId) {
-            updateServiceOptions(categoryId);
+            updateServiceDropdown(categoryId);
             resetOrderSummary();
         }
     });
     
-    // Initialize Tom Select for Service
-    serviceTomSelect = new TomSelect('#serviceSelect', {
-        placeholder: 'Tìm và chọn dịch vụ...',
-        allowEmptyOption: true,
-        render: {
-            option: function(data, escape) {
-                const service = servicesMap[data.value];
-                if (!service) return `<div>${escape(data.text)}</div>`;
-                return `<div>
-                    <span>${escape(service.name)}</span>
-                    <span class="price">${Number(service.price_vnd).toLocaleString('vi-VN')}đ</span>
-                </div>`;
-            },
-            item: function(data, escape) {
-                const service = servicesMap[data.value];
-                if (!service) return `<div>${escape(data.text)}</div>`;
-                return `<div>${escape(service.name)} - ${Number(service.price_vnd).toLocaleString('vi-VN')}đ/1000</div>`;
-            }
-        },
+    // Initialize Service Dropdown
+    const serviceDropdown = new SearchableDropdown(document.getElementById('serviceDropdown'), {
+        hiddenInput: document.getElementById('serviceInput'),
+        placeholder: '-- Chọn dịch vụ --',
         onChange: function(serviceId) {
             onServiceChange(serviceId);
         }
     });
     
-    function updateServiceOptions(categoryId) {
-        serviceTomSelect.clear();
-        serviceTomSelect.clearOptions();
-        serviceTomSelect.addOption({ value: '', text: '-- Chọn dịch vụ --' });
+    function updateServiceDropdown(categoryId) {
+        serviceDropdown.clear();
         
-        if (!categoryId) return;
+        if (!categoryId) {
+            serviceDropdown.disable();
+            serviceDropdown.setItems([]);
+            return;
+        }
         
         const category = categories.find(c => c.id == categoryId);
         if (category && category.services) {
-            category.services.forEach(service => {
-                serviceTomSelect.addOption({
-                    value: service.id,
-                    text: `${service.name} - ${Number(service.price_vnd).toLocaleString('vi-VN')}đ/1000`
-                });
-            });
+            const items = category.services.map(s => ({
+                value: s.id,
+                text: s.name,
+                price: Number(s.price_vnd).toLocaleString('vi-VN') + 'đ/1000'
+            }));
+            serviceDropdown.setItems(items);
+            serviceDropdown.enable();
         }
-        serviceTomSelect.refreshOptions(false);
     }
     
     function onServiceChange(serviceId) {
@@ -350,6 +543,7 @@
     }
     
     document.getElementById('quantityInput').addEventListener('input', updateTotal);
+    document.getElementById('linkInput').addEventListener('input', updateTotal);
     
     function updateTotal() {
         if (!selectedService) return;
@@ -441,23 +635,30 @@
         }
     }
     
-    document.getElementById('linkInput').addEventListener('input', updateTotal);
-    
     // Auto-select service if passed via URL
     const preSelectedServiceId = {{ $selectedService ?? 'null' }};
     
     if (preSelectedServiceId) {
         const service = servicesMap[preSelectedServiceId];
         if (service) {
-            // Set category first
-            categoryTomSelect.setValue(service.category_id);
+            console.log('Pre-selecting service:', preSelectedServiceId, service);
             
-            // Wait for service options to be populated, then select service
+            // Find category name
+            const category = categories.find(c => c.id == service.category_id);
+            const categoryName = category ? category.name : '';
+            
+            // Set category first
+            categoryDropdown.select(String(service.category_id), categoryName);
+            
+            // Populate services for this category
+            updateServiceDropdown(service.category_id);
+            
+            // Then select service after items are populated
             setTimeout(() => {
-                serviceTomSelect.setValue(preSelectedServiceId);
+                serviceDropdown.select(String(preSelectedServiceId), service.name);
+                onServiceChange(preSelectedServiceId);
             }, 150);
         }
     }
 </script>
 @endsection
-
