@@ -23,17 +23,15 @@
                                     <i class="fas fa-folder has-text-primary"></i> Danh mục
                                 </label>
                                 <div class="control">
-                                    <div class="select is-fullwidth is-medium">
-                                        <select id="categorySelect" required>
-                                            <option value="">-- Chọn danh mục --</option>
-                                            @foreach($categories as $category)
-                                                <option value="{{ $category->id }}" 
-                                                    {{ $selectedCategory == $category->id ? 'selected' : '' }}>
-                                                    {{ $category->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+                                    <select id="categorySelect" class="tom-select-category" placeholder="Tìm và chọn danh mục...">
+                                        <option value="">-- Chọn danh mục --</option>
+                                        @foreach($categories as $category)
+                                            <option value="{{ $category->id }}" 
+                                                {{ $selectedCategory == $category->id ? 'selected' : '' }}>
+                                                {{ $category->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                             
@@ -43,11 +41,9 @@
                                     <i class="fas fa-cog has-text-info"></i> Dịch vụ
                                 </label>
                                 <div class="control">
-                                    <div class="select is-fullwidth is-medium">
-                                        <select name="service_id" id="serviceSelect" required>
-                                            <option value="">-- Chọn dịch vụ --</option>
-                                        </select>
-                                    </div>
+                                    <select name="service_id" id="serviceSelect" class="tom-select-service" placeholder="Tìm và chọn dịch vụ...">
+                                        <option value="">-- Chọn dịch vụ --</option>
+                                    </select>
                                 </div>
                             </div>
                             
@@ -182,42 +178,148 @@
 @endsection
 
 @section('scripts')
+<style>
+    /* Tom Select customization for Bulma - Full Reset */
+    .ts-wrapper {
+        width: 100%;
+        font-family: inherit;
+    }
+    .ts-wrapper * {
+        box-sizing: border-box;
+    }
+    .ts-wrapper .ts-control {
+        border: 1px solid #dbdbdb !important;
+        border-radius: 6px !important;
+        padding: 0.625em 1em !important;
+        font-size: 1rem !important;
+        min-height: 2.75em !important;
+        background: white !important;
+        box-shadow: inset 0 0.0625em 0.125em rgba(10,10,10,.05) !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+    .ts-wrapper .ts-control input {
+        font-size: 1rem !important;
+    }
+    .ts-wrapper.focus .ts-control {
+        border-color: #6366f1 !important;
+        box-shadow: 0 0 0 0.125em rgba(99,102,241,.25) !important;
+        outline: none !important;
+    }
+    .ts-wrapper .ts-dropdown {
+        border: 1px solid #dbdbdb !important;
+        border-radius: 6px !important;
+        box-shadow: 0 8px 16px rgba(10,10,10,.1) !important;
+        margin-top: 4px !important;
+        background: white !important;
+        z-index: 1000 !important;
+    }
+    .ts-wrapper .ts-dropdown-content {
+        max-height: 300px !important;
+        overflow-y: auto !important;
+    }
+    .ts-wrapper .ts-dropdown .option {
+        padding: 0.75em 1em !important;
+        cursor: pointer !important;
+        color: #363636 !important;
+    }
+    .ts-wrapper .ts-dropdown .option.active {
+        background: #6366f1 !important;
+        color: white !important;
+    }
+    .ts-wrapper .ts-dropdown .option:hover:not(.active) {
+        background: #f5f5ff !important;
+        color: #6366f1 !important;
+    }
+    .ts-wrapper .ts-dropdown .option .price {
+        float: right;
+        font-weight: 600;
+        color: #10b981;
+    }
+    .ts-wrapper .ts-dropdown .option.active .price {
+        color: #a7f3d0;
+    }
+    /* Remove any Bulma notification conflicts */
+    .ts-wrapper .notification {
+        all: unset;
+    }
+</style>
+
 <script>
     const categories = @json($categories);
     let selectedService = null;
     const userBalance = {{ auth()->user()->balance }};
+    let categoryTomSelect, serviceTomSelect;
     
-    document.getElementById('categorySelect').addEventListener('change', function() {
-        const categoryId = this.value;
-        const serviceSelect = document.getElementById('serviceSelect');
-        
-        serviceSelect.innerHTML = '<option value="">-- Chọn dịch vụ --</option>';
+    // Build all services map for quick lookup
+    const servicesMap = {};
+    categories.forEach(cat => {
+        (cat.services || []).forEach(s => {
+            servicesMap[s.id] = { ...s, category_id: cat.id };
+        });
+    });
+    
+    // Initialize Tom Select for Category
+    categoryTomSelect = new TomSelect('#categorySelect', {
+        placeholder: 'Tìm và chọn danh mục...',
+        allowEmptyOption: true,
+        onChange: function(categoryId) {
+            updateServiceOptions(categoryId);
+            resetOrderSummary();
+        }
+    });
+    
+    // Initialize Tom Select for Service
+    serviceTomSelect = new TomSelect('#serviceSelect', {
+        placeholder: 'Tìm và chọn dịch vụ...',
+        allowEmptyOption: true,
+        render: {
+            option: function(data, escape) {
+                const service = servicesMap[data.value];
+                if (!service) return `<div>${escape(data.text)}</div>`;
+                return `<div>
+                    <span>${escape(service.name)}</span>
+                    <span class="price">${Number(service.price_vnd).toLocaleString('vi-VN')}đ</span>
+                </div>`;
+            },
+            item: function(data, escape) {
+                const service = servicesMap[data.value];
+                if (!service) return `<div>${escape(data.text)}</div>`;
+                return `<div>${escape(service.name)} - ${Number(service.price_vnd).toLocaleString('vi-VN')}đ/1000</div>`;
+            }
+        },
+        onChange: function(serviceId) {
+            onServiceChange(serviceId);
+        }
+    });
+    
+    function updateServiceOptions(categoryId) {
+        serviceTomSelect.clear();
+        serviceTomSelect.clearOptions();
+        serviceTomSelect.addOption({ value: '', text: '-- Chọn dịch vụ --' });
         
         if (!categoryId) return;
         
         const category = categories.find(c => c.id == categoryId);
         if (category && category.services) {
             category.services.forEach(service => {
-                const opt = document.createElement('option');
-                opt.value = service.id;
-                opt.textContent = `${service.name} - ${Number(service.price_vnd).toLocaleString('vi-VN')}đ/1000`;
-                opt.dataset.service = JSON.stringify(service);
-                serviceSelect.appendChild(opt);
+                serviceTomSelect.addOption({
+                    value: service.id,
+                    text: `${service.name} - ${Number(service.price_vnd).toLocaleString('vi-VN')}đ/1000`
+                });
             });
         }
-        
-        resetOrderSummary();
-    });
+        serviceTomSelect.refreshOptions(false);
+    }
     
-    document.getElementById('serviceSelect').addEventListener('change', function() {
-        const selectedOption = this.options[this.selectedIndex];
-        
-        if (!selectedOption.value) {
+    function onServiceChange(serviceId) {
+        if (!serviceId) {
             resetOrderSummary();
             return;
         }
         
-        selectedService = JSON.parse(selectedOption.dataset.service);
+        selectedService = servicesMap[serviceId];
+        if (!selectedService) return;
         
         // Update description
         const descEl = document.getElementById('serviceDescription');
@@ -245,7 +347,7 @@
         generateExtraFields(selectedService.type);
         
         updateTotal();
-    });
+    }
     
     document.getElementById('quantityInput').addEventListener('input', updateTotal);
     
@@ -345,25 +447,17 @@
     const preSelectedServiceId = {{ $selectedService ?? 'null' }};
     
     if (preSelectedServiceId) {
-        // Find which category contains this service
-        for (const category of categories) {
-            const service = category.services?.find(s => s.id == preSelectedServiceId);
-            if (service) {
-                // Select the category
-                document.getElementById('categorySelect').value = category.id;
-                
-                // Trigger change event to populate services
-                document.getElementById('categorySelect').dispatchEvent(new Event('change'));
-                
-                // Wait for DOM update then select the service
-                setTimeout(() => {
-                    document.getElementById('serviceSelect').value = preSelectedServiceId;
-                    document.getElementById('serviceSelect').dispatchEvent(new Event('change'));
-                }, 100);
-                
-                break;
-            }
+        const service = servicesMap[preSelectedServiceId];
+        if (service) {
+            // Set category first
+            categoryTomSelect.setValue(service.category_id);
+            
+            // Wait for service options to be populated, then select service
+            setTimeout(() => {
+                serviceTomSelect.setValue(preSelectedServiceId);
+            }, 150);
         }
     }
 </script>
 @endsection
+
