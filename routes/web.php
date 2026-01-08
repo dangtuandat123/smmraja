@@ -68,6 +68,7 @@ Route::middleware('auth')->group(function () {
 // Admin routes
 Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/statistics', [\App\Http\Controllers\Admin\StatisticController::class, 'index'])->name('statistics.index');
     
     // Categories
     Route::resource('categories', AdminCategoryController::class);

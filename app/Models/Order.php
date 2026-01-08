@@ -24,6 +24,7 @@ class Order extends Model
         'remains',
         'extra_data',
         'error_message',
+        'refill_requested_at',
     ];
 
     protected $casts = [
@@ -34,6 +35,7 @@ class Order extends Model
         'start_count' => 'integer',
         'remains' => 'integer',
         'extra_data' => 'array',
+        'refill_requested_at' => 'datetime',
     ];
 
     /**
@@ -45,6 +47,7 @@ class Order extends Model
     const STATUS_COMPLETED = 'completed';
     const STATUS_PARTIAL = 'partial';
     const STATUS_CANCEL_PENDING = 'cancel_pending';
+    const STATUS_REFILL_PENDING = 'refill_pending';
     const STATUS_CANCELED = 'canceled';
     const STATUS_REFUNDED = 'refunded';
     const STATUS_ERROR = 'error';
@@ -77,6 +80,7 @@ class Order extends Model
             'completed' => 'Hoàn thành',
             'partial' => 'Hoàn thành một phần',
             'cancel_pending' => 'Chờ hoàn tiền',
+            'refill_pending' => 'Đang bảo hành',
             'canceled' => 'Đã hủy',
             'refunded' => 'Đã hoàn tiền',
             'error' => 'Lỗi',
@@ -96,6 +100,8 @@ class Order extends Model
             'in_progress' => 'primary',
             'completed' => 'success',
             'partial' => 'warning',
+            'cancel_pending' => 'warning',
+            'refill_pending' => 'link',
             'canceled' => 'danger',
             'refunded' => 'info',
             'error' => 'danger',
@@ -137,11 +143,17 @@ class Order extends Model
     }
 
     /**
-     * Scope for pending orders that need status check
+     * Scope for orders that need status check from API
      */
     public function scopeNeedsStatusCheck($query)
     {
         return $query->whereNotNull('api_order_id')
-            ->whereIn('status', ['pending', 'processing', 'in_progress']);
+            ->whereIn('status', [
+                'pending', 
+                'processing', 
+                'in_progress',
+                'refill_pending',   // Đang chờ bảo hành
+                'cancel_pending',   // Đang chờ hủy
+            ]);
     }
 }

@@ -293,6 +293,11 @@
                         <i class="fas fa-tachometer-alt"></i> Dashboard
                     </a>
                 </li>
+                <li>
+                    <a href="{{ route('admin.statistics.index') }}" class="{{ request()->routeIs('admin.statistics.*') ? 'is-active' : '' }}">
+                        <i class="fas fa-chart-line"></i> Thống kê
+                    </a>
+                </li>
             </ul>
             
             <p class="menu-label">Dịch vụ</p>

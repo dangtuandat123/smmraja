@@ -65,7 +65,9 @@
                     <th>Qty</th>
                     <th>Start</th>
                     <th>Remains</th>
-                    <th>Giá</th>
+                    <th>Giá bán</th>
+                    <th>Giá gốc</th>
+                    <th class="has-text-success">Lợi nhuận</th>
                     <th>Status</th>
                     <th>Ngày</th>
                     <th></th>
@@ -89,6 +91,15 @@
                         <td>{{ $order->start_count !== null ? number_format($order->start_count) : '-' }}</td>
                         <td>{{ $order->remains !== null ? number_format($order->remains) : '-' }}</td>
                         <td>{{ number_format($order->total_price, 0, ',', '.') }}đ</td>
+                        @php
+                            // Giá gốc API (đã quy đổi VND)
+                            $apiCostVnd = $order->api_charge ? round($order->api_charge * \App\Services\ExchangeRateService::getRate()) : 0;
+                            $profit = $order->total_price - $apiCostVnd;
+                        @endphp
+                        <td class="has-text-grey">{{ $apiCostVnd ? number_format($apiCostVnd, 0, ',', '.') . 'đ' : '-' }}</td>
+                        <td class="{{ $profit > 0 ? 'has-text-success has-text-weight-bold' : ($profit < 0 ? 'has-text-danger' : '') }}">
+                            {{ $apiCostVnd ? number_format($profit, 0, ',', '.') . 'đ' : '-' }}
+                        </td>
                         <td><span class="tag is-{{ $order->status_color }}">{{ $order->status_display }}</span></td>
                         <td>{{ $order->created_at->format('d/m H:i') }}</td>
                         <td>
@@ -98,7 +109,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="10" class="has-text-centered has-text-grey py-5">Không có đơn hàng nào</td></tr>
+                    <tr><td colspan="14" class="has-text-centered has-text-grey py-5">Không có đơn hàng nào</td></tr>
                 @endforelse
             </tbody>
         </table>

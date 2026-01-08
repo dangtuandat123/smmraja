@@ -120,6 +120,8 @@
                                 <th>Giá USD</th>
                                 <th class="has-text-success">Giá VND/1000</th>
                                 <th>Min/Max</th>
+                                <th class="has-text-centered">Hủy</th>
+                                <th class="has-text-centered">Bảo hành</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -146,6 +148,20 @@
                                     <td class="has-text-grey">${{ number_format($service['rate'], 4) }}</td>
                                     <td class="has-text-success has-text-weight-semibold">{{ number_format($priceVnd, 0, ',', '.') }}đ</td>
                                     <td>{{ $service['min'] ?? 'N/A' }} / {{ $service['max'] ?? 'N/A' }}</td>
+                                    <td class="has-text-centered">
+                                        @if(isset($service['cancel']) && $service['cancel'])
+                                            <span class="tag is-success"><i class="fas fa-check mr-1"></i>Có</span>
+                                        @else
+                                            <span class="tag is-danger is-light"><i class="fas fa-times mr-1"></i>Không</span>
+                                        @endif
+                                    </td>
+                                    <td class="has-text-centered">
+                                        @if(isset($service['refill']) && $service['refill'])
+                                            <span class="tag is-info"><i class="fas fa-sync mr-1"></i>Có</span>
+                                        @else
+                                            <span class="tag is-warning is-light"><i class="fas fa-times mr-1"></i>Không</span>
+                                        @endif
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

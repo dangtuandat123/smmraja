@@ -304,9 +304,16 @@ class OrderController extends Controller
 
         try {
             $this->smmService->refillOrder($order->api_order_id);
-            return back()->with('success', 'Yêu cầu refill đã được gửi thành công.');
+            
+            // Update status to track refill
+            $order->update([
+                'status' => 'refill_pending',
+                'refill_requested_at' => now(),
+            ]);
+            
+            return back()->with('success', 'Yêu cầu bảo hành đã được gửi! Đơn hàng sẽ được xử lý lại.');
         } catch (Exception $e) {
-            return back()->withErrors(['error' => 'Refill thất bại: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'Bảo hành thất bại: ' . $e->getMessage()]);
         }
     }
 
