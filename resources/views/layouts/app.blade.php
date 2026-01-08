@@ -542,79 +542,11 @@
                 font-size: 0.9rem;
             }
             
-            /* FIX: Notification dropdown on mobile */
-            .navbar-menu .navbar-end {
-                display: flex;
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .navbar-menu .navbar-end .navbar-item {
-                display: flex;
-                justify-content: flex-start;
-            }
-            
-            /* Notification dropdown on mobile - full width */
-            .navbar-menu #notificationDropdown {
-                width: 100%;
-            }
-            
-            .navbar-menu #notificationDropdown .dropdown-menu {
-                position: static !important;
-                width: 100% !important;
-                max-width: 100% !important;
-                margin-top: 0.5rem;
-            }
-            
-            .navbar-menu #notificationDropdown.is-active .dropdown-menu {
-                display: block;
-            }
-            
-            .navbar-menu .notification-menu {
-                width: 100% !important;
-                max-width: 100% !important;
-            }
-            
-            /* Balance display on mobile - more prominent */
-            .navbar-menu .balance-display {
-                display: block;
-                width: 100%;
-                text-align: center;
-                margin-bottom: 0.5rem;
-            }
-            
-            /* User dropdown on mobile */
-            .navbar-menu .navbar-item.has-dropdown {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .navbar-menu .navbar-item.has-dropdown .navbar-link {
-                width: 100%;
-            }
-            
-            .navbar-menu .navbar-item.has-dropdown .navbar-dropdown {
-                position: static !important;
-                display: none;
-            }
-            
-            .navbar-menu .navbar-item.has-dropdown.is-active .navbar-dropdown {
-                display: block;
-            }
-            
-            /* Notification bell on mobile - adjust position */
-            .navbar-menu .notification-bell {
-                background: rgba(255,255,255,0.2);
-                width: 100%;
-                border-radius: 8px;
-                justify-content: flex-start;
-                padding: 0.75rem 1rem;
-            }
-            
-            .navbar-menu .notification-bell::after {
-                content: 'Thông báo';
-                margin-left: 0.5rem;
-                color: white;
+            /* Mobile: Notification dropdown */
+            .notification-menu {
+                left: auto !important;
+                right: 0 !important;
+                min-width: 280px;
             }
         }
         
