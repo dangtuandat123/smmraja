@@ -31,11 +31,17 @@
         body {
             background: var(--light);
             min-height: 100vh;
+            padding-top: 80px; /* Space for fixed navbar */
         }
         
         .navbar {
             background: var(--gradient);
             box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
         }
         
         .navbar-item, .navbar-link {
@@ -579,6 +585,221 @@
                 width: 50%;
             }
         }
+        
+        /* ========== MOBILE BOTTOM NAVIGATION ========== */
+        .mobile-bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+            z-index: 100;
+            padding: 8px 0;
+            padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+        }
+        
+        .mobile-bottom-nav .nav-items {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 0;
+        }
+        
+        .mobile-bottom-nav .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            text-decoration: none;
+            color: #6b7280;
+            font-size: 10px;
+            padding: 4px;
+            width: 65px;
+            height: 50px;
+            transition: all 0.2s;
+        }
+        
+        .mobile-bottom-nav .nav-item:hover,
+        .mobile-bottom-nav .nav-item.is-active {
+            color: var(--primary);
+        }
+        
+        .mobile-bottom-nav .nav-item i {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        
+        .mobile-bottom-nav .nav-item.is-primary {
+            background: var(--gradient);
+            color: white !important;
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            margin: 0 8px;
+            margin-top: -15px;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+            justify-content: center;
+            padding: 0;
+        }
+        
+        .mobile-bottom-nav .nav-item.is-primary i {
+            font-size: 24px;
+            margin: 0;
+        }
+        
+        .mobile-bottom-nav .nav-item.is-primary span {
+            display: none;
+        }
+        
+        /* Mobile slide menu overlay */
+        .mobile-menu-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 199;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .mobile-menu-overlay.is-active {
+            display: block;
+            opacity: 1;
+        }
+        
+        /* Mobile slide menu */
+        .mobile-slide-menu {
+            position: fixed;
+            top: 0;
+            right: -280px;
+            width: 280px;
+            height: 100%;
+            background: white;
+            z-index: 200;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+            box-shadow: -4px 0 20px rgba(0,0,0,0.1);
+        }
+        
+        .mobile-slide-menu.is-active {
+            right: 0;
+        }
+        
+        .mobile-slide-menu .menu-header {
+            background: var(--gradient);
+            color: white;
+            padding: 1.5rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .mobile-slide-menu .menu-header .avatar {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .mobile-slide-menu .menu-header .user-info {
+            flex: 1;
+        }
+        
+        .mobile-slide-menu .menu-header .user-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .mobile-slide-menu .menu-header .user-balance {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+        
+        .mobile-slide-menu .menu-header .close-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .mobile-slide-menu .menu-items {
+            padding: 1rem 0;
+        }
+        
+        .mobile-slide-menu .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 0.9rem 1.25rem;
+            color: #374151;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s;
+            gap: 0.75rem;
+        }
+        
+        .mobile-slide-menu .menu-item:hover,
+        .mobile-slide-menu .menu-item.is-active {
+            background: #f3f4f6;
+            color: var(--primary);
+        }
+        
+        .mobile-slide-menu .menu-item i {
+            width: 24px;
+            text-align: center;
+            color: #6b7280;
+        }
+        
+        .mobile-slide-menu .menu-item.is-active i,
+        .mobile-slide-menu .menu-item:hover i {
+            color: var(--primary);
+        }
+        
+        .mobile-slide-menu .menu-divider {
+            height: 1px;
+            background: #e5e7eb;
+            margin: 0.5rem 1rem;
+        }
+        
+        .mobile-slide-menu .menu-item.is-danger {
+            color: #ef4444;
+        }
+        
+        .mobile-slide-menu .menu-item.is-danger i {
+            color: #ef4444;
+        }
+        
+        /* Show bottom nav on mobile */
+        @media screen and (max-width: 768px) {
+            .mobile-bottom-nav {
+                display: block;
+            }
+            
+            /* Add padding to body for bottom nav */
+            body {
+                padding-bottom: 75px;
+            }
+            
+            /* Hide navbar menu AND burger on mobile */
+            .navbar-menu,
+            .navbar-burger {
+                display: none !important;
+            }
+        }
     </style>
     
     @yield('styles')
@@ -905,7 +1126,153 @@
         // Poll every 30 seconds
         setInterval(pollNotifications, 30000);
         @endauth
+        
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const overlay = document.getElementById('mobileMenuOverlay');
+            const menu = document.getElementById('mobileSlideMenu');
+            overlay.classList.toggle('is-active');
+            menu.classList.toggle('is-active');
+            document.body.style.overflow = menu.classList.contains('is-active') ? 'hidden' : '';
+        }
+        
+        function closeMobileMenu() {
+            const overlay = document.getElementById('mobileMenuOverlay');
+            const menu = document.getElementById('mobileSlideMenu');
+            overlay.classList.remove('is-active');
+            menu.classList.remove('is-active');
+            document.body.style.overflow = '';
+        }
     </script>
+    
+    @auth
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-bottom-nav">
+        <div class="nav-items">
+            <a href="{{ route('home') }}" class="nav-item {{ request()->routeIs('home') ? 'is-active' : '' }}">
+                <i class="fas fa-home"></i>
+                <span>Trang chủ</span>
+            </a>
+            <a href="{{ route('services.index') }}" class="nav-item {{ request()->routeIs('services.*') ? 'is-active' : '' }}">
+                <i class="fas fa-list-ul"></i>
+                <span>Dịch vụ</span>
+            </a>
+            <a href="{{ route('orders.create') }}" class="nav-item is-primary">
+                <i class="fas fa-plus"></i>
+                <span>Mua hàng</span>
+            </a>
+            <a href="{{ route('orders.index') }}" class="nav-item {{ request()->routeIs('orders.*') ? 'is-active' : '' }}">
+                <i class="fas fa-shopping-bag"></i>
+                <span>Đơn hàng</span>
+            </a>
+            <a href="javascript:void(0)" onclick="toggleMobileMenu()" class="nav-item">
+                <i class="fas fa-bars"></i>
+                <span>Menu</span>
+            </a>
+        </div>
+    </nav>
+    
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="closeMobileMenu()"></div>
+    
+    <!-- Mobile Slide Menu -->
+    <div class="mobile-slide-menu" id="mobileSlideMenu">
+        <div class="menu-header">
+            <div class="avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="user-info">
+                <div class="user-name">{{ auth()->user()->name }}</div>
+                <div class="user-balance">
+                    <i class="fas fa-wallet"></i> {{ number_format(auth()->user()->balance, 0, ',', '.') }} VND
+                </div>
+            </div>
+            <button class="close-btn" onclick="closeMobileMenu()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="menu-items">
+            <a href="{{ route('dashboard') }}" class="menu-item {{ request()->routeIs('dashboard') ? 'is-active' : '' }}">
+                <i class="fas fa-tachometer-alt"></i>
+                Dashboard
+            </a>
+            <a href="{{ route('orders.index') }}" class="menu-item {{ request()->routeIs('orders.index') ? 'is-active' : '' }}">
+                <i class="fas fa-shopping-bag"></i>
+                Đơn hàng của tôi
+            </a>
+            <a href="{{ route('wallet.index') }}" class="menu-item {{ request()->routeIs('wallet.index') ? 'is-active' : '' }}">
+                <i class="fas fa-coins"></i>
+                Nạp tiền
+            </a>
+            <a href="{{ route('wallet.history') }}" class="menu-item {{ request()->routeIs('wallet.history') ? 'is-active' : '' }}">
+                <i class="fas fa-history"></i>
+                Lịch sử giao dịch
+            </a>
+            
+            <div class="menu-divider"></div>
+            
+            <a href="{{ route('services.index') }}" class="menu-item {{ request()->routeIs('services.*') ? 'is-active' : '' }}">
+                <i class="fas fa-list-ul"></i>
+                Danh sách dịch vụ
+            </a>
+            <a href="{{ route('orders.create') }}" class="menu-item {{ request()->routeIs('orders.create') ? 'is-active' : '' }}">
+                <i class="fas fa-cart-plus"></i>
+                Đặt hàng mới
+            </a>
+            <a href="{{ route('contact') }}" class="menu-item {{ request()->routeIs('contact') ? 'is-active' : '' }}">
+                <i class="fas fa-envelope"></i>
+                Liên hệ hỗ trợ
+            </a>
+            
+            @if(auth()->user()->isAdmin())
+            <div class="menu-divider"></div>
+            <a href="{{ route('admin.dashboard') }}" class="menu-item">
+                <i class="fas fa-cog"></i>
+                Quản trị Admin
+            </a>
+            @endif
+            
+            <div class="menu-divider"></div>
+            
+            <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
+                @csrf
+                <button type="submit" class="menu-item is-danger" style="width: 100%; border: none; background: none; cursor: pointer; text-align: left;">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Đăng xuất
+                </button>
+            </form>
+        </div>
+    </div>
+    @endauth
+    
+    @guest
+    <!-- Mobile Bottom Navigation for Guest -->
+    <nav class="mobile-bottom-nav">
+        <div class="nav-items">
+            <a href="{{ route('home') }}" class="nav-item {{ request()->routeIs('home') ? 'is-active' : '' }}">
+                <i class="fas fa-home"></i>
+                <span>Trang chủ</span>
+            </a>
+            <a href="{{ route('services.index') }}" class="nav-item {{ request()->routeIs('services.*') ? 'is-active' : '' }}">
+                <i class="fas fa-list-ul"></i>
+                <span>Dịch vụ</span>
+            </a>
+            <a href="{{ route('login') }}" class="nav-item is-primary">
+                <i class="fas fa-sign-in-alt"></i>
+                <span>Đăng nhập</span>
+            </a>
+            <a href="{{ route('register') }}" class="nav-item">
+                <i class="fas fa-user-plus"></i>
+                <span>Đăng ký</span>
+            </a>
+            <a href="{{ route('contact') }}" class="nav-item {{ request()->routeIs('contact') ? 'is-active' : '' }}">
+                <i class="fas fa-envelope"></i>
+                <span>Liên hệ</span>
+            </a>
+        </div>
+    </nav>
+    @endguest
     
     @yield('scripts')
 </body>

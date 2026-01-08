@@ -2,6 +2,40 @@
 
 @section('title', 'Chi tiết đơn hàng #' . $order->id)
 
+@section('styles')
+<style>
+    /* Mobile responsive for order details */
+    @media screen and (max-width: 768px) {
+        .order-table th {
+            width: 100px !important;
+            font-size: 0.85rem;
+        }
+        .order-table td {
+            word-break: break-word;
+            font-size: 0.9rem;
+        }
+        .link-cell {
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            display: block;
+        }
+        .service-name {
+            display: block;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .extra-data-pre {
+            font-size: 0.75rem;
+            overflow-x: auto;
+        }
+    }
+</style>
+@endsection
+
 @section('content')
 <section class="section">
     <div class="container">
@@ -28,19 +62,19 @@
                         </span>
                     </div>
                     <div class="card-content">
-                        <table class="table is-fullwidth">
+                        <table class="table is-fullwidth order-table">
                             <tbody>
                                 <tr>
-                                    <th width="30%">Dịch vụ</th>
+                                    <th>Dịch vụ</th>
                                     <td>
                                         <span class="tag is-light">{{ $order->service->category->name ?? 'N/A' }}</span>
-                                        {{ $order->service->name ?? 'N/A' }}
+                                        <span class="service-name">{{ $order->service->name ?? 'N/A' }}</span>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>Link</th>
                                     <td>
-                                        <a href="{{ $order->link }}" target="_blank" class="has-text-info">
+                                        <a href="{{ $order->link }}" target="_blank" class="has-text-info link-cell" title="{{ $order->link }}">
                                             {{ $order->link }}
                                             <i class="fas fa-external-link-alt fa-xs ml-1"></i>
                                         </a>
@@ -92,7 +126,7 @@
                         @if($order->extra_data && count($order->extra_data) > 0)
                             <h5 class="title is-6 mt-5">Thông tin bổ sung</h5>
                             <div class="content">
-                                <pre style="background: #f5f5f5; padding: 1rem; border-radius: 8px;">{{ json_encode($order->extra_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
+                                <pre class="extra-data-pre" style="background: #f5f5f5; padding: 1rem; border-radius: 8px;">{{ json_encode($order->extra_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
                             </div>
                         @endif
                     </div>
