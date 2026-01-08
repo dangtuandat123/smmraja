@@ -57,7 +57,6 @@ class SettingController extends Controller
                 'site_logo' => ['type' => 'text', 'label' => 'URL Logo'],
                 'site_favicon' => ['type' => 'text', 'label' => 'URL Favicon'],
                 'currency_symbol' => ['type' => 'text', 'label' => 'Ký hiệu tiền tệ'],
-                'exchange_rate' => ['type' => 'number', 'label' => 'Tỷ giá USD/VND'],
                 'maintenance_mode' => ['type' => 'boolean', 'label' => 'Chế độ bảo trì'],
             ],
             'api' => [

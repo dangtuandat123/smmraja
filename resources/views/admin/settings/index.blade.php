@@ -33,9 +33,24 @@
                     <input class="input" type="text" name="site_logo" value="{{ $settings['general']['site_logo'] ?? '' }}">
                 </div>
                 
+                <hr>
+                
                 <div class="field">
-                    <label class="label">Tỷ giá USD/VND</label>
-                    <input class="input" type="number" name="exchange_rate" value="{{ $settings['general']['exchange_rate'] ?? 25000 }}">
+                    <label class="label">
+                        <i class="fas fa-tools mr-1 has-text-warning"></i>
+                        Chế độ bảo trì
+                    </label>
+                    <div class="control">
+                        <label class="switch">
+                            <input type="checkbox" name="maintenance_mode" value="1" 
+                                {{ ($settings['general']['maintenance_mode'] ?? false) ? 'checked' : '' }}>
+                            <span class="slider round"></span>
+                        </label>
+                        <span class="ml-3 {{ ($settings['general']['maintenance_mode'] ?? false) ? 'has-text-danger has-text-weight-bold' : 'has-text-grey' }}">
+                            {{ ($settings['general']['maintenance_mode'] ?? false) ? 'ĐANG BẬT - Website đang bảo trì' : 'Tắt' }}
+                        </span>
+                    </div>
+                    <p class="help">Khi bật, chỉ Admin mới có thể truy cập website. Người dùng sẽ thấy trang bảo trì.</p>
                 </div>
                 
                 <button type="submit" class="button is-primary"><i class="fas fa-save mr-2"></i> Lưu cài đặt</button>
@@ -210,4 +225,53 @@
         });
     });
 </script>
+@endsection
+
+@section('styles')
+<style>
+    /* Toggle Switch */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 26px;
+    }
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .3s;
+    }
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 20px;
+        width: 20px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: .3s;
+    }
+    input:checked + .slider {
+        background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+    }
+    input:checked + .slider:before {
+        transform: translateX(24px);
+    }
+    .slider.round {
+        border-radius: 26px;
+    }
+    .slider.round:before {
+        border-radius: 50%;
+    }
+</style>
 @endsection

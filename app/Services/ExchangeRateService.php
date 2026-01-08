@@ -5,7 +5,6 @@ namespace App\Services;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use App\Models\Setting;
 use Exception;
 
 class ExchangeRateService
@@ -26,11 +25,11 @@ class ExchangeRateService
     const DEFAULT_RATE = 27000;
 
     /**
-     * Get default rate from database or constant
+     * Get default rate (constant fallback)
      */
     protected static function getDefaultRate(): float
     {
-        return (float) (Setting::get('exchange_rate') ?: self::DEFAULT_RATE);
+        return self::DEFAULT_RATE;
     }
 
     /**

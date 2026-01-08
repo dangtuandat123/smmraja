@@ -24,8 +24,7 @@ class SyncSettingsFromEnv extends Command
             ['key' => 'vietqr_account_name', 'value' => env('VIETQR_ACCOUNT_NAME', ''), 'type' => 'text', 'group' => 'payment', 'label' => 'Tên chủ TK'],
             ['key' => 'vietqr_template', 'value' => env('VIETQR_TEMPLATE', 'rdXzPHV'), 'type' => 'text', 'group' => 'payment', 'label' => 'VietQR Template'],
             
-            // General
-            ['key' => 'exchange_rate', 'value' => env('USD_TO_VND_RATE', '27000'), 'type' => 'number', 'group' => 'general', 'label' => 'Tỷ giá USD/VND'],
+            // General - exchange_rate removed (auto-fetched from API)
         ];
 
         foreach ($settings as $setting) {
