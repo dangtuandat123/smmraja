@@ -18,6 +18,9 @@ class TrackPageViews
         'livewire/*',
         '_debugbar/*',
         'sanctum/*',
+        'notifications/*',      // AJAX calls
+        'wallet/balance',       // AJAX calls
+        'services/*/details',   // AJAX calls
     ];
 
     /**
@@ -27,8 +30,19 @@ class TrackPageViews
     {
         $response = $next($request);
 
-        // Only track successful GET requests
+        // Only track successful GET requests that return HTML (not JSON/AJAX)
         if ($request->isMethod('GET') && $response->isSuccessful()) {
+            // Skip AJAX requests
+            if ($request->ajax() || $request->wantsJson()) {
+                return $response;
+            }
+            
+            // Skip if response is not HTML
+            $contentType = $response->headers->get('Content-Type', '');
+            if (!str_contains($contentType, 'text/html')) {
+                return $response;
+            }
+            
             if (!$this->shouldExclude($request)) {
                 try {
                     PageView::track(
