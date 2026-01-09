@@ -797,8 +797,9 @@
                 display: block;
             }
             
-            /* Add padding to body for bottom nav */
+            /* Adjust padding for mobile navbar (smaller) */
             body {
+                padding-top: 52px;
                 padding-bottom: 75px;
             }
             
