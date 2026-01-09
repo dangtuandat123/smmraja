@@ -680,6 +680,14 @@
             opacity: 1;
         }
         
+        /* Lock body scroll when menu is open */
+        body.menu-open {
+            overflow: hidden !important;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+        }
+        
         /* Mobile slide menu */
         .mobile-slide-menu {
             position: fixed;
@@ -1150,7 +1158,12 @@
             const menu = document.getElementById('mobileSlideMenu');
             overlay.classList.toggle('is-active');
             menu.classList.toggle('is-active');
-            document.body.style.overflow = menu.classList.contains('is-active') ? 'hidden' : '';
+            
+            if (menu.classList.contains('is-active')) {
+                document.body.classList.add('menu-open');
+            } else {
+                document.body.classList.remove('menu-open');
+            }
         }
         
         function closeMobileMenu() {
@@ -1158,7 +1171,7 @@
             const menu = document.getElementById('mobileSlideMenu');
             overlay.classList.remove('is-active');
             menu.classList.remove('is-active');
-            document.body.style.overflow = '';
+            document.body.classList.remove('menu-open');
         }
     </script>
     
