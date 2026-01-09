@@ -173,7 +173,8 @@ class SyncOrderStatus extends Command
                 $order->id
             );
             
-            Notification::depositSuccess($user->id, $refundAmount);
+            // Notification already sent via orderStatusChanged() above (line 105-109)
+            // No need for separate refund notification
             
             Log::info('Order refunded', [
                 'order_id' => $order->id,

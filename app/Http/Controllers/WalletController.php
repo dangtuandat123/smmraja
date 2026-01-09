@@ -33,6 +33,7 @@ class WalletController extends Controller
         );
 
         $recentTransactions = Transaction::forUser($user->id)
+            ->where('type', 'deposit')
             ->latest()
             ->limit(5)
             ->get();
