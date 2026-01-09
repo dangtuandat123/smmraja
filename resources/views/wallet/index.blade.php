@@ -19,7 +19,14 @@
                     </div>
                     <div class="card-content has-text-centered">
                         <div class="mb-4">
-                            <img src="{{ $qrUrl }}" alt="VietQR Code" style="max-width: 280px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+                            <img src="{{ $qrUrl }}" alt="VietQR Code" id="qrImage" style="max-width: 280px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);" crossorigin="anonymous">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <button class="button is-primary is-small" onclick="downloadQR()">
+                                <span class="icon"><i class="fas fa-download"></i></span>
+                                <span>Tải mã QR</span>
+                            </button>
                         </div>
                         
                         <div class="notification is-info is-light" style="text-align: left;">
@@ -143,10 +150,30 @@
 @section('scripts')
 <script>
     function copyContent() {
-        const content = document.getElementById('transferContent').textContent;
+        const content = document.getElementById('transferContent').textContent.trim();
         navigator.clipboard.writeText(content).then(() => {
             alert('Đã copy nội dung chuyển khoản!');
         });
+    }
+    
+    function downloadQR() {
+        const qrUrl = '{{ $qrUrl }}';
+        
+        fetch(qrUrl)
+            .then(response => response.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'QR_NapTien_{{ auth()->id() }}.jpg';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                a.remove();
+            })
+            .catch(() => {
+                alert('Không thể tải. Vui lòng nhấn giữ ảnh QR để lưu!');
+            });
     }
 </script>
 @endsection
