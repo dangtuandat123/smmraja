@@ -16,6 +16,8 @@ class ServiceController extends Controller
         $categorySlug = $request->get('category');
         $search = $request->get('search');
         $sort = $request->get('sort', 'default');
+        $refill = $request->get('refill');
+        $cancel = $request->get('cancel');
 
         $categories = Category::active()
             ->ordered()
@@ -40,6 +42,16 @@ class ServiceController extends Controller
             });
         }
 
+        // Filter by refill
+        if ($refill === '1') {
+            $servicesQuery->where('refill', true);
+        }
+
+        // Filter by cancel
+        if ($cancel === '1') {
+            $servicesQuery->where('cancel', true);
+        }
+
         // Apply sorting
         switch ($sort) {
             case 'price_asc':
@@ -61,7 +73,7 @@ class ServiceController extends Controller
 
         $services = $servicesQuery->paginate(20)->appends($request->query());
 
-        return view('services.index', compact('categories', 'services', 'categorySlug', 'search', 'sort'));
+        return view('services.index', compact('categories', 'services', 'categorySlug', 'search', 'sort', 'refill', 'cancel'));
     }
 
     /**

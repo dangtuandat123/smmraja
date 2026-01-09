@@ -39,6 +39,21 @@
                         <label class="label is-small has-text-grey mb-1">Sắp xếp theo</label>
                         <div id="mobileSortDropdown" class="custom-dropdown"></div>
                     </div>
+                    
+                    <!-- Mobile Filter checkboxes -->
+                    <div class="field">
+                        <label class="label is-small has-text-grey mb-1">Lọc theo</label>
+                        <div class="control is-flex" style="gap: 1rem;">
+                            <label class="checkbox">
+                                <input type="checkbox" id="mobileFilterRefill" {{ $refill === '1' ? 'checked' : '' }}>
+                                <span class="ml-1"><i class="fas fa-sync-alt has-text-success"></i> Bảo hành</span>
+                            </label>
+                            <label class="checkbox">
+                                <input type="checkbox" id="mobileFilterCancel" {{ $cancel === '1' ? 'checked' : '' }}>
+                                <span class="ml-1"><i class="fas fa-times-circle has-text-warning"></i> Hủy</span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- Desktop: Sidebar Card -->
@@ -53,7 +68,7 @@
                             <aside class="menu">
                                 <ul class="menu-list" id="categoryMenu">
                                     <li>
-                                        <a href="{{ route('services.index') }}" 
+                                        <a href="{{ route('services.index', request()->only(['sort', 'refill', 'cancel'])) }}" 
                                            class="category-link is-flex is-justify-content-space-between is-align-items-center {{ !$categorySlug ? 'is-active' : '' }}"
                                            data-category=""
                                            style="padding: 0.75rem 1rem; border-radius: 0;">
@@ -64,7 +79,7 @@
                                     </li>
                                     @foreach($categories as $category)
                                         <li>
-                                            <a href="{{ route('services.index', ['category' => $category->slug]) }}" 
+                                            <a href="{{ route('services.index', array_merge(['category' => $category->slug], request()->only(['sort', 'refill', 'cancel']))) }}" 
                                                class="category-link is-flex is-justify-content-space-between is-align-items-center {{ $categorySlug == $category->slug ? 'is-active' : '' }}"
                                                data-category="{{ $category->slug }}"
                                                style="padding: 0.75rem 1rem; border-radius: 0;">
@@ -109,6 +124,21 @@
                             <div class="field">
                                 <label class="label is-small has-text-grey">Sắp xếp theo</label>
                                 <div id="desktopSortDropdown" class="custom-dropdown"></div>
+                            </div>
+                            
+                            <!-- Filter checkboxes -->
+                            <div class="field">
+                                <label class="label is-small has-text-grey">Lọc theo</label>
+                                <div class="control">
+                                    <label class="checkbox mb-2" style="display: block;">
+                                        <input type="checkbox" id="filterRefill" {{ $refill === '1' ? 'checked' : '' }}>
+                                        <span class="ml-1"><i class="fas fa-sync-alt has-text-success"></i> Có bảo hành</span>
+                                    </label>
+                                    <label class="checkbox" style="display: block;">
+                                        <input type="checkbox" id="filterCancel" {{ $cancel === '1' ? 'checked' : '' }}>
+                                        <span class="ml-1"><i class="fas fa-times-circle has-text-warning"></i> Có thể hủy</span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -584,14 +614,9 @@
         });
     }
     
-    // Desktop category links
-    document.querySelectorAll('.category-link').forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const category = link.dataset.category || '';
-            loadCategoryAjax(category);
-        });
-    });
+    // Desktop category links - use native href navigation to preserve filter params
+    // The href already contains refill/cancel params from Blade template
+    // No need for JavaScript override
     
     // Debounce function
     function debounce(func, wait) {
@@ -623,6 +648,26 @@
         // Add search
         if (searchValue) {
             url.searchParams.set('search', searchValue);
+        }
+        
+        // Add refill filter - check both desktop and mobile
+        const desktopRefill = document.getElementById('filterRefill');
+        const mobileRefill = document.getElementById('mobileFilterRefill');
+        const refillChecked = (desktopRefill && desktopRefill.checked) || (mobileRefill && mobileRefill.checked);
+        if (refillChecked) {
+            url.searchParams.set('refill', '1');
+        } else {
+            url.searchParams.delete('refill');
+        }
+        
+        // Add cancel filter - check both desktop and mobile
+        const desktopCancel = document.getElementById('filterCancel');
+        const mobileCancel = document.getElementById('mobileFilterCancel');
+        const cancelChecked = (desktopCancel && desktopCancel.checked) || (mobileCancel && mobileCancel.checked);
+        if (cancelChecked) {
+            url.searchParams.set('cancel', '1');
+        } else {
+            url.searchParams.delete('cancel');
         }
         
         // Update URL
@@ -683,6 +728,38 @@
             debouncedSearch(e.target.value);
         });
     }
+    
+    // Helper function to apply filters with page reload
+    function applyFilterRedirect() {
+        const url = new URL(window.location.href);
+        
+        // Get refill checkbox state
+        const refillCheckbox = document.getElementById('filterRefill') || document.getElementById('mobileFilterRefill');
+        if (refillCheckbox && refillCheckbox.checked) {
+            url.searchParams.set('refill', '1');
+        } else {
+            url.searchParams.delete('refill');
+        }
+        
+        // Get cancel checkbox state
+        const cancelCheckbox = document.getElementById('filterCancel') || document.getElementById('mobileFilterCancel');
+        if (cancelCheckbox && cancelCheckbox.checked) {
+            url.searchParams.set('cancel', '1');
+        } else {
+            url.searchParams.delete('cancel');
+        }
+        
+        // Redirect to new URL
+        window.location.href = url.toString();
+    }
+    
+    // Filter checkboxes - Desktop & Mobile (use redirect for reliability)
+    ['filterRefill', 'filterCancel', 'mobileFilterRefill', 'mobileFilterCancel'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('change', applyFilterRedirect);
+        }
+    });
 </script>
 @endsection
 
