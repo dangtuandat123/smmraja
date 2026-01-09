@@ -115,15 +115,15 @@
                     <div class="card-content">
                         @if($recentTransactions->count() > 0)
                             @foreach($recentTransactions as $trans)
-                                <div class="level is-mobile mb-3">
-                                    <div class="level-left">
-                                        <div>
-                                            <p class="has-text-weight-semibold">{{ $trans->description }}</p>
-                                            <p class="is-size-7 has-text-grey">{{ $trans->created_at->format('d/m/Y H:i') }}</p>
-                                        </div>
+                                <div class="transaction-item" style="display: flex; justify-content: space-between; align-items: flex-start; padding: 0.75rem 0; border-bottom: 1px solid #f0f0f0;">
+                                    <div style="flex: 1; min-width: 0; padding-right: 0.75rem;">
+                                        <p class="has-text-weight-semibold" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.9rem;">
+                                            {{ Str::limit($trans->description, 35) }}
+                                        </p>
+                                        <p class="is-size-7 has-text-grey">{{ $trans->created_at->format('d/m/Y H:i') }}</p>
                                     </div>
-                                    <div class="level-right">
-                                        <span class="has-text-{{ $trans->amount >= 0 ? 'success' : 'danger' }} has-text-weight-bold">
+                                    <div style="flex-shrink: 0; text-align: right;">
+                                        <span class="has-text-{{ $trans->amount >= 0 ? 'success' : 'danger' }} has-text-weight-bold" style="font-size: 0.95rem;">
                                             {{ $trans->amount >= 0 ? '+' : '' }}{{ number_format($trans->amount, 0, ',', '.') }}đ
                                         </span>
                                     </div>

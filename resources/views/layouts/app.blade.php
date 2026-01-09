@@ -594,63 +594,72 @@
             left: 0;
             right: 0;
             background: white;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 -2px 15px rgba(0,0,0,0.08);
             z-index: 100;
-            padding: 8px 0;
-            padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+            padding: 6px 8px;
+            padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px));
         }
         
         .mobile-bottom-nav .nav-items {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: flex-end;
-            gap: 0;
+            max-width: 400px;
+            margin: 0 auto;
         }
         
         .mobile-bottom-nav .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-end;
+            justify-content: center;
             text-decoration: none;
-            color: #6b7280;
-            font-size: 10px;
-            padding: 4px;
-            width: 65px;
-            height: 50px;
+            color: #9ca3af;
+            font-size: 9px;
+            font-weight: 500;
+            padding: 4px 8px;
+            min-width: 52px;
+            height: 42px;
             transition: all 0.2s;
+            border-radius: 8px;
         }
         
         .mobile-bottom-nav .nav-item:hover,
         .mobile-bottom-nav .nav-item.is-active {
             color: var(--primary);
+            background: rgba(99, 102, 241, 0.08);
         }
         
         .mobile-bottom-nav .nav-item i {
-            font-size: 20px;
-            margin-bottom: 4px;
+            font-size: 18px;
+            margin-bottom: 2px;
         }
         
         .mobile-bottom-nav .nav-item.is-primary {
             background: var(--gradient);
             color: white !important;
-            border-radius: 50%;
-            width: 56px;
-            height: 56px;
-            margin: 0 8px;
-            margin-top: -15px;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
-            justify-content: center;
-            padding: 0;
+            border-radius: 14px;
+            min-width: 58px;
+            height: 48px;
+            margin-top: -8px;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+            padding: 0 12px;
+        }
+        
+        .mobile-bottom-nav .nav-item.is-primary:hover {
+            background: var(--gradient);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.45);
         }
         
         .mobile-bottom-nav .nav-item.is-primary i {
-            font-size: 24px;
-            margin: 0;
+            font-size: 20px;
+            margin-bottom: 2px;
         }
         
         .mobile-bottom-nav .nav-item.is-primary span {
-            display: none;
+            font-size: 8px;
+            font-weight: 600;
         }
         
         /* Mobile slide menu overlay */
@@ -844,6 +853,14 @@
                                 <i class="fas fa-wallet mr-1"></i>
                                 {{ number_format(auth()->user()->balance, 0, ',', '.') }} VND
                             </span>
+                        </div>
+                        
+                        <!-- Deposit Button -->
+                        <div class="navbar-item">
+                            <a href="{{ route('wallet.index') }}" class="button is-warning is-small has-text-weight-bold" style="border-radius: 20px; padding-left: 1rem; padding-right: 1rem;">
+                                <span class="icon is-small"><i class="fas fa-plus-circle"></i></span>
+                                <span>Nạp tiền</span>
+                            </a>
                         </div>
                         
                         <!-- Notification Bell -->
@@ -1158,7 +1175,7 @@
                 <span>Dịch vụ</span>
             </a>
             <a href="{{ route('orders.create') }}" class="nav-item is-primary">
-                <i class="fas fa-plus"></i>
+                <i class="fas fa-cart-plus"></i>
                 <span>Mua hàng</span>
             </a>
             <a href="{{ route('orders.index') }}" class="nav-item {{ request()->routeIs('orders.*') ? 'is-active' : '' }}">
