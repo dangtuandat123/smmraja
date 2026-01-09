@@ -638,12 +638,11 @@
         .mobile-bottom-nav .nav-item.is-primary {
             background: var(--gradient);
             color: white !important;
-            border-radius: 14px;
-            min-width: 58px;
-            height: 48px;
-            margin-top: -8px;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
-            padding: 0 12px;
+            border-radius: 8px;
+            min-width: 52px;
+            height: 42px;
+            box-shadow: 0 3px 10px rgba(99, 102, 241, 0.35);
+            padding: 4px 8px;
         }
         
         .mobile-bottom-nav .nav-item.is-primary:hover {
@@ -1166,7 +1165,7 @@
     <!-- Mobile Bottom Navigation -->
     <nav class="mobile-bottom-nav">
         <div class="nav-items">
-            <a href="{{ route('home') }}" class="nav-item {{ request()->routeIs('home') ? 'is-active' : '' }}">
+            <a href="{{ route('home') }}" class="nav-item {{ request()->routeIs('home') || request()->routeIs('dashboard') ? 'is-active' : '' }}">
                 <i class="fas fa-home"></i>
                 <span>Trang chủ</span>
             </a>
@@ -1174,11 +1173,11 @@
                 <i class="fas fa-list-ul"></i>
                 <span>Dịch vụ</span>
             </a>
-            <a href="{{ route('orders.create') }}" class="nav-item is-primary">
+            <a href="{{ route('orders.create') }}" class="nav-item is-primary {{ request()->routeIs('orders.create') ? 'is-active' : '' }}">
                 <i class="fas fa-cart-plus"></i>
                 <span>Mua hàng</span>
             </a>
-            <a href="{{ route('orders.index') }}" class="nav-item {{ request()->routeIs('orders.*') ? 'is-active' : '' }}">
+            <a href="{{ route('orders.index') }}" class="nav-item {{ request()->routeIs('orders.index') || request()->routeIs('orders.show') ? 'is-active' : '' }}">
                 <i class="fas fa-shopping-bag"></i>
                 <span>Đơn hàng</span>
             </a>
