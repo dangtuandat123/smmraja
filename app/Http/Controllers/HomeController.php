@@ -22,8 +22,9 @@ class HomeController extends Controller
             ->get();
 
         $featuredServices = Service::active()
-            ->ordered()
+            ->withCount('orders')
             ->with('category')
+            ->orderByDesc('orders_count')
             ->limit(8)
             ->get();
 

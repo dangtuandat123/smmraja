@@ -510,7 +510,11 @@
         
         <div class="services-grid">
             @foreach($featuredServices->take(6) as $service)
-                <div class="service-card-new">
+                @auth
+                <a href="{{ route('orders.create', ['service' => $service->id]) }}" class="service-card-new" style="text-decoration: none; cursor: pointer;">
+                @else
+                <a href="{{ route('services.index', ['category' => $service->category->slug ?? '']) }}" class="service-card-new" style="text-decoration: none; cursor: pointer;">
+                @endauth
                     <span class="category-tag">{{ $service->category->name ?? 'N/A' }}</span>
                     <h5>{{ Str::limit($service->name, 50) }}</h5>
                     <p class="meta">Min: {{ number_format($service->min) }} • Max: {{ number_format($service->max) }}</p>
@@ -518,7 +522,7 @@
                         <span class="price">{{ number_format($service->price_vnd, 0, ',', '.') }}đ</span>
                         <span class="unit">/1000</span>
                     </div>
-                </div>
+                </a>
             @endforeach
         </div>
     </div>
