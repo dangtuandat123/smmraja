@@ -29,7 +29,7 @@ class OrderController extends Controller
         $categories = Category::active()
             ->ordered()
             ->with(['services' => function ($query) {
-                $query->where('is_active', true)->ordered();
+                $query->where('is_active', true)->orderBy('price_vnd', 'asc');
             }])
             ->get();
 
