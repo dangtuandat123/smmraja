@@ -550,15 +550,26 @@
     
     // AJAX load by category
     function loadCategoryAjax(categorySlug) {
+        const currentUrl = new URL(window.location.href);
         const url = new URL(window.location.origin + '/services');
+        
         if (categorySlug) {
             url.searchParams.set('category', categorySlug);
         }
+        
         // Keep current sort
         const currentSortValue = document.getElementById('desktopSortInput')?.value || 
                                   document.getElementById('mobileSortInput')?.value || 'default';
         if (currentSortValue && currentSortValue !== 'default') {
             url.searchParams.set('sort', currentSortValue);
+        }
+        
+        // Keep current filter params from URL
+        if (currentUrl.searchParams.get('refill') === '1') {
+            url.searchParams.set('refill', '1');
+        }
+        if (currentUrl.searchParams.get('cancel') === '1') {
+            url.searchParams.set('cancel', '1');
         }
         
         // Update URL
