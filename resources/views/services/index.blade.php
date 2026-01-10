@@ -40,17 +40,17 @@
                         <div id="mobileSortDropdown" class="custom-dropdown"></div>
                     </div>
                     
-                    <!-- Mobile Filter checkboxes -->
+                    <!-- Mobile Filter checkboxes - use same IDs as desktop for JS compatibility -->
                     <div class="field">
                         <label class="label is-small has-text-grey mb-1">Lọc theo</label>
                         <div class="control is-flex" style="gap: 1rem;">
                             <label class="checkbox">
-                                <input type="checkbox" id="mobileFilterRefill" {{ $refill === '1' ? 'checked' : '' }}>
-                                <span class="ml-1"><i class="fas fa-sync-alt has-text-success"></i> Bảo hành</span>
+                                <input type="checkbox" class="filter-refill-checkbox" {{ $refill === '1' ? 'checked' : '' }}>
+                                <span class="ml-1"><i class="fas fa-sync-alt has-text-success"></i> Có bảo hành</span>
                             </label>
                             <label class="checkbox">
-                                <input type="checkbox" id="mobileFilterCancel" {{ $cancel === '1' ? 'checked' : '' }}>
-                                <span class="ml-1"><i class="fas fa-times-circle has-text-warning"></i> Hủy</span>
+                                <input type="checkbox" class="filter-cancel-checkbox" {{ $cancel === '1' ? 'checked' : '' }}>
+                                <span class="ml-1"><i class="fas fa-times-circle has-text-warning"></i> Có thể hủy</span>
                             </label>
                         </div>
                     </div>
@@ -131,11 +131,11 @@
                                 <label class="label is-small has-text-grey">Lọc theo</label>
                                 <div class="control">
                                     <label class="checkbox mb-2" style="display: block;">
-                                        <input type="checkbox" id="filterRefill" {{ $refill === '1' ? 'checked' : '' }}>
+                                        <input type="checkbox" class="filter-refill-checkbox" {{ $refill === '1' ? 'checked' : '' }}>
                                         <span class="ml-1"><i class="fas fa-sync-alt has-text-success"></i> Có bảo hành</span>
                                     </label>
                                     <label class="checkbox" style="display: block;">
-                                        <input type="checkbox" id="filterCancel" {{ $cancel === '1' ? 'checked' : '' }}>
+                                        <input type="checkbox" class="filter-cancel-checkbox" {{ $cancel === '1' ? 'checked' : '' }}>
                                         <span class="ml-1"><i class="fas fa-times-circle has-text-warning"></i> Có thể hủy</span>
                                     </label>
                                 </div>
@@ -730,20 +730,34 @@
     }
     
     // Helper function to apply filters with page reload
-    function applyFilterRedirect() {
+    function applyFilterRedirect(event) {
         const url = new URL(window.location.href);
+        const clickedCheckbox = event.target;
         
-        // Get refill checkbox state
-        const refillCheckbox = document.getElementById('filterRefill') || document.getElementById('mobileFilterRefill');
-        if (refillCheckbox && refillCheckbox.checked) {
+        // Determine which filter was clicked and its new state
+        const isRefillCheckbox = clickedCheckbox.classList.contains('filter-refill-checkbox');
+        const isCancelCheckbox = clickedCheckbox.classList.contains('filter-cancel-checkbox');
+        
+        // For the clicked checkbox, use its current state
+        // For other filters, read from URL (current state)
+        let refillChecked = url.searchParams.get('refill') === '1';
+        let cancelChecked = url.searchParams.get('cancel') === '1';
+        
+        if (isRefillCheckbox) {
+            refillChecked = clickedCheckbox.checked;
+        }
+        if (isCancelCheckbox) {
+            cancelChecked = clickedCheckbox.checked;
+        }
+        
+        // Update URL params
+        if (refillChecked) {
             url.searchParams.set('refill', '1');
         } else {
             url.searchParams.delete('refill');
         }
         
-        // Get cancel checkbox state
-        const cancelCheckbox = document.getElementById('filterCancel') || document.getElementById('mobileFilterCancel');
-        if (cancelCheckbox && cancelCheckbox.checked) {
+        if (cancelChecked) {
             url.searchParams.set('cancel', '1');
         } else {
             url.searchParams.delete('cancel');
@@ -753,12 +767,9 @@
         window.location.href = url.toString();
     }
     
-    // Filter checkboxes - Desktop & Mobile (use redirect for reliability)
-    ['filterRefill', 'filterCancel', 'mobileFilterRefill', 'mobileFilterCancel'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
-            el.addEventListener('change', applyFilterRedirect);
-        }
+    // Filter checkboxes - Desktop & Mobile (use class selector)
+    document.querySelectorAll('.filter-refill-checkbox, .filter-cancel-checkbox').forEach(el => {
+        el.addEventListener('change', applyFilterRedirect);
     });
 </script>
 @endsection
