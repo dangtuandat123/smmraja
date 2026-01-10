@@ -62,22 +62,42 @@ class SyncServicePrices extends Command
 
             $newApiRate = (float) $apiService['rate'];
             $oldApiRate = (float) $service->api_rate;
+            $newMin = (int) ($apiService['min'] ?? $service->min);
+            $newMax = (int) ($apiService['max'] ?? $service->max);
+            $newRefill = (bool) ($apiService['refill'] ?? false);
+            $newCancel = (bool) ($apiService['cancel'] ?? false);
+            $newApiName = $apiService['name'] ?? $service->api_name;
             
-            // Update if price changed or force flag is set
-            if ($force || $newApiRate != $oldApiRate) {
+            // Check if any field changed
+            $priceChanged = $newApiRate != $oldApiRate;
+            $minChanged = $newMin != $service->min;
+            $maxChanged = $newMax != $service->max;
+            $refillChanged = $newRefill != $service->refill;
+            $cancelChanged = $newCancel != $service->cancel;
+            $nameChanged = $newApiName != $service->api_name;
+            
+            $hasChanges = $priceChanged || $minChanged || $maxChanged || $refillChanged || $cancelChanged || $nameChanged;
+            
+            // Update if any field changed or force flag is set
+            if ($force || $hasChanges) {
                 $service->api_rate = $newApiRate;
-                $service->min = (int) ($apiService['min'] ?? $service->min);
-                $service->max = (int) ($apiService['max'] ?? $service->max);
-                $service->refill = (bool) ($apiService['refill'] ?? $service->refill);
-                $service->cancel = (bool) ($apiService['cancel'] ?? $service->cancel);
+                $service->min = $newMin;
+                $service->max = $newMax;
+                $service->refill = $newRefill;
+                $service->cancel = $newCancel;
+                $service->api_name = $newApiName;
                 $service->updatePriceVnd($exchangeRate);
                 
-                if ($newApiRate != $oldApiRate) {
+                if ($hasChanges) {
                     $updateCount++;
-                    Log::info('Service price updated', [
+                    Log::info('Service updated from API', [
                         'service_id' => $service->id,
-                        'old_rate' => $oldApiRate,
-                        'new_rate' => $newApiRate,
+                        'price_changed' => $priceChanged,
+                        'min_changed' => $minChanged,
+                        'max_changed' => $maxChanged,
+                        'refill_changed' => $refillChanged,
+                        'cancel_changed' => $cancelChanged,
+                        'name_changed' => $nameChanged,
                     ]);
                 }
             }
