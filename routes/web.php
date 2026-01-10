@@ -93,6 +93,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
     // Settings
     Route::get('/settings', [AdminSettingController::class, 'index'])->name('settings.index');
     Route::post('/settings', [AdminSettingController::class, 'update'])->name('settings.update');
+    Route::get('/settings/test-telegram', [AdminSettingController::class, 'testTelegram'])->name('settings.test-telegram');
     
     // API Balance check
     Route::get('/api-balance', [AdminDashboardController::class, 'apiBalance'])->name('api.balance');

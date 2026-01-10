@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Services\TelegramService;
 use Illuminate\Http\Request;
 
 class SettingController extends Controller
@@ -16,6 +17,7 @@ class SettingController extends Controller
         $settings = [
             'general' => Setting::getByGroup('general'),
             'api' => Setting::getByGroup('api'),
+            'telegram' => Setting::getByGroup('telegram'),
             'seo' => Setting::getByGroup('seo'),
             'contact' => Setting::getByGroup('contact'),
             'payment' => Setting::getByGroup('payment'),
@@ -47,6 +49,28 @@ class SettingController extends Controller
     }
 
     /**
+     * Test Telegram notification
+     */
+    public function testTelegram(TelegramService $telegram)
+    {
+        if (!$telegram->isConfigured()) {
+            return back()->withErrors(['telegram' => 'Telegram chưa được cấu hình. Vui lòng nhập Bot Token và Chat ID.']);
+        }
+
+        $success = $telegram->sendMessage(
+            "✅ <b>Test thành công!</b>\n\n"
+            . "Telegram Bot đã được cấu hình đúng.\n"
+            . "🕐 " . now()->format('H:i d/m/Y')
+        );
+
+        if ($success) {
+            return back()->with('success', '✅ Gửi tin nhắn test thành công! Kiểm tra Telegram của bạn.');
+        } else {
+            return back()->withErrors(['telegram' => '❌ Gửi thất bại! Kiểm tra lại Bot Token và Chat ID.']);
+        }
+    }
+
+    /**
      * Get settings configuration
      */
     protected function getSettingsConfig(): array
@@ -63,6 +87,12 @@ class SettingController extends Controller
                 'smmraja_api_url' => ['type' => 'text', 'label' => 'SMM Raja API URL'],
                 'smmraja_api_key' => ['type' => 'password', 'label' => 'SMM Raja API Key'],
                 'wallet_api_key' => ['type' => 'password', 'label' => 'Wallet API Key'],
+            ],
+            'telegram' => [
+                'telegram_enabled' => ['type' => 'boolean', 'label' => 'Bật Telegram'],
+                'telegram_bot_token' => ['type' => 'text', 'label' => 'Bot Token'],
+                'telegram_chat_id' => ['type' => 'text', 'label' => 'Chat ID'],
+                'balance_warning_threshold' => ['type' => 'number', 'label' => 'Ngưỡng cảnh báo ($)'],
             ],
             'seo' => [
                 'meta_title' => ['type' => 'text', 'label' => 'Meta Title'],
@@ -88,3 +118,4 @@ class SettingController extends Controller
         ];
     }
 }
+

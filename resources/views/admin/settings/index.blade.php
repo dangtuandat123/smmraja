@@ -9,6 +9,7 @@
     <ul>
         <li class="is-active" data-tab="general"><a>Chung</a></li>
         <li data-tab="api"><a>API</a></li>
+        <li data-tab="telegram"><a><i class="fab fa-telegram mr-1"></i>Telegram</a></li>
         <li data-tab="payment"><a>Thanh toán</a></li>
         <li data-tab="seo"><a>SEO</a></li>
         <li data-tab="contact"><a>Liên hệ</a></li>
@@ -96,6 +97,73 @@
                 </div>
                 
                 <button type="submit" class="button is-primary"><i class="fas fa-save mr-2"></i> Lưu cài đặt</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Telegram -->
+<div id="tab-telegram" class="tab-content" style="display: none;">
+    <div class="card">
+        <div class="card-content">
+            <form method="POST" action="{{ route('admin.settings.update') }}">
+                @csrf
+                <input type="hidden" name="group" value="telegram">
+                
+                <div class="notification is-info is-light">
+                    <strong><i class="fab fa-telegram mr-2"></i>Telegram Bot:</strong> 
+                    Nhận thông báo đơn hàng mới, user đăng ký, lỗi hệ thống qua Telegram.
+                </div>
+                
+                <div class="field">
+                    <label class="label">
+                        <i class="fas fa-toggle-on mr-1"></i>Bật thông báo Telegram
+                    </label>
+                    <div class="control">
+                        <label class="switch">
+                            <input type="checkbox" name="telegram_enabled" value="1" 
+                                {{ ($settings['telegram']['telegram_enabled'] ?? false) ? 'checked' : '' }}>
+                            <span class="slider round"></span>
+                        </label>
+                        <span class="ml-3 {{ ($settings['telegram']['telegram_enabled'] ?? false) ? 'has-text-success' : 'has-text-grey' }}">
+                            {{ ($settings['telegram']['telegram_enabled'] ?? false) ? 'Đang bật' : 'Tắt' }}
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="field">
+                    <label class="label">Bot Token</label>
+                    <input class="input" type="text" name="telegram_bot_token" 
+                        value="{{ $settings['telegram']['telegram_bot_token'] ?? '' }}" 
+                        placeholder="5969681337:AAEDTmYjKNhmLlmd1llQPb89I29gjqWMvII">
+                    <p class="help">Lấy từ @BotFather trên Telegram</p>
+                </div>
+                
+                <div class="field">
+                    <label class="label">Chat ID</label>
+                    <input class="input" type="text" name="telegram_chat_id" 
+                        value="{{ $settings['telegram']['telegram_chat_id'] ?? '' }}" 
+                        placeholder="5514850036">
+                    <p class="help">ID của bạn hoặc group chat để nhận thông báo. Dùng @userinfobot để lấy ID.</p>
+                </div>
+                
+                <hr>
+                
+                <div class="field">
+                    <label class="label">Ngưỡng cảnh báo số dư SMM Raja ($)</label>
+                    <input class="input" type="number" step="0.01" name="balance_warning_threshold" 
+                        value="{{ $settings['telegram']['balance_warning_threshold'] ?? '10' }}" 
+                        placeholder="10">
+                    <p class="help">Gửi cảnh báo khi số dư SMM Raja thấp hơn mức này (USD)</p>
+                </div>
+                
+                <button type="submit" class="button is-primary"><i class="fas fa-save mr-2"></i> Lưu cài đặt</button>
+                
+                @if($settings['telegram']['telegram_enabled'] ?? false)
+                <a href="{{ route('admin.settings.test-telegram') }}" class="button is-info ml-2">
+                    <i class="fas fa-paper-plane mr-2"></i> Test gửi thông báo
+                </a>
+                @endif
             </form>
         </div>
     </div>
