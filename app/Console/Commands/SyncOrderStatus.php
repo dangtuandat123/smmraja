@@ -143,7 +143,50 @@ class SyncOrderStatus extends Command
             $this->warn("   ✗ Hủy/Hoàn tiền: {$canceledCount}");
         }
         
+        // Check SMM Raja balance and warn if low
+        $this->checkApiBalance($smmService);
+        
         return 0;
+    }
+    
+    /**
+     * Check API balance and warn admins if low
+     */
+    protected function checkApiBalance(SmmRajaService $smmService): void
+    {
+        try {
+            $balanceData = $smmService->getBalance();
+            $balance = (float) ($balanceData['balance'] ?? 0);
+            $currency = $balanceData['currency'] ?? 'USD';
+            
+            // Get warning threshold from settings (default $10)
+            $threshold = (float) (\App\Models\Setting::get('balance_warning_threshold') ?? 10);
+            
+            $this->info("💰 Số dư SMM Raja: \${$balance} {$currency}");
+            
+            if ($balance < $threshold) {
+                $this->error("⚠️  CẢNH BÁO: Số dư SMM Raja thấp! (< \${$threshold})");
+                
+                // Notify all admins
+                $admins = \App\Models\User::where('role', 'admin')->get();
+                foreach ($admins as $admin) {
+                    Notification::system(
+                        $admin->id,
+                        '⚠️ Số dư SMM Raja thấp!',
+                        "Số dư hiện tại: \${$balance} {$currency}. Vui lòng nạp thêm để đảm bảo dịch vụ hoạt động.",
+                        'warning'
+                    );
+                }
+                
+                Log::warning('SMM Raja balance low', [
+                    'balance' => $balance,
+                    'currency' => $currency,
+                    'threshold' => $threshold,
+                ]);
+            }
+        } catch (\Exception $e) {
+            $this->warn("⚠️  Không thể kiểm tra số dư API: " . $e->getMessage());
+        }
     }
     
     /**

@@ -48,6 +48,9 @@ class RegisterController extends Controller
 
         Auth::login($user);
 
+        // Queue Telegram notification for new user
+        \App\Models\TelegramQueue::queueNewUser($user->email, $user->name);
+
         return redirect()->route('dashboard')
             ->with('success', 'Đăng ký thành công! Chào mừng bạn đến với SMM Panel.');
     }

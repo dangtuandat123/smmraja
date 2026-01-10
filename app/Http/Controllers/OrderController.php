@@ -146,6 +146,16 @@ class OrderController extends Controller
                 $service->name
             );
 
+            // Queue Telegram notification
+            \App\Models\TelegramQueue::queueOrder(
+                $order->id,
+                $user->name,
+                $service->name,
+                $quantity,
+                $totalPrice,
+                $request->link
+            );
+
             return redirect()->route('orders.show', $order)
                 ->with('success', 'Đặt hàng thành công! Mã đơn hàng: #' . $order->id);
 
