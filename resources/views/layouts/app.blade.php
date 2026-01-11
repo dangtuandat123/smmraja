@@ -816,6 +816,17 @@
             .navbar-burger {
                 display: none !important;
             }
+            
+            /* Show mobile deposit button */
+            .mobile-deposit-btn {
+                display: flex !important;
+                margin-left: auto;
+            }
+        }
+        
+        /* Hide mobile deposit button on desktop */
+        .mobile-deposit-btn {
+            display: none;
         }
     </style>
     
@@ -831,6 +842,16 @@
                         <i class="fas fa-bolt"></i> SMM Panel
                     </strong>
                 </a>
+                
+                <!-- Mobile Deposit Button (visible only on mobile) -->
+                @auth
+                <a href="{{ route('wallet.index') }}" class="navbar-item mobile-deposit-btn">
+                    <span class="button is-warning is-small has-text-weight-bold" style="border-radius: 20px; padding: 0.5rem 1rem;">
+                        <span class="icon is-small"><i class="fas fa-plus-circle"></i></span>
+                        <span>Nạp tiền</span>
+                    </span>
+                </a>
+                @endauth
                 
                 <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navMenu">
                     <span aria-hidden="true"></span>
