@@ -30,14 +30,26 @@ class StatisticController extends Controller
         // Get exchange rate for profit calculation
         $exchangeRate = ExchangeRateService::getRate();
 
-        // === REVENUE & PROFIT ===
+        // === REVENUE & PROFIT (exclude canceled/refunded orders) ===
         $ordersQuery = Order::whereBetween('created_at', [$startDate, $endDate]);
         
-        $totalRevenue = (clone $ordersQuery)->sum('total_price');
-        $totalApiCost = (clone $ordersQuery)->sum('api_charge') * $exchangeRate;
+        // Only count revenue from orders that are NOT canceled/refunded
+        $validOrdersQuery = Order::whereBetween('created_at', [$startDate, $endDate])
+            ->whereNotIn('status', ['canceled', 'refunded']);
+        
+        $totalRevenue = (clone $validOrdersQuery)->sum('total_price');
+        $totalApiCost = (clone $validOrdersQuery)->sum('api_charge') * $exchangeRate;
         $totalProfit = $totalRevenue - $totalApiCost;
         $totalOrders = (clone $ordersQuery)->count();
         $completedOrders = (clone $ordersQuery)->where('status', 'completed')->count();
+        
+        // Canceled & Refunded stats
+        $canceledOrders = (clone $ordersQuery)->where('status', 'canceled')->count();
+        $refundedOrders = (clone $ordersQuery)->where('status', 'refunded')->count();
+        $partialOrders = (clone $ordersQuery)->where('status', 'partial')->count();
+        $refundedAmount = Transaction::where('type', 'refund')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->sum('amount');
 
         // === DEPOSITS ===
         $depositsQuery = Transaction::where('type', 'deposit')
@@ -100,6 +112,7 @@ class StatisticController extends Controller
         return view('admin.statistics.index', compact(
             'period', 'month', 'year',
             'totalRevenue', 'totalProfit', 'totalApiCost', 'totalOrders', 'completedOrders',
+            'canceledOrders', 'refundedOrders', 'partialOrders', 'refundedAmount',
             'totalDeposits', 'depositCount',
             'newUsers', 'totalUsers',
             'pageViews', 'uniqueVisitors',
@@ -159,7 +172,9 @@ class StatisticController extends Controller
                 $date = Carbon::create($year, $month, $day);
                 $labels[] = $day;
                 
-                $dayOrders = Order::whereDate('created_at', $date);
+                // Exclude canceled/refunded orders from revenue calculation
+                $dayOrders = Order::whereDate('created_at', $date)
+                    ->whereNotIn('status', ['canceled', 'refunded']);
                 $revenue = (clone $dayOrders)->sum('total_price');
                 $apiCost = (clone $dayOrders)->sum('api_charge') * $exchangeRate;
                 
@@ -175,7 +190,9 @@ class StatisticController extends Controller
                 
                 $labels[] = 'T' . $m;
                 
-                $monthOrders = Order::whereBetween('created_at', [$startOfMonth, $endOfMonth]);
+                // Exclude canceled/refunded orders from revenue calculation
+                $monthOrders = Order::whereBetween('created_at', [$startOfMonth, $endOfMonth])
+                    ->whereNotIn('status', ['canceled', 'refunded']);
                 $revenue = (clone $monthOrders)->sum('total_price');
                 $apiCost = (clone $monthOrders)->sum('api_charge') * $exchangeRate;
                 

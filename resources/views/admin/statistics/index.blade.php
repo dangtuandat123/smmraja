@@ -138,9 +138,14 @@
                         <div>
                             <p class="heading">Đơn hàng</p>
                             <p class="title is-4">{{ number_format($totalOrders) }}</p>
-                            <p class="is-size-7 has-text-grey">
-                                Hoàn thành: {{ number_format($completedOrders) }}
+                            <p class="is-size-7 has-text-success">
+                                <i class="fas fa-check mr-1"></i>Hoàn thành: {{ number_format($completedOrders) }}
                             </p>
+                            @if($canceledOrders > 0 || $refundedOrders > 0 || $partialOrders > 0)
+                            <p class="is-size-7 has-text-danger">
+                                <i class="fas fa-times mr-1"></i>Hủy: {{ $canceledOrders }} | Hoàn tiền: {{ $refundedOrders }} | Một phần: {{ $partialOrders }}
+                            </p>
+                            @endif
                         </div>
                     </div>
                     <div class="level-right">

@@ -81,7 +81,6 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email,' . $user->id],
             'phone' => ['nullable', 'string', 'max:20'],
-            'role' => ['required', 'in:user,admin'],
             'is_active' => ['boolean'],
             'password' => ['nullable', 'min:6'],
         ]);

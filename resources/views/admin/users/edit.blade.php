@@ -26,16 +26,7 @@
                         <input class="input" type="text" name="phone" value="{{ old('phone', $user->phone) }}">
                     </div>
                     
-                    <div class="field">
-                        <label class="label">Role *</label>
-                        <div class="select is-fullwidth">
-                            <select name="role">
-                                <option value="user" {{ $user->role == 'user' ? 'selected' : '' }}>User</option>
-                                <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>Admin</option>
-                            </select>
-                        </div>
-                    </div>
-                    
+
                     <div class="field">
                         <label class="label">Mật khẩu mới (để trống nếu không đổi)</label>
                         <input class="input" type="password" name="password" placeholder="••••••••">
