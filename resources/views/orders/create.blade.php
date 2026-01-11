@@ -642,8 +642,9 @@
         
         const typeLower = type.toLowerCase();
         
-        if (typeLower.includes('comment') && !typeLower.includes('like')) {
-            container.innerHTML = `
+        // 1. Custom Comments / Custom Comments Package
+        if ((typeLower.includes('custom comment') || typeLower === 'comment replies') && !typeLower.includes('like')) {
+            container.innerHTML += `
                 <div class="field">
                     <label class="label"><i class="fas fa-comments has-text-info"></i> Danh sách bình luận</label>
                     <div class="control">
@@ -654,10 +655,11 @@
             `;
         }
         
-        if (typeLower.includes('mention') && typeLower.includes('user')) {
+        // 2. Comment Replies - cần thêm username
+        if (typeLower === 'comment replies') {
             container.innerHTML += `
                 <div class="field">
-                    <label class="label"><i class="fas fa-at has-text-primary"></i> Username</label>
+                    <label class="label"><i class="fas fa-at has-text-primary"></i> Username (của comment gốc)</label>
                     <div class="control">
                         <input class="input" type="text" name="username" placeholder="@username">
                     </div>
@@ -665,26 +667,172 @@
             `;
         }
         
-        if (typeLower.includes('hashtag')) {
+        // 3. Comment Likes
+        if (typeLower === 'comment likes') {
+            container.innerHTML += `
+                <div class="field">
+                    <label class="label"><i class="fas fa-at has-text-primary"></i> Username (chủ comment)</label>
+                    <div class="control">
+                        <input class="input" type="text" name="username" placeholder="@username">
+                    </div>
+                    <p class="help">Username của người viết comment cần like</p>
+                </div>
+            `;
+        }
+        
+        // 4. Mentions User Followers
+        if (typeLower === 'mentions user followers') {
+            container.innerHTML += `
+                <div class="field">
+                    <label class="label"><i class="fas fa-at has-text-primary"></i> Username (để lấy followers)</label>
+                    <div class="control">
+                        <input class="input" type="text" name="username" placeholder="@username">
+                    </div>
+                    <p class="help">Followers của user này sẽ được đề cập</p>
+                </div>
+            `;
+        }
+        
+        // 5. Mentions Custom List
+        if (typeLower === 'mentions custom list' || typeLower.includes('mentions') && typeLower.includes('list')) {
+            container.innerHTML += `
+                <div class="field">
+                    <label class="label"><i class="fas fa-users has-text-info"></i> Danh sách Usernames</label>
+                    <div class="control">
+                        <textarea class="textarea" name="usernames" rows="5" placeholder="@user1\n@user2\n@user3"></textarea>
+                    </div>
+                    <p class="help">Mỗi username một dòng</p>
+                </div>
+            `;
+        }
+        
+        // 6. Mentions with Hashtags (single hashtag)
+        if (typeLower === 'mentions with hashtags' || typeLower === 'mentions hashtag') {
             container.innerHTML += `
                 <div class="field">
                     <label class="label"><i class="fas fa-hashtag has-text-info"></i> Hashtag</label>
                     <div class="control">
                         <input class="input" type="text" name="hashtag" placeholder="#hashtag">
                     </div>
+                    <p class="help">Hashtag để lấy usernames</p>
                 </div>
             `;
         }
         
-        if (typeLower.includes('poll')) {
+        // 7. Mentions with Hashtags (list of hashtags + usernames)
+        if (typeLower.includes('mentions') && typeLower.includes('hashtags') && typeLower.includes('list')) {
+            container.innerHTML += `
+                <div class="field">
+                    <label class="label"><i class="fas fa-hashtag has-text-info"></i> Danh sách Hashtags</label>
+                    <div class="control">
+                        <textarea class="textarea" name="hashtags" rows="3" placeholder="#hashtag1\n#hashtag2"></textarea>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label"><i class="fas fa-users has-text-primary"></i> Danh sách Usernames</label>
+                    <div class="control">
+                        <textarea class="textarea" name="usernames" rows="3" placeholder="@user1\n@user2"></textarea>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // 8. Mentions Media Likers
+        if (typeLower === 'mentions media likers') {
+            container.innerHTML += `
+                <div class="field">
+                    <label class="label"><i class="fas fa-image has-text-success"></i> Media URL</label>
+                    <div class="control">
+                        <input class="input" type="url" name="media" placeholder="https://instagram.com/p/...">
+                    </div>
+                    <p class="help">URL của bài viết để lấy danh sách người like</p>
+                </div>
+            `;
+        }
+        
+        // 9. Poll
+        if (typeLower === 'poll') {
             container.innerHTML += `
                 <div class="field">
                     <label class="label"><i class="fas fa-poll has-text-warning"></i> Số câu trả lời</label>
                     <div class="control">
                         <input class="input" type="number" name="answer_number" min="1" placeholder="1, 2, 3...">
                     </div>
+                    <p class="help">Số thứ tự câu trả lời trong poll (1, 2, 3...)</p>
                 </div>
             `;
+        }
+        
+        // 10. Invites from Groups
+        if (typeLower === 'invites from groups') {
+            container.innerHTML += `
+                <div class="field">
+                    <label class="label"><i class="fas fa-users-cog has-text-info"></i> Danh sách Groups</label>
+                    <div class="control">
+                        <textarea class="textarea" name="groups" rows="5" placeholder="https://facebook.com/groups/...\nhttps://facebook.com/groups/..."></textarea>
+                    </div>
+                    <p class="help">Mỗi link group một dòng</p>
+                </div>
+            `;
+        }
+        
+        // 11. Package Subscriptions
+        if (typeLower === 'subscriptions' || typeLower === 'package subscriptions') {
+            container.innerHTML += `
+                <div class="field">
+                    <label class="label"><i class="fas fa-at has-text-primary"></i> Username</label>
+                    <div class="control">
+                        <input class="input" type="text" name="username" placeholder="@username" required>
+                    </div>
+                </div>
+                <div class="columns">
+                    <div class="column">
+                        <div class="field">
+                            <label class="label">Min</label>
+                            <input class="input" type="number" name="min" value="10" min="1">
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="field">
+                            <label class="label">Max</label>
+                            <input class="input" type="number" name="max" value="100" min="1">
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="field">
+                            <label class="label">Delay (phút)</label>
+                            <select class="input" name="delay">
+                                <option value="0">0</option>
+                                <option value="5" selected>5</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="30">30</option>
+                                <option value="60">60</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="columns">
+                    <div class="column">
+                        <div class="field">
+                            <label class="label">Số bài viết (tùy chọn)</label>
+                            <input class="input" type="number" name="posts" placeholder="Không giới hạn">
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="field">
+                            <label class="label">Hết hạn (tùy chọn)</label>
+                            <input class="input" type="text" name="expiry" placeholder="dd/mm/yyyy">
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // 12. Default with runs/interval (optional drip-feed)
+        if (typeLower === 'default') {
+            // Keep quantity field visible, optionally show runs/interval
+            // Most Default services don't need extra fields
         }
     }
     
