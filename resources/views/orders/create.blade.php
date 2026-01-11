@@ -235,9 +235,32 @@
                                 <p class="has-text-grey mt-3">Vui lòng chọn dịch vụ để xem thông tin</p>
                             </div>
                             
+                            <!-- Balance Warning -->
+                            <div id="balanceWarning" class="notification is-danger is-light mt-4" style="display: none;">
+                                <div class="is-flex is-justify-content-space-between is-align-items-center flex-wrap" style="gap: 10px;">
+                                    <span class="icon-text">
+                                        <span class="icon has-text-danger"><i class="fas fa-exclamation-triangle"></i></span>
+                                        <span class="has-text-danger has-text-weight-bold">Số dư không đủ!</span>
+                                    </span>
+                                    <a href="{{ route('wallet.index') }}" class="button is-warning is-small has-text-weight-bold" style="border-radius: 20px;">
+                                        <span class="icon is-small"><i class="fas fa-plus-circle"></i></span>
+                                        <span>Nạp tiền ngay</span>
+                                    </a>
+                                </div>
+                                <p class="is-size-7 mt-2">
+                                    Số dư hiện tại: <strong id="currentBalance">{{ number_format(auth()->user()->balance, 0, ',', '.') }}</strong> VND
+                                </p>
+                            </div>
+                            
                             <button type="submit" class="button is-primary is-medium is-fullwidth mt-4" id="submitBtn" disabled style="border-radius: 8px;">
                                 <span class="icon"><i class="fas fa-shopping-cart"></i></span>
                                 <span>Đặt hàng ngay</span>
+                            </button>
+                            
+                            <!-- Insufficient Balance Button (hidden by default) -->
+                            <button type="button" class="button is-danger is-medium is-fullwidth mt-4" id="insufficientBtn" style="display: none; border-radius: 8px;" disabled>
+                                <span class="icon"><i class="fas fa-ban"></i></span>
+                                <span>Số dư không đủ</span>
                             </button>
                         </div>
                     </div>
@@ -635,21 +658,32 @@
         document.getElementById('summaryTotal').textContent = total.toLocaleString('vi-VN');
         
         const submitBtn = document.getElementById('submitBtn');
-        const isValid = quantity >= selectedService.min && 
-                       quantity <= selectedService.max && 
-                       total <= userBalance &&
-                       document.getElementById('linkInput').value;
+        const insufficientBtn = document.getElementById('insufficientBtn');
+        const balanceWarning = document.getElementById('balanceWarning');
         
-        submitBtn.disabled = !isValid;
+        const hasEnoughBalance = total <= userBalance;
+        const isQuantityValid = quantity >= selectedService.min && quantity <= selectedService.max;
+        const hasLink = document.getElementById('linkInput').value;
+        const isValid = isQuantityValid && hasEnoughBalance && hasLink;
         
-        if (total > userBalance) {
-            submitBtn.innerHTML = '<span class="icon"><i class="fas fa-exclamation-triangle"></i></span><span>Số dư không đủ</span>';
-            submitBtn.classList.remove('is-primary');
-            submitBtn.classList.add('is-danger');
+        // Toggle buttons and warning based on balance
+        if (!hasEnoughBalance && quantity > 0) {
+            // Show insufficient balance warning
+            balanceWarning.style.display = 'block';
+            submitBtn.style.display = 'none';
+            insufficientBtn.style.display = 'flex';
         } else {
-            submitBtn.innerHTML = '<span class="icon"><i class="fas fa-check"></i></span><span>Đặt hàng</span>';
-            submitBtn.classList.add('is-primary');
-            submitBtn.classList.remove('is-danger');
+            // Hide warning, show normal submit button
+            balanceWarning.style.display = 'none';
+            submitBtn.style.display = 'flex';
+            insufficientBtn.style.display = 'none';
+            submitBtn.disabled = !isValid;
+            
+            if (isValid) {
+                submitBtn.innerHTML = '<span class="icon"><i class="fas fa-check"></i></span><span>Đặt hàng</span>';
+                submitBtn.classList.add('is-primary');
+                submitBtn.classList.remove('is-danger');
+            }
         }
     }
     
