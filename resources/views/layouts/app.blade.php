@@ -4,7 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'SMM Panel') - {{ config('app.name', 'SMM Panel') }}</title>
+    
+    <!-- SEO Meta Tags -->
+    @php
+        $siteName = \App\Models\Setting::get('site_name', 'SMM Panel');
+        $metaTitle = \App\Models\Setting::get('meta_title', 'Dịch vụ tăng tương tác mạng xã hội');
+        $metaDescription = \App\Models\Setting::get('meta_description', 'Dịch vụ SMM chất lượng cao, giá rẻ. Tăng like, follow, view cho Facebook, Instagram, TikTok, YouTube.');
+        $metaKeywords = \App\Models\Setting::get('meta_keywords', 'smm panel, tăng like, tăng follow, tăng view, mua like facebook, tăng follow instagram, tăng view tiktok');
+    @endphp
+    
+    <title>@yield('title', $metaTitle) - {{ $siteName }}</title>
+    <meta name="description" content="@yield('meta_description', $metaDescription)">
+    <meta name="keywords" content="@yield('meta_keywords', $metaKeywords)">
+    <meta name="author" content="{{ $siteName }}">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="@yield('title', $metaTitle) - {{ $siteName }}">
+    <meta property="og:description" content="@yield('meta_description', $metaDescription)">
+    <meta property="og:site_name" content="{{ $siteName }}">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@yield('title', $metaTitle) - {{ $siteName }}">
+    <meta name="twitter:description" content="@yield('meta_description', $metaDescription)">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ url()->current() }}">
+    
+    <!-- Google Analytics -->
+    @if($gaCode = \App\Models\Setting::get('google_analytics'))
+    {!! $gaCode !!}
+    @endif
     
     <!-- Bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
@@ -837,10 +870,18 @@
     <nav class="navbar is-spaced" role="navigation" aria-label="main navigation">
         <div class="container">
             <div class="navbar-brand">
+                @php
+                    $siteLogo = \App\Models\Setting::get('site_logo');
+                    $siteName = \App\Models\Setting::get('site_name', 'SMM Panel');
+                @endphp
                 <a class="navbar-item" href="{{ route('home') }}">
-                    <strong style="font-size: 1.5rem;">
-                        <i class="fas fa-bolt"></i> SMM Panel
-                    </strong>
+                    @if($siteLogo)
+                        <img src="{{ $siteLogo }}" alt="{{ $siteName }}" style="max-height: 40px;">
+                    @else
+                        <strong style="font-size: 1.5rem;">
+                            <i class="fas fa-bolt"></i> {{ $siteName }}
+                        </strong>
+                    @endif
                 </a>
                 
                 <!-- Mobile Deposit Button (visible only on mobile) -->
@@ -1003,10 +1044,18 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
+            @php
+                $siteName = \App\Models\Setting::get('site_name', 'SMM Panel');
+                $contactEmail = \App\Models\Setting::get('contact_email');
+                $contactPhone = \App\Models\Setting::get('contact_phone');
+                $facebookUrl = \App\Models\Setting::get('facebook_url');
+                $telegramUrl = \App\Models\Setting::get('telegram_url');
+                $zaloUrl = \App\Models\Setting::get('zalo_url');
+            @endphp
             <div class="columns">
                 <div class="column is-4">
                     <h4 class="title is-5 has-text-white">
-                        <i class="fas fa-bolt"></i> SMM Panel
+                        <i class="fas fa-bolt"></i> {{ $siteName }}
                     </h4>
                     <p class="has-text-grey-light">
                         Dịch vụ SMM chất lượng cao với giá cả phải chăng. Tăng tương tác mạng xã hội nhanh chóng và hiệu quả.
@@ -1023,22 +1072,35 @@
                 <div class="column is-3">
                     <h6 class="title is-6 has-text-white">Hỗ trợ</h6>
                     <p class="has-text-grey-light">
-                        <i class="fas fa-envelope mr-2"></i> support@smmpanel.vn<br>
-                        <i class="fab fa-telegram mr-2"></i> @smmpanelvn
+                        @if($contactEmail)
+                        <i class="fas fa-envelope mr-2"></i> {{ $contactEmail }}<br>
+                        @endif
+                        @if($contactPhone)
+                        <i class="fas fa-phone mr-2"></i> {{ $contactPhone }}<br>
+                        @endif
+                        @if($telegramUrl)
+                        <i class="fab fa-telegram mr-2"></i> <a href="{{ $telegramUrl }}" target="_blank" class="has-text-grey-light">Telegram</a>
+                        @endif
                     </p>
                 </div>
                 <div class="column is-3">
                     <h6 class="title is-6 has-text-white">Kết nối</h6>
                     <div class="buttons">
-                        <a class="button is-small is-dark" href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a class="button is-small is-dark" href="#"><i class="fab fa-telegram"></i></a>
-                        <a class="button is-small is-dark" href="#"><i class="fab fa-tiktok"></i></a>
+                        @if($facebookUrl)
+                        <a class="button is-small is-dark" href="{{ $facebookUrl }}" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                        @endif
+                        @if($telegramUrl)
+                        <a class="button is-small is-dark" href="{{ $telegramUrl }}" target="_blank"><i class="fab fa-telegram"></i></a>
+                        @endif
+                        @if($zaloUrl)
+                        <a class="button is-small is-dark" href="{{ $zaloUrl }}" target="_blank"><i class="fas fa-comment-dots"></i></a>
+                        @endif
                     </div>
                 </div>
             </div>
             <hr style="background: rgba(255,255,255,0.1);">
             <p class="has-text-centered has-text-grey-light">
-                &copy; {{ date('Y') }} SMM Panel. All rights reserved.
+                &copy; {{ date('Y') }} {{ $siteName }}. All rights reserved.
             </p>
         </div>
     </footer>

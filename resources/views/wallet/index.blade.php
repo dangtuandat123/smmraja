@@ -98,6 +98,10 @@
                     </div>
                     <div class="card-content">
                         <div class="content">
+                            @php $minDeposit = \App\Models\Setting::get('min_deposit', 10000); @endphp
+                            <div class="notification is-light is-primary mb-3">
+                                <strong>Nạp tối thiểu:</strong> {{ number_format($minDeposit, 0, ',', '.') }} VND
+                            </div>
                             <ol>
                                 <li>Mở ứng dụng ngân hàng trên điện thoại</li>
                                 <li>Quét mã QR hoặc chuyển khoản thủ công</li>
