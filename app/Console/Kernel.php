@@ -12,15 +12,21 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // Sync service prices from API every hour
-        $schedule->command('services:sync-prices')
-            ->hourly()
+        // Sync order status from API every 2 minutes
+        $schedule->command('orders:sync-status')
+            ->everyTwoMinutes()
             ->withoutOverlapping()
             ->runInBackground();
         
-        // Sync order status from API every 5 minutes
-        $schedule->command('orders:sync-status')
-            ->everyFiveMinutes()
+        // Sync service prices from API every 30 minutes
+        $schedule->command('services:sync-prices')
+            ->everyThirtyMinutes()
+            ->withoutOverlapping()
+            ->runInBackground();
+        
+        // Send Telegram notifications every minute
+        $schedule->command('telegram:send')
+            ->everyMinute()
             ->withoutOverlapping()
             ->runInBackground();
         
