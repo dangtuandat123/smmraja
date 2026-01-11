@@ -169,6 +169,11 @@
                                                 <td class="has-text-grey">{{ $service->id }}</td>
                                                 <td>
                                                     <div class="is-flex is-align-items-start">
+                                                        @if($service->icon)
+                                                            <span class="icon is-medium mr-2" style="color: {{ $service->icon_color ?? '#6366f1' }}">
+                                                                <i class="{{ $service->icon }} fa-lg"></i>
+                                                            </span>
+                                                        @endif
                                                         <div>
                                                             <p class="has-text-weight-semibold mb-1">{{ $service->name }}</p>
                                                             @if($service->description)
@@ -227,7 +232,14 @@
                                 <div class="card-content" style="padding: 1rem;">
                                     <div class="is-flex is-justify-content-space-between is-align-items-start mb-2">
                                         <div class="is-flex-grow-1">
-                                            <p class="has-text-weight-bold">{{ $service->name }}</p>
+                                            <p class="has-text-weight-bold">
+                                                @if($service->icon)
+                                                    <span class="icon is-small mr-1" style="color: {{ $service->icon_color ?? '#6366f1' }}">
+                                                        <i class="{{ $service->icon }}"></i>
+                                                    </span>
+                                                @endif
+                                                {{ $service->name }}
+                                            </p>
                                             <p class="is-size-7 has-text-grey">ID: {{ $service->id }}</p>
                                         </div>
                                         <div class="has-text-right">

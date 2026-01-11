@@ -78,6 +78,66 @@
                         </div>
                     </div>
                     
+                    <div class="columns">
+                        <div class="column">
+                            <div class="field">
+                                <label class="label"><i class="fas fa-icons mr-1"></i>Icon (FontAwesome)</label>
+                                <div class="control has-icons-left">
+                                    <input class="input" type="text" name="icon" id="iconInput"
+                                           value="{{ old('icon', $service->icon) }}" 
+                                           placeholder="fas fa-heart">
+                                    <span class="icon is-left" id="iconPreview">
+                                        <i class="{{ $service->icon ?? 'fas fa-box' }}"></i>
+                                    </span>
+                                </div>
+                                <p class="help">Ví dụ: fas fa-heart, fab fa-facebook, fas fa-thumbs-up</p>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="field">
+                                <label class="label"><i class="fas fa-palette mr-1"></i>Màu Icon</label>
+                                <div class="control">
+                                    <input type="hidden" name="icon_color" id="colorInput" 
+                                           value="{{ old('icon_color', $service->icon_color ?? '#6366f1') }}">
+                                    <div class="color-swatches is-flex is-flex-wrap-wrap" style="gap: 8px;">
+                                        @php
+                                            $colors = [
+                                                '#ef4444' => 'Đỏ',
+                                                '#f97316' => 'Cam',
+                                                '#eab308' => 'Vàng',
+                                                '#22c55e' => 'Xanh lá',
+                                                '#14b8a6' => 'Ngọc',
+                                                '#3b82f6' => 'Xanh dương',
+                                                '#6366f1' => 'Tím',
+                                                '#ec4899' => 'Hồng',
+                                                '#8b5cf6' => 'Violet',
+                                                '#64748b' => 'Xám',
+                                                '#000000' => 'Đen',
+                                                '#ffffff' => 'Trắng',
+                                            ];
+                                            $currentColor = old('icon_color', $service->icon_color ?? '#6366f1');
+                                        @endphp
+                                        @foreach($colors as $hex => $name)
+                                            <div class="color-swatch {{ $currentColor == $hex ? 'is-selected' : '' }}" 
+                                                 data-color="{{ $hex }}" 
+                                                 title="{{ $name }}"
+                                                 style="width: 32px; height: 32px; background-color: {{ $hex }}; border-radius: 6px; cursor: pointer; border: 2px solid {{ $currentColor == $hex ? '#000' : '#ddd' }}; {{ $hex == '#ffffff' ? 'border-color: #ccc;' : '' }}">
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="notification is-light mb-4" id="iconDemo">
+                        <strong>Xem trước:</strong> 
+                        <span class="icon is-medium" id="iconPreviewLarge" style="color: {{ $service->icon_color ?? '#6366f1' }}">
+                            <i class="{{ $service->icon ?? 'fas fa-box' }} fa-lg"></i>
+                        </span>
+                        <span id="iconPreviewName">{{ $service->name }}</span>
+                    </div>
+                    
                     <div class="field">
                         <label class="checkbox">
                             <input type="checkbox" name="is_active" value="1" {{ $service->is_active ? 'checked' : '' }}>
@@ -119,4 +179,39 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const iconInput = document.getElementById('iconInput');
+    const colorInput = document.getElementById('colorInput');
+    const iconPreview = document.getElementById('iconPreview');
+    const iconPreviewLarge = document.getElementById('iconPreviewLarge');
+    const swatches = document.querySelectorAll('.color-swatch');
+    
+    // Icon input change
+    iconInput.addEventListener('input', function() {
+        const iconClass = this.value || 'fas fa-box';
+        iconPreview.innerHTML = `<i class="${iconClass}"></i>`;
+        iconPreviewLarge.innerHTML = `<i class="${iconClass} fa-lg"></i>`;
+    });
+    
+    // Color swatch click
+    swatches.forEach(swatch => {
+        swatch.addEventListener('click', function() {
+            const color = this.dataset.color;
+            colorInput.value = color;
+            iconPreviewLarge.style.color = color;
+            
+            // Update selected state
+            swatches.forEach(s => {
+                s.style.border = '2px solid #ddd';
+                if (s.dataset.color === '#ffffff') s.style.borderColor = '#ccc';
+            });
+            this.style.border = '2px solid #000';
+        });
+    });
+});
+</script>
 @endsection

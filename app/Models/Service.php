@@ -19,6 +19,8 @@ class Service extends Model
         'api_name',
         'type',
         'description',
+        'icon',
+        'icon_color',
         'api_rate',
         'markup_percent',
         'price_vnd',

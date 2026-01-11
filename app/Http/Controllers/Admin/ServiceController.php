@@ -195,6 +195,8 @@ class ServiceController extends Controller
             'category_id' => ['required', 'exists:categories,id'],
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
+            'icon' => ['nullable', 'string', 'max:100'],
+            'icon_color' => ['nullable', 'string', 'max:20'],
             'markup_percent' => ['required', 'numeric', 'min:0', 'max:1000'],
             'min' => ['required', 'integer', 'min:1'],
             'max' => ['required', 'integer', 'min:1'],
