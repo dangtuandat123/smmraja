@@ -30,7 +30,6 @@ class NotificationController extends Controller
                     'message' => $n->message,
                     'icon' => $n->icon,
                     'color' => $n->color,
-                    'link' => $n->link,
                     'is_read' => $n->is_read,
                     'time_ago' => $n->created_at->diffForHumans(),
                     'created_at' => $n->created_at->format('d/m/Y H:i'),

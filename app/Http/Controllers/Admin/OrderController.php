@@ -51,6 +51,9 @@ class OrderController extends Controller
             'pending' => Order::where('status', 'pending')->count(),
             'processing' => Order::whereIn('status', ['processing', 'in_progress'])->count(),
             'completed' => Order::where('status', 'completed')->count(),
+            'partial' => Order::where('status', 'partial')->count(),
+            'canceled' => Order::where('status', 'canceled')->count(),
+            'refunded' => Order::where('status', 'refunded')->count(),
             'error' => Order::where('status', 'error')->count(),
         ];
 

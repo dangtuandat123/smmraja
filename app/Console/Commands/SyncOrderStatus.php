@@ -167,16 +167,8 @@ class SyncOrderStatus extends Command
             if ($balance < $threshold) {
                 $this->error("⚠️  CẢNH BÁO: Số dư SMM Raja thấp! (< \${$threshold})");
                 
-                // Notify all admins
-                $admins = \App\Models\User::where('role', 'admin')->get();
-                foreach ($admins as $admin) {
-                    Notification::system(
-                        $admin->id,
-                        '⚠️ Số dư SMM Raja thấp!',
-                        "Số dư hiện tại: \${$balance} {$currency}. Vui lòng nạp thêm để đảm bảo dịch vụ hoạt động.",
-                        'warning'
-                    );
-                }
+                // Only send to Telegram, not to user notifications
+                \App\Models\TelegramQueue::queueBalanceWarning($balance, $currency);
                 
                 Log::warning('SMM Raja balance low', [
                     'balance' => $balance,

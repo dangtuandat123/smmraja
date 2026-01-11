@@ -86,7 +86,7 @@ class Notification extends Model
             'message' => "Đơn hàng #{$orderId} ({$serviceName}) đã được tạo thành công.",
             'icon' => 'fa-shopping-bag',
             'color' => 'success',
-            'link' => route('orders.show', $orderId),
+            'link' => url('/orders/' . $orderId),
             'data' => ['order_id' => $orderId],
         ]);
     }
@@ -123,7 +123,7 @@ class Notification extends Model
             'message' => "Đơn hàng #{$orderId} {$message}.",
             'icon' => 'fa-shopping-bag',
             'color' => $color,
-            'link' => route('orders.show', $orderId),
+            'link' => url('/orders/' . $orderId),
             'data' => ['order_id' => $orderId, 'status' => $status],
         ]);
     }
