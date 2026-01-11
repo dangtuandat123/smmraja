@@ -4,12 +4,35 @@
 
 @section('styles')
 <style>
-    /* Hero Section - Modern & Clean */
+    /* Hero Section - Premium Design */
     .home-hero {
-        background: var(--gradient);
-        padding: 3rem 1.5rem 4rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        padding: 4rem 1.5rem 5rem;
         position: relative;
         overflow: hidden;
+        min-height: 500px;
+    }
+    
+    /* Floating Social Icons */
+    .floating-icons {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+    }
+    
+    .floating-icon {
+        position: absolute;
+        font-size: 2rem;
+        color: rgba(255,255,255,0.15);
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-20px) rotate(10deg); }
     }
     
     .home-hero::before {
@@ -17,95 +40,241 @@
         position: absolute;
         top: -50%;
         right: -20%;
+        width: 600px;
+        height: 600px;
+        background: rgba(255,255,255,0.08);
+        border-radius: 50%;
+        animation: pulse-bg 4s ease-in-out infinite;
+    }
+    
+    .home-hero::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: -10%;
         width: 400px;
         height: 400px;
-        background: rgba(255,255,255,0.1);
+        background: rgba(255,255,255,0.05);
         border-radius: 50%;
+    }
+    
+    @keyframes pulse-bg {
+        0%, 100% { transform: scale(1); opacity: 0.08; }
+        50% { transform: scale(1.1); opacity: 0.12; }
     }
     
     .home-hero .hero-content {
         position: relative;
         z-index: 1;
+        text-align: center;
+    }
+    
+    /* Hero Badge */
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255,255,255,0.2);
+        backdrop-filter: blur(10px);
+        padding: 8px 16px;
+        border-radius: 50px;
+        margin-bottom: 1.5rem;
+        color: white;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+    
+    .pulse-dot {
+        width: 8px;
+        height: 8px;
+        background: #22c55e;
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+        70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
     }
     
     .home-hero h1 {
-        font-size: 2.5rem;
-        font-weight: 700;
+        font-size: 3rem;
+        font-weight: 800;
         color: white;
-        margin-bottom: 0.75rem;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+    
+    .gradient-text {
+        background: linear-gradient(90deg, #ffd700, #ff6b6b, #4ecdc4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: gradient-shift 3s ease infinite;
+        background-size: 200% auto;
+    }
+    
+    @keyframes gradient-shift {
+        0% { background-position: 0% center; }
+        50% { background-position: 100% center; }
+        100% { background-position: 0% center; }
     }
     
     .home-hero .tagline {
-        color: rgba(255,255,255,0.9);
-        font-size: 1.1rem;
+        color: rgba(255,255,255,0.95);
+        font-size: 1.2rem;
         margin-bottom: 1.5rem;
+    }
+    
+    /* Service Tags */
+    .service-tags {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .service-tag {
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(5px);
+        color: white;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.3s;
+    }
+    
+    .service-tag:hover {
+        background: rgba(255,255,255,0.25);
+        transform: translateY(-2px);
     }
     
     .home-hero .hero-buttons {
         display: flex;
-        gap: 0.75rem;
+        gap: 1rem;
         flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 2.5rem;
     }
     
     .home-hero .btn-primary {
         background: white;
-        color: var(--primary);
-        padding: 0.75rem 1.5rem;
-        border-radius: 25px;
-        font-weight: 600;
+        color: #764ba2;
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        font-weight: 700;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
         transition: all 0.3s;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        font-size: 1rem;
+    }
+    
+    .btn-glow {
+        box-shadow: 0 0 20px rgba(255,255,255,0.4), 0 4px 15px rgba(0,0,0,0.1);
+        animation: glow 2s ease-in-out infinite;
+    }
+    
+    @keyframes glow {
+        0%, 100% { box-shadow: 0 0 20px rgba(255,255,255,0.4), 0 4px 15px rgba(0,0,0,0.1); }
+        50% { box-shadow: 0 0 30px rgba(255,255,255,0.6), 0 4px 20px rgba(0,0,0,0.15); }
     }
     
     .home-hero .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     }
     
     .home-hero .btn-secondary {
         background: transparent;
         color: white;
         border: 2px solid rgba(255,255,255,0.5);
-        padding: 0.7rem 1.5rem;
-        border-radius: 25px;
+        padding: 0.95rem 1.5rem;
+        border-radius: 50px;
         font-weight: 600;
         text-decoration: none;
         transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
     }
     
     .home-hero .btn-secondary:hover {
-        background: rgba(255,255,255,0.1);
+        background: rgba(255,255,255,0.15);
         border-color: white;
     }
     
-    /* Stats Row */
-    .stats-row {
+    /* Hero Stats */
+    .hero-stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        justify-content: center;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .hero-stats .stat-item {
         display: flex;
-        gap: 2rem;
-        margin-top: 2rem;
-        justify-content: flex-start;
-    }
-    
-    .stat-item {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(10px);
+        padding: 16px 24px;
+        border-radius: 12px;
         text-align: center;
-        background: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
+        min-width: 100px;
     }
     
-    .stat-item .number {
-        font-size: 1.75rem;
-        font-weight: 700;
+    .hero-stats .stat-icon {
+        width: 40px;
+        height: 40px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1rem;
+    }
+    
+    .hero-stats .stat-info {
+        text-align: center;
+        width: 100%;
+    }
+    
+    .hero-stats .stat-info .number {
+        display: block !important;
+        text-align: center !important;
+        font-size: 1.25rem !important;
+        font-weight: 700 !important;
         color: white !important;
+        line-height: 1.2 !important;
+        margin-bottom: 4px !important;
+        /* Reset Bulma overrides */
+        background-color: transparent !important;
+        border-radius: 0 !important;
+        height: auto !important;
+        min-width: auto !important;
+        padding: 0 !important;
+        margin-right: 0 !important;
+        vertical-align: baseline !important;
+        align-items: unset !important;
+        justify-content: unset !important;
     }
     
-    .stat-item .label {
-        font-size: 0.8rem;
-        color: rgba(255,255,255,0.85) !important;
+    .hero-stats .stat-info .label {
+        display: block;
+        text-align: center;
+        font-size: 0.75rem;
+        color: white !important;
     }
     
     /* Quick Features */
@@ -332,23 +501,65 @@
     /* Mobile Responsive */
     @media screen and (max-width: 768px) {
         .home-hero {
-            padding: 2rem 1rem 3rem;
+            padding: 2.5rem 1rem 3.5rem;
+            min-height: auto;
+        }
+        
+        .floating-icon {
+            font-size: 1.25rem;
+            opacity: 0.5;
+        }
+        
+        .hero-badge {
+            font-size: 0.8rem;
+            padding: 6px 12px;
         }
         
         .home-hero h1 {
-            font-size: 1.75rem;
+            font-size: 2rem;
         }
         
         .home-hero .tagline {
-            font-size: 0.95rem;
+            font-size: 1rem;
         }
         
-        .stats-row {
-            justify-content: space-around;
+        .service-tags {
+            gap: 0.4rem;
         }
         
-        .stat-item .number {
-            font-size: 1.25rem;
+        .service-tag {
+            font-size: 0.75rem;
+            padding: 5px 10px;
+        }
+        
+        .home-hero .btn-primary {
+            padding: 0.85rem 1.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .hero-stats {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            max-width: 100%;
+        }
+        
+        .hero-stats .stat-item {
+            padding: 12px 10px;
+            gap: 6px;
+        }
+        
+        .hero-stats .stat-icon {
+            width: 32px;
+            height: 32px;
+            font-size: 0.85rem;
+        }
+        
+        .hero-stats .stat-info .number {
+            font-size: 1rem;
+        }
+        
+        .hero-stats .stat-info .label {
+            font-size: 0.65rem;
         }
         
         .quick-features {
@@ -405,44 +616,85 @@
 @section('content')
 <!-- Hero Section -->
 <section class="home-hero">
+    <!-- Floating Social Icons Background -->
+    <div class="floating-icons">
+        <i class="fab fa-facebook floating-icon" style="top: 10%; left: 10%; animation-delay: 0s;"></i>
+        <i class="fab fa-instagram floating-icon" style="top: 20%; right: 15%; animation-delay: 1s;"></i>
+        <i class="fab fa-tiktok floating-icon" style="top: 60%; left: 5%; animation-delay: 2s;"></i>
+        <i class="fab fa-youtube floating-icon" style="top: 70%; right: 10%; animation-delay: 0.5s;"></i>
+        <i class="fab fa-twitter floating-icon" style="top: 40%; left: 20%; animation-delay: 1.5s;"></i>
+        <i class="fas fa-heart floating-icon" style="top: 15%; right: 30%; animation-delay: 2.5s;"></i>
+        <i class="fas fa-thumbs-up floating-icon" style="top: 80%; left: 25%; animation-delay: 0.8s;"></i>
+        <i class="fas fa-eye floating-icon" style="top: 50%; right: 25%; animation-delay: 1.2s;"></i>
+    </div>
+    
     <div class="container">
         <div class="hero-content">
-            <h1>🚀 SMM Panel Việt Nam</h1>
+            <div class="hero-badge">
+                <span class="pulse-dot"></span>
+                <span>🔥 #1 SMM Panel Việt Nam</span>
+            </div>
+            
+            <h1>Tăng Tương Tác<br><span class="gradient-text">Mạng Xã Hội</span></h1>
+            
             <p class="tagline">
-                Tăng tương tác mạng xã hội<br>
-                <strong>Nhanh • Tự động • Giá tốt nhất</strong>
+                <span class="typewriter">Like • Follow • View • Comment • Share • Subscribe</span>
             </p>
+            
+            <div class="service-tags">
+                <span class="service-tag"><i class="fab fa-facebook"></i> Facebook</span>
+                <span class="service-tag"><i class="fab fa-instagram"></i> Instagram</span>
+                <span class="service-tag"><i class="fab fa-tiktok"></i> TikTok</span>
+                <span class="service-tag"><i class="fab fa-youtube"></i> YouTube</span>
+                <span class="service-tag"><i class="fab fa-telegram"></i> Telegram</span>
+            </div>
             
             <div class="hero-buttons">
                 @auth
-                    <a href="{{ route('orders.create') }}" class="btn-primary">
-                        <i class="fas fa-cart-plus"></i> Đặt hàng ngay
+                    <a href="{{ route('orders.create') }}" class="btn-primary btn-glow">
+                        <i class="fas fa-rocket"></i> Tăng tương tác ngay
                     </a>
                     <a href="{{ route('services.index') }}" class="btn-secondary">
-                        Xem dịch vụ
+                        <i class="fas fa-list"></i> Xem dịch vụ
                     </a>
                 @else
-                    <a href="{{ route('register') }}" class="btn-primary">
-                        <i class="fas fa-user-plus"></i> Đăng ký ngay
+                    <a href="{{ route('register') }}" class="btn-primary btn-glow">
+                        <i class="fas fa-user-plus"></i> Đăng ký miễn phí
                     </a>
                     <a href="{{ route('login') }}" class="btn-secondary">
-                        Đăng nhập
+                        <i class="fas fa-sign-in-alt"></i> Đăng nhập
                     </a>
                 @endauth
             </div>
             
-            <div class="hero-stats" style="display: flex; gap: 2rem; margin-top: 2rem;">
-                <div style="text-align: center;">
-                    <div style="font-size: 1.75rem; font-weight: 700; color: white;">{{ $categories->count() }}+</div>
-                    <div style="font-size: 0.8rem; color: rgba(255,255,255,0.85);">Danh mục</div>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
+                    <div class="stat-info">
+                        <div class="number">{{ number_format($categories->count() * 50) }}+</div>
+                        <div class="label">Đơn hàng</div>
+                    </div>
                 </div>
-                <div style="text-align: center;">
-                    <div style="font-size: 1.75rem; font-weight: 700; color: white;">{{ $featuredServices->count() * 10 }}+</div>
-                    <div style="font-size: 0.8rem; color: rgba(255,255,255,0.85);">Dịch vụ</div>
+                <div class="stat-item">
+                    <div class="stat-icon"><i class="fas fa-cogs"></i></div>
+                    <div class="stat-info">
+                        <div class="number">{{ $featuredServices->count() * 10 }}+</div>
+                        <div class="label">Dịch vụ</div>
+                    </div>
                 </div>
-                <div style="text-align: center;">
-                    <div style="font-size: 1.75rem; font-weight: 700; color: white;">24/7</div>
-                    <div style="font-size: 0.8rem; color: rgba(255,255,255,0.85);">Hỗ trợ</div>
+                <div class="stat-item">
+                    <div class="stat-icon"><i class="fas fa-users"></i></div>
+                    <div class="stat-info">
+                        <div class="number">1000+</div>
+                        <div class="label">Khách hàng</div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon"><i class="fas fa-headset"></i></div>
+                    <div class="stat-info">
+                        <div class="number">24/7</div>
+                        <div class="label">Hỗ trợ</div>
+                    </div>
                 </div>
             </div>
         </div>
