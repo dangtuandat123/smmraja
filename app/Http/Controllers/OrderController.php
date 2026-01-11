@@ -346,7 +346,10 @@ class OrderController extends Controller
             $this->smmService->cancelOrder($order->api_order_id);
             
             // Mark as pending cancellation - admin will confirm refund
-            $order->update(['status' => 'cancel_pending']);
+            $order->update([
+                'status' => 'cancel_pending',
+                'cancel_requested_at' => now(),
+            ]);
             
             return back()->with('success', 'Yêu cầu hủy đã được gửi! Tiền sẽ được hoàn sau khi Admin xác nhận với SMM Raja.');
         } catch (Exception $e) {

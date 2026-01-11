@@ -25,6 +25,7 @@ class Order extends Model
         'extra_data',
         'error_message',
         'refill_requested_at',
+        'cancel_requested_at',
     ];
 
     protected $casts = [
@@ -36,6 +37,7 @@ class Order extends Model
         'remains' => 'integer',
         'extra_data' => 'array',
         'refill_requested_at' => 'datetime',
+        'cancel_requested_at' => 'datetime',
     ];
 
     /**
