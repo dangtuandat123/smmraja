@@ -52,6 +52,9 @@
                                                 <div class="dropdown-items">
                                                     @foreach($categories as $category)
                                                         <a href="#" class="dropdown-item" data-value="{{ $category->id }}">
+                                                            <span class="icon is-small mr-1" style="color: {{ $category->icon_color ?? '#6366f1' }}">
+                                                                <i class="{{ $category->icon ?? 'fas fa-folder' }}"></i>
+                                                            </span>
                                                             {{ $category->name }}
                                                         </a>
                                                     @endforeach
@@ -261,9 +264,12 @@
         background: white;
         border: 1px solid #dbdbdb;
         font-weight: normal;
-        overflow: hidden;
+        padding-left: 1rem;
     }
     .searchable-dropdown .dropdown-btn .selected-text {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -305,6 +311,20 @@
         padding: 0.75rem 1rem;
         white-space: normal;
         line-height: 1.4;
+        display: flex !important;
+        align-items: center;
+    }
+    .searchable-dropdown .dropdown-item .icon {
+        flex-shrink: 0;
+    }
+    .searchable-dropdown .dropdown-btn .selected-text {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    .searchable-dropdown .dropdown-btn .selected-text .icon {
+        flex-shrink: 0;
+        margin-right: 6px;
     }
     .searchable-dropdown .dropdown-item:hover {
         background: #f5f5ff;
@@ -443,9 +463,12 @@
         
         select(value, text) {
             this.value = value;
-            // Extract only the service name, remove price if exists
+            
+            // Get clean text - remove price
             let displayText = text.replace(/\d+[.,]\d+.*đ.*$/g, '').trim();
             if (!displayText) displayText = text.split('\n')[0].trim();
+            
+            // Show only text (no icon)
             this.selectedText.textContent = displayText;
             
             console.log('Selected:', value, 'Text:', displayText);
@@ -472,6 +495,7 @@
         setItems(items) {
             this.itemsContainer.innerHTML = items.map(item => `
                 <a href="#" class="dropdown-item" data-value="${item.value}">
+                    ${item.icon ? `<span class="icon is-small mr-1" style="color: ${item.iconColor || '#6366f1'}"><i class="${item.icon}"></i></span>` : ''}
                     ${item.text}
                     ${item.price ? `<span class="price">${item.price}</span>` : ''}
                 </a>
@@ -538,6 +562,8 @@
             const items = category.services.map(s => ({
                 value: s.id,
                 text: s.name,
+                icon: s.icon || null,
+                iconColor: s.icon_color || '#6366f1',
                 price: Math.round(s.price_vnd).toLocaleString('vi-VN') + 'đ/1000'
             }));
             serviceDropdown.setItems(items);
