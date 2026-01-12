@@ -291,10 +291,6 @@
                             </div>
                         @endforeach
                     </div>
-                    
-                    <div class="mt-4">
-                        {{ $services->links() }}
-                    </div>
                 @else
                     <div class="card">
                         <div class="card-content has-text-centered py-6">
