@@ -653,29 +653,31 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.6rem 0.75rem;
-    background: #f8fafc;
+    padding: 0.75rem;
+    background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
     border-top: 1px solid #e2e8f0;
 }
 
 .service-price {
     display: flex;
-    align-items: baseline;
-    gap: 0.25rem;
+    flex-direction: column;
+    gap: 0;
 }
 
 .price-value {
-    font-size: 1rem;
-    font-weight: 800;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    font-size: 1.25rem;
+    font-weight: 900;
+    color: #e53e3e;
+    text-shadow: 0 0 10px rgba(229, 62, 62, 0.3);
+    letter-spacing: -0.5px;
 }
 
 .price-unit {
-    font-size: 0.65rem;
-    color: #94a3b8;
+    font-size: 0.6rem;
+    color: #718096;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .order-btn {

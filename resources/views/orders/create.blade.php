@@ -357,13 +357,29 @@
         background: #6366f1;
         color: white;
     }
-    .searchable-dropdown .dropdown-item .price {
-        float: right;
-        font-weight: 600;
-        color: #10b981;
+    .searchable-dropdown .dropdown-item .item-info {
+        font-size: 0.8rem;
+        color: #666;
+        margin-left: auto;
+        white-space: nowrap;
     }
-    .searchable-dropdown .dropdown-item.is-active .price {
-        color: #a7f3d0;
+    .searchable-dropdown .dropdown-item .item-info .price {
+        color: #e53e3e;
+        font-weight: 700;
+    }
+    .searchable-dropdown .dropdown-item .item-info .badge-text {
+        color: #22c55e;
+        font-weight: 600;
+    }
+    .searchable-dropdown .dropdown-item .item-info .badge-cancel {
+        color: #3b82f6;
+        font-weight: 600;
+    }
+    .searchable-dropdown .dropdown-item.is-active .item-info,
+    .searchable-dropdown .dropdown-item.is-active .item-info .price,
+    .searchable-dropdown .dropdown-item.is-active .item-info .badge-text,
+    .searchable-dropdown .dropdown-item.is-active .item-info .badge-cancel {
+        color: rgba(255,255,255,0.9);
     }
     .searchable-dropdown .dropdown-divider {
         margin: 0;
@@ -516,13 +532,21 @@
         }
         
         setItems(items) {
-            this.itemsContainer.innerHTML = items.map(item => `
-                <a href="#" class="dropdown-item" data-value="${item.value}">
-                    ${item.icon ? `<span class="icon is-small mr-1" style="color: ${item.iconColor || '#6366f1'}"><i class="${item.icon}"></i></span>` : ''}
-                    ${item.text}
-                    ${item.price ? `<span class="price">${item.price}</span>` : ''}
-                </a>
-            `).join('');
+            this.itemsContainer.innerHTML = items.map(item => {
+                let infoParts = [];
+                if (item.price) infoParts.push(`<span class="price">${item.price}</span>`);
+                if (item.refill) infoParts.push('<span class="badge-text">BH</span>');
+                if (item.cancel) infoParts.push('<span class="badge-cancel">Hủy</span>');
+                const infoHtml = infoParts.length ? `<span class="item-info">${infoParts.join(' | ')}</span>` : '';
+                
+                return `
+                    <a href="#" class="dropdown-item" data-value="${item.value}">
+                        ${item.icon ? `<span class="icon is-small mr-1" style="color: ${item.iconColor || '#6366f1'}"><i class="${item.icon}"></i></span>` : ''}
+                        ${item.text}
+                        ${infoHtml}
+                    </a>
+                `;
+            }).join('');
         }
         
         setValue(value) {
@@ -587,6 +611,8 @@
                 text: s.name,
                 icon: s.icon || null,
                 iconColor: s.icon_color || '#6366f1',
+                refill: s.refill,
+                cancel: s.cancel,
                 price: Math.round(s.price_vnd).toLocaleString('vi-VN') + 'đ/1000'
             }));
             serviceDropdown.setItems(items);
