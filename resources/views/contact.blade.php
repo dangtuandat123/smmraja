@@ -71,6 +71,15 @@
                             <div class="card-content">
                                 <h4 class="title is-5 mb-4">Thông tin liên hệ</h4>
                                 
+                                @php
+                                    $contactEmail = \App\Models\Setting::get('contact_email');
+                                    $contactPhone = \App\Models\Setting::get('contact_phone');
+                                    $telegramUrl = \App\Models\Setting::get('telegram_url');
+                                    $facebookUrl = \App\Models\Setting::get('facebook_url');
+                                    $zaloUrl = \App\Models\Setting::get('zalo_url');
+                                @endphp
+                                
+                                @if($contactEmail)
                                 <div class="media mb-4">
                                     <div class="media-left">
                                         <span class="icon is-large has-text-primary">
@@ -79,10 +88,30 @@
                                     </div>
                                     <div class="media-content">
                                         <p class="title is-6">Email</p>
-                                        <p class="subtitle is-6">support@smmpanel.vn</p>
+                                        <p class="subtitle is-6">
+                                            <a href="mailto:{{ $contactEmail }}">{{ $contactEmail }}</a>
+                                        </p>
                                     </div>
                                 </div>
+                                @endif
                                 
+                                @if($contactPhone)
+                                <div class="media mb-4">
+                                    <div class="media-left">
+                                        <span class="icon is-large has-text-success">
+                                            <i class="fas fa-phone fa-2x"></i>
+                                        </span>
+                                    </div>
+                                    <div class="media-content">
+                                        <p class="title is-6">Điện thoại</p>
+                                        <p class="subtitle is-6">
+                                            <a href="tel:{{ $contactPhone }}">{{ $contactPhone }}</a>
+                                        </p>
+                                    </div>
+                                </div>
+                                @endif
+                                
+                                @if($telegramUrl)
                                 <div class="media mb-4">
                                     <div class="media-left">
                                         <span class="icon is-large has-text-info">
@@ -91,10 +120,14 @@
                                     </div>
                                     <div class="media-content">
                                         <p class="title is-6">Telegram</p>
-                                        <p class="subtitle is-6">@smmpanelvn</p>
+                                        <p class="subtitle is-6">
+                                            <a href="{{ $telegramUrl }}" target="_blank">{{ str_replace(['https://t.me/', 'https://telegram.me/'], '@', $telegramUrl) }}</a>
+                                        </p>
                                     </div>
                                 </div>
+                                @endif
                                 
+                                @if($facebookUrl)
                                 <div class="media mb-4">
                                     <div class="media-left">
                                         <span class="icon is-large has-text-link">
@@ -103,9 +136,28 @@
                                     </div>
                                     <div class="media-content">
                                         <p class="title is-6">Facebook</p>
-                                        <p class="subtitle is-6">fb.com/smmpanelvn</p>
+                                        <p class="subtitle is-6">
+                                            <a href="{{ $facebookUrl }}" target="_blank">Facebook Page</a>
+                                        </p>
                                     </div>
                                 </div>
+                                @endif
+                                
+                                @if($zaloUrl)
+                                <div class="media mb-4">
+                                    <div class="media-left">
+                                        <span class="icon is-large has-text-primary">
+                                            <i class="fas fa-comment-dots fa-2x"></i>
+                                        </span>
+                                    </div>
+                                    <div class="media-content">
+                                        <p class="title is-6">Zalo</p>
+                                        <p class="subtitle is-6">
+                                            <a href="{{ $zaloUrl }}" target="_blank">Chat Zalo</a>
+                                        </p>
+                                    </div>
+                                </div>
+                                @endif
                                 
                                 <hr>
                                 
