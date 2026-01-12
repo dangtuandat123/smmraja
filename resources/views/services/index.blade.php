@@ -207,13 +207,15 @@
                                                         <a href="{{ route('orders.create', ['service' => $service->id]) }}" 
                                                            class="button is-primary is-small is-rounded"
                                                            title="Đặt hàng">
-                                                            <i class="fas fa-cart-plus"></i>
+                                                            <span class="icon is-small"><i class="fas fa-cart-plus"></i></span>
+                                                            <span>Đặt hàng</span>
                                                         </a>
                                                     @else
                                                         <a href="{{ route('login') }}" 
                                                            class="button is-light is-small is-rounded"
                                                            title="Đăng nhập để đặt hàng">
-                                                            <i class="fas fa-sign-in-alt"></i>
+                                                            <span class="icon is-small"><i class="fas fa-sign-in-alt"></i></span>
+                                                            <span>Đăng nhập</span>
                                                         </a>
                                                     @endauth
                                                 </td>
@@ -223,6 +225,13 @@
                                 </table>
                             </div>
                         </div>
+                        
+                        <!-- Desktop Pagination -->
+                        @if($services->hasPages())
+                        <div class="mt-4">
+                            {{ $services->links() }}
+                        </div>
+                        @endif
                     </div>
                     
                     <!-- Mobile Card View -->
@@ -267,12 +276,14 @@
                                         </div>
                                         @auth
                                             <a href="{{ route('orders.create', ['service' => $service->id]) }}" 
-                                               class="button is-primary is-small">
-                                                <i class="fas fa-cart-plus mr-1"></i> Đặt
+                                               class="button is-primary is-small is-rounded">
+                                                <span class="icon is-small"><i class="fas fa-cart-plus"></i></span>
+                                                <span>Đặt hàng</span>
                                             </a>
                                         @else
-                                            <a href="{{ route('login') }}" class="button is-light is-small">
-                                                <i class="fas fa-sign-in-alt mr-1"></i> Đăng nhập
+                                            <a href="{{ route('login') }}" class="button is-light is-small is-rounded">
+                                                <span class="icon is-small"><i class="fas fa-sign-in-alt"></i></span>
+                                                <span>Đăng nhập</span>
                                             </a>
                                         @endauth
                                     </div>
