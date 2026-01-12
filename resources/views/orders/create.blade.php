@@ -362,6 +362,10 @@
         align-items: flex-start !important;
         gap: 2px;
         padding: 0.5rem 0.75rem;
+        border-bottom: 1px solid #eee;
+    }
+    .searchable-dropdown .dropdown-item:last-child {
+        border-bottom: none;
     }
     .searchable-dropdown .dropdown-item .item-name {
         font-weight: 500;
