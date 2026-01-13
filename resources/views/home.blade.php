@@ -348,7 +348,7 @@
         font-weight: 500;
     }
     
-    /* Category Cards */
+    /* Category Cards - Premium */
     .categories-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
@@ -357,78 +357,134 @@
     
     .category-card {
         background: white;
-        border-radius: 12px;
-        padding: 1.25rem;
+        border-radius: 16px;
+        padding: 1.5rem 1rem;
         text-align: center;
         text-decoration: none;
-        transition: all 0.3s;
-        border: 1px solid #f0f0f0;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: 1px solid #e5e7eb;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .category-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+        opacity: 0;
+        transition: opacity 0.3s;
     }
     
     .category-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        border-color: var(--primary);
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+        border-color: transparent;
+    }
+    
+    .category-card:hover::before {
+        opacity: 1;
     }
     
     .category-card .icon {
-        width: 48px;
-        height: 48px;
-        border-radius: 12px;
-        background: rgba(99, 102, 241, 0.1);
-        color: var(--primary) !important;
+        width: 60px;
+        height: 60px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white !important;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin: 0 auto 0.75rem;
-        font-size: 1.25rem;
+        margin: 0 auto 1rem;
+        font-size: 1.5rem;
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .category-card:hover .icon {
+        transform: scale(1.1) rotate(5deg);
+        box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
     }
     
     .category-card h4 {
-        font-size: 0.9rem;
-        font-weight: 600;
+        font-size: 0.95rem;
+        font-weight: 700;
         color: #1f2937 !important;
-        margin-bottom: 0.25rem;
+        margin-bottom: 0.5rem;
     }
     
     .category-card .count {
-        font-size: 0.75rem;
-        color: #9ca3af !important;
+        font-size: 0.8rem;
+        color: #6b7280 !important;
+        background: #f3f4f6;
+        padding: 4px 12px;
+        border-radius: 20px;
+        display: inline-block;
     }
     
-    /* Service Cards */
+    /* Service Cards - Premium */
     .services-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
+        gap: 1.25rem;
     }
     
     .service-card-new {
         background: white;
-        border-radius: 12px;
-        padding: 1rem;
-        border: 1px solid #f0f0f0;
-        transition: all 0.3s;
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
     }
     
     .service-card-new:hover {
-        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
-        border-color: var(--primary);
+        transform: translateY(-6px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+        border-color: transparent;
+    }
+    
+    .service-card-new .card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 0.75rem 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
     
     .service-card-new .category-tag {
-        display: inline-block;
-        background: #f3f4f6;
-        color: #6b7280 !important;
+        background: rgba(255,255,255,0.2);
+        color: white !important;
         font-size: 0.7rem;
-        padding: 0.2rem 0.5rem;
-        border-radius: 4px;
-        margin-bottom: 0.5rem;
+        font-weight: 600;
+        padding: 0.25rem 0.6rem;
+        border-radius: 20px;
+        backdrop-filter: blur(5px);
+    }
+    
+    .service-card-new .badges {
+        display: flex;
+        gap: 4px;
+    }
+    
+    .service-card-new .badge-sm {
+        background: rgba(255,255,255,0.25);
+        color: white;
+        font-size: 0.6rem;
+        padding: 2px 6px;
+        border-radius: 10px;
+    }
+    
+    .service-card-new .card-body {
+        padding: 1rem;
     }
     
     .service-card-new h5 {
-        font-size: 0.85rem;
-        font-weight: 600;
+        font-size: 0.9rem;
+        font-weight: 700;
         color: #1f2937 !important;
         margin-bottom: 0.5rem;
         line-height: 1.4;
@@ -439,29 +495,45 @@
     }
     
     .service-card-new .meta {
-        font-size: 0.7rem;
-        color: #9ca3af !important;
-        margin-bottom: 0.5rem;
+        font-size: 0.75rem;
+        color: #6b7280 !important;
+        margin-bottom: 0.75rem;
+        display: flex;
+        gap: 1rem;
+    }
+    
+    .service-card-new .meta span {
+        display: flex;
+        align-items: center;
+        gap: 4px;
     }
     
     .service-card-new .price-row {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        padding-top: 0.75rem;
+        border-top: 1px solid #f3f4f6;
     }
     
     .service-card-new .price {
-        background: var(--gradient);
-        color: white;
-        font-size: 0.8rem;
-        font-weight: 600;
-        padding: 0.3rem 0.6rem;
-        border-radius: 6px;
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: #e53e3e;
     }
     
     .service-card-new .unit {
-        font-size: 0.7rem;
+        font-size: 0.75rem;
         color: #9ca3af;
+    }
+    
+    .service-card-new .order-hint {
+        font-size: 0.7rem;
+        color: #667eea;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 4px;
     }
     
     /* CTA Banner */
@@ -767,12 +839,26 @@
                 @else
                 <a href="{{ route('services.index', ['category' => $service->category->slug ?? '']) }}" class="service-card-new" style="text-decoration: none; cursor: pointer;">
                 @endauth
-                    <span class="category-tag">{{ $service->category->name ?? 'N/A' }}</span>
-                    <h5>{{ Str::limit($service->name, 50) }}</h5>
-                    <p class="meta">Min: {{ number_format($service->min) }} • Max: {{ number_format($service->max) }}</p>
-                    <div class="price-row">
-                        <span class="price">{{ number_format($service->price_vnd, 0, ',', '.') }}đ</span>
-                        <span class="unit">/1000</span>
+                    <div class="card-header">
+                        <span class="category-tag">{{ $service->category->name ?? 'N/A' }}</span>
+                        <div class="badges">
+                            @if($service->refill)<span class="badge-sm">✓ Bảo hành</span>@endif
+                            @if($service->cancel)<span class="badge-sm">✓ Hủy được</span>@endif
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h5>{{ Str::limit($service->name, 55) }}</h5>
+                        <p class="meta">
+                            <span><i class="fas fa-arrow-down"></i> Tối thiểu: {{ number_format($service->min) }}</span>
+                            <span><i class="fas fa-arrow-up"></i> Tối đa: {{ number_format($service->max) }}</span>
+                        </p>
+                        <div class="price-row">
+                            <div>
+                                <span class="price">{{ number_format($service->price_vnd, 0, ',', '.') }}đ</span>
+                                <span class="unit">/ 1000 lượt</span>
+                            </div>
+                            <span class="order-hint"><i class="fas fa-shopping-cart"></i> Đặt hàng</span>
+                        </div>
                     </div>
                 </a>
             @endforeach

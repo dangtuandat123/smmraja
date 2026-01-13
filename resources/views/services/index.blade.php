@@ -156,63 +156,62 @@
                 <div class="columns is-multiline">
                     @foreach($services as $service)
                     <div class="column is-4-desktop is-6-tablet is-12-mobile">
-                        <div class="service-card">
-                            <div class="service-card-header">
-                                <div class="service-icon" style="background: linear-gradient(135deg, {{ $service->icon_color ?? '#667eea' }} 0%, #764ba2 100%);">
-                                    <i class="{{ $service->icon ?? 'fas fa-star' }}"></i>
-                                </div>
-                                <div class="service-id">#{{ $service->id }}</div>
-                            </div>
-                            
-                            <div class="service-card-body">
-                                <h3 class="service-name">{{ $service->name }}</h3>
-                                @if($service->description)
-                                <p class="service-desc">{{ Str::limit($service->description, 60) }}</p>
-                                @endif
-                                
-                                <div class="service-badges">
-                                    @if($service->refill)
-                                    <span class="badge badge-success">
-                                        ✓ Được bảo hành
-                                    </span>
-                                    @endif
-                                    @if($service->cancel)
-                                    <span class="badge badge-warning">
-                                        ✓ Có thể hủy đơn
-                                    </span>
-                                    @endif
+                        @auth
+                        <a href="{{ route('orders.create', ['service' => $service->id]) }}" class="service-card-link">
+                        @else
+                        <a href="{{ route('login') }}" class="service-card-link">
+                        @endauth
+                            <div class="service-card">
+                                <div class="service-card-header">
+                                    <div class="service-icon" style="background: linear-gradient(135deg, {{ $service->icon_color ?? '#667eea' }} 0%, #764ba2 100%);">
+                                        <i class="{{ $service->icon ?? 'fas fa-star' }}"></i>
+                                    </div>
+                                    <div class="service-id">#{{ $service->id }}</div>
                                 </div>
                                 
-                                <div class="service-stats">
-                                    <div class="stat">
-                                        <span class="stat-label">Tối thiểu</span>
-                                        <span class="stat-value">{{ number_format($service->min) }}</span>
+                                <div class="service-card-body">
+                                    <h3 class="service-name">{{ $service->name }}</h3>
+                                    @if($service->description)
+                                    <p class="service-desc">{{ Str::limit($service->description, 60) }}</p>
+                                    @endif
+                                    
+                                    <div class="service-badges">
+                                        @if($service->refill)
+                                        <span class="badge badge-success">
+                                            ✓ Được bảo hành
+                                        </span>
+                                        @endif
+                                        @if($service->cancel)
+                                        <span class="badge badge-warning">
+                                            ✓ Có thể hủy đơn
+                                        </span>
+                                        @endif
                                     </div>
-                                    <div class="stat">
-                                        <span class="stat-label">Tối đa</span>
-                                        <span class="stat-value">{{ number_format($service->max) }}</span>
+                                    
+                                    <div class="service-stats">
+                                        <div class="stat">
+                                            <span class="stat-label">Tối thiểu</span>
+                                            <span class="stat-value">{{ number_format($service->min) }}</span>
+                                        </div>
+                                        <div class="stat">
+                                            <span class="stat-label">Tối đa</span>
+                                            <span class="stat-value">{{ number_format($service->max) }}</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            
-                            <div class="service-card-footer">
-                                <div class="service-price">
-                                    <span class="price-value">{{ number_format($service->price_vnd, 0, ',', '.') }}đ</span>
-                                    <span class="price-unit">/ 1000 lượt</span>
+                                
+                                <div class="service-card-footer">
+                                    <div class="service-price">
+                                        <span class="price-value">{{ number_format($service->price_vnd, 0, ',', '.') }}đ</span>
+                                        <span class="price-unit">/ 1000 lượt</span>
+                                    </div>
+                                    <span class="order-btn">
+                                        <i class="fas fa-cart-plus"></i>
+                                        <span>@auth Đặt hàng @else Đăng nhập @endauth</span>
+                                    </span>
                                 </div>
-                                @auth
-                                <a href="{{ route('orders.create', ['service' => $service->id]) }}" class="order-btn">
-                                    <i class="fas fa-cart-plus"></i>
-                                    <span>Đặt hàng</span>
-                                </a>
-                                @else
-                                <a href="{{ route('login') }}" class="order-btn order-btn-light">
-                                    <i class="fas fa-sign-in-alt"></i>
-                                    <span>Đăng nhập để mua</span>
-                                </a>
-                                @endauth
                             </div>
-                        </div>
+                        </a>
                     </div>
                     @endforeach
                 </div>
@@ -532,6 +531,17 @@
 }
 
 /* Service Cards */
+.service-card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    height: 100%;
+}
+
+.service-card-link:hover {
+    text-decoration: none;
+}
+
 .service-card {
     background: white;
     border-radius: 16px;
@@ -541,6 +551,7 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+    cursor: pointer;
 }
 
 .service-card:hover {
