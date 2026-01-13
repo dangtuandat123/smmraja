@@ -173,23 +173,23 @@
                                 <div class="service-badges">
                                     @if($service->refill)
                                     <span class="badge badge-success">
-                                        <i class="fas fa-shield-alt"></i> Bảo hành
+                                        ✓ Được bảo hành
                                     </span>
                                     @endif
                                     @if($service->cancel)
                                     <span class="badge badge-warning">
-                                        <i class="fas fa-undo"></i> Hủy được
+                                        ✓ Có thể hủy đơn
                                     </span>
                                     @endif
                                 </div>
                                 
                                 <div class="service-stats">
                                     <div class="stat">
-                                        <span class="stat-label">Min</span>
+                                        <span class="stat-label">Tối thiểu</span>
                                         <span class="stat-value">{{ number_format($service->min) }}</span>
                                     </div>
                                     <div class="stat">
-                                        <span class="stat-label">Max</span>
+                                        <span class="stat-label">Tối đa</span>
                                         <span class="stat-value">{{ number_format($service->max) }}</span>
                                     </div>
                                 </div>
@@ -197,8 +197,8 @@
                             
                             <div class="service-card-footer">
                                 <div class="service-price">
-                                    <span class="price-value">{{ number_format($service->price_vnd, 0, ',', '.') }}</span>
-                                    <span class="price-unit">đ/1000</span>
+                                    <span class="price-value">{{ number_format($service->price_vnd, 0, ',', '.') }}đ</span>
+                                    <span class="price-unit">/ 1000 lượt</span>
                                 </div>
                                 @auth
                                 <a href="{{ route('orders.create', ['service' => $service->id]) }}" class="order-btn">
@@ -208,7 +208,7 @@
                                 @else
                                 <a href="{{ route('login') }}" class="order-btn order-btn-light">
                                     <i class="fas fa-sign-in-alt"></i>
-                                    <span>Đăng nhập</span>
+                                    <span>Đăng nhập để mua</span>
                                 </a>
                                 @endauth
                             </div>
