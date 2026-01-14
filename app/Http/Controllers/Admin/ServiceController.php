@@ -205,7 +205,7 @@ class ServiceController extends Controller
             'is_active' => ['boolean'],
         ]);
 
-        $validated['is_active'] = $request->boolean('is_active', true);
+        $validated['is_active'] = $request->boolean('is_active');
         $validated['markup_percent'] = (float) $validated['markup_percent'];
 
         $service->fill($validated);
