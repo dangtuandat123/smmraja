@@ -451,6 +451,7 @@
 
 .category-pills {
     display: flex;
+    flex-wrap: wrap;
     gap: 0.75rem;
     padding-bottom: 0.5rem;
 }
