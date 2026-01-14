@@ -102,7 +102,7 @@
         <div class="contact-info">
             <p>
                 <i class="fas fa-envelope mr-1"></i>
-                Liên hệ hỗ trợ: <a href="mailto:support@smmpanel.vn">support@smmpanel.vn</a>
+                Liên hệ hỗ trợ: <a href="mailto:{{ \App\Models\Setting::get('contact_email', 'support@tiktos.me') }}">{{ \App\Models\Setting::get('contact_email', 'support@tiktos.me') }}</a>
             </p>
         </div>
     </div>
