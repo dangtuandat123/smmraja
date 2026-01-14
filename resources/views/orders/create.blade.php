@@ -357,15 +357,23 @@
         background: #6366f1;
         color: white;
     }
+    /* Base dropdown item - inline for category */
     .searchable-dropdown .dropdown-item {
-        flex-direction: column;
-        align-items: flex-start !important;
-        gap: 2px;
-        padding: 0.5rem 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0.75rem 1rem;
         border-bottom: 1px solid #eee;
     }
     .searchable-dropdown .dropdown-item:last-child {
         border-bottom: none;
+    }
+    /* Service dropdown items - column layout */
+    .searchable-dropdown .dropdown-item.service-item {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 4px;
+        padding: 0.75rem 1rem;
     }
     .searchable-dropdown .dropdown-item .item-name {
         font-weight: 500;
@@ -552,7 +560,7 @@
                 if (item.cancel) metaParts.push('<span class="badge-cancel">✓ có thể hủy</span>');
                 
                 return `
-                    <a href="#" class="dropdown-item" data-value="${item.value}">
+                    <a href="#" class="dropdown-item service-item" data-value="${item.value}">
                         <span class="item-name">${item.text}</span>
                         <span class="item-meta">${metaParts.join(' • ')}</span>
                     </a>
