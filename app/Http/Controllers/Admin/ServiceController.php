@@ -195,6 +195,7 @@ class ServiceController extends Controller
             'category_id' => ['required', 'exists:categories,id'],
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
+            'type' => ['required', 'string', 'in:Default,Custom Comments,Custom Comments Package,Mentions,Mentions with Hashtags,Mentions Custom List,Mentions Hashtag,Mentions User Followers,Mentions Media Likers,Comment Likes,Comment Replies,Poll,Invites from Groups,Package,Subscriptions'],
             'icon' => ['nullable', 'string', 'max:100'],
             'icon_color' => ['nullable', 'string', 'max:20'],
             'markup_percent' => ['required', 'numeric', 'min:0', 'max:1000'],

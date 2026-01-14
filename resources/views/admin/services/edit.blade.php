@@ -42,6 +42,47 @@
                         </div>
                     </div>
                     
+                    <div class="field">
+                        <label class="label">
+                            <i class="fas fa-cog mr-1"></i>Loại dịch vụ *
+                            <span class="tag is-warning is-light ml-2">Override API</span>
+                        </label>
+                        <div class="control">
+                            <div class="select is-fullwidth">
+                                @php
+                                    $types = [
+                                        'Default' => 'Mặc định (Default)',
+                                        'Custom Comments' => 'Bình luận tùy chỉnh (Custom Comments)',
+                                        'Custom Comments Package' => 'Gói bình luận tùy chỉnh',
+                                        'Mentions' => 'Đề cập (Mentions)',
+                                        'Mentions with Hashtags' => 'Đề cập với Hashtags',
+                                        'Mentions Custom List' => 'Đề cập danh sách tùy chỉnh',
+                                        'Mentions Hashtag' => 'Đề cập Hashtag',
+                                        'Mentions User Followers' => 'Đề cập Follower người dùng',
+                                        'Mentions Media Likers' => 'Đề cập người Like',
+                                        'Comment Likes' => 'Like bình luận (Comment Likes)',
+                                        'Comment Replies' => 'Trả lời bình luận (Comment Replies)',
+                                        'Poll' => 'Bình chọn (Poll)',
+                                        'Invites from Groups' => 'Mời từ nhóm',
+                                        'Package' => 'Gói dịch vụ (Package)',
+                                        'Subscriptions' => 'Đăng ký theo dõi (Subscriptions)',
+                                    ];
+                                @endphp
+                                <select name="type" required>
+                                    @foreach($types as $value => $label)
+                                        <option value="{{ $value }}" {{ old('type', $service->type) == $value ? 'selected' : '' }}>
+                                            {{ $label }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <p class="help">
+                            <span class="has-text-warning"><i class="fas fa-exclamation-triangle mr-1"></i></span>
+                            Loại từ API: <strong>{{ $service->type }}</strong> - Thay đổi nếu API ghi sai
+                        </p>
+                    </div>
+                    
                     <div class="columns">
                         <div class="column">
                             <div class="field">
