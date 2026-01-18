@@ -177,7 +177,7 @@
                                 @endauth
                                     <div class="service-card">
                                         <div class="service-card-header">
-                                            <div class="service-icon" style="background: linear-gradient(135deg, {{ $service->icon_color ?? '#667eea' }} 0%, #764ba2 100%);">
+                                            <div class="service-icon" style="background: {{ $service->icon_color ?? '#667eea' }};">
                                                 <i class="{{ $service->icon ?? 'fas fa-star' }}"></i>
                                             </div>
                                             <div class="service-id">#{{ $service->id }}</div>
@@ -239,7 +239,7 @@
                             @endauth
                                 <div class="service-card">
                                     <div class="service-card-header">
-                                        <div class="service-icon" style="background: linear-gradient(135deg, {{ $service->icon_color ?? '#667eea' }} 0%, #764ba2 100%);">
+                                        <div class="service-icon" style="background: {{ $service->icon_color ?? '#667eea' }};">
                                             <i class="{{ $service->icon ?? 'fas fa-star' }}"></i>
                                         </div>
                                         <div class="service-id">#{{ $service->id }}</div>
