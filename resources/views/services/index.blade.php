@@ -171,32 +171,18 @@
                                 
                                 <div class="service-card-body">
                                     <h3 class="service-name">{{ $service->name }}</h3>
-                                    @if($service->description)
-                                    <p class="service-desc">{{ Str::limit($service->description, 60) }}</p>
-                                    @endif
                                     
                                     <div class="service-badges">
                                         @if($service->refill)
                                         <span class="badge badge-success">
-                                            ✓ Được bảo hành
+                                            ✓ Bảo hành
                                         </span>
                                         @endif
                                         @if($service->cancel)
                                         <span class="badge badge-warning">
-                                            ✓ Có thể hủy đơn
+                                            ✓ Hủy được
                                         </span>
                                         @endif
-                                    </div>
-                                    
-                                    <div class="service-stats">
-                                        <div class="stat">
-                                            <span class="stat-label">Tối thiểu</span>
-                                            <span class="stat-value">{{ number_format($service->min) }}</span>
-                                        </div>
-                                        <div class="stat">
-                                            <span class="stat-label">Tối đa</span>
-                                            <span class="stat-value">{{ number_format($service->max) }}</span>
-                                        </div>
                                     </div>
                                 </div>
                                 
