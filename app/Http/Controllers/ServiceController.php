@@ -22,7 +22,7 @@ class ServiceController extends Controller
         $categories = Category::active()
             ->ordered()
             ->withCount(['services' => function ($query) {
-                $query->where('is_active', true);
+                $query->where('services.is_active', true);
             }])
             ->get();
 
