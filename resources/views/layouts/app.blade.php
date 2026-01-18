@@ -975,7 +975,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 1rem 1.5rem;
+            padding: 0.75rem 1rem;
             background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
             color: white;
         }
@@ -989,7 +989,7 @@
             background: rgba(255,255,255,0.5);
         }
         .announcement-content {
-            padding: 1.5rem;
+            padding: 1rem;
             max-height: 50vh;
             overflow-y: auto;
         }
@@ -999,7 +999,7 @@
             border-radius: 8px;
         }
         .announcement-footer {
-            padding: 1rem 1.5rem;
+            padding: 0.75rem 1rem;
             background: #f5f5f5;
             border-top: 1px solid #e5e5e5;
         }
