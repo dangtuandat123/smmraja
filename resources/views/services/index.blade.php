@@ -180,7 +180,14 @@
                                             <div class="service-icon" style="background: linear-gradient(135deg, {{ $service->icon_color ?? '#667eea' }} 0%, #764ba2 100%);">
                                                 <i class="{{ $service->icon ?? 'fas fa-star' }}"></i>
                                             </div>
+                                            @if($service->delivery_time_estimate)
+                                            <div class="delivery-time-badge" title="Đo lúc: {{ $service->delivery_time_estimate['measured_ago'] }}">
+                                                <i class="fas fa-clock"></i>
+                                                <span>{{ $service->delivery_time_estimate['formatted'] }}</span>
+                                            </div>
+                                            @else
                                             <div class="service-id">#{{ $service->id }}</div>
+                                            @endif
                                         </div>
                                         
                                         <div class="service-card-body">
@@ -227,7 +234,14 @@
                                         <div class="service-icon" style="background: linear-gradient(135deg, {{ $service->icon_color ?? '#667eea' }} 0%, #764ba2 100%);">
                                             <i class="{{ $service->icon ?? 'fas fa-star' }}"></i>
                                         </div>
+                                        @if($service->delivery_time_estimate)
+                                        <div class="delivery-time-badge" title="Đo lúc: {{ $service->delivery_time_estimate['measured_ago'] }}">
+                                            <i class="fas fa-clock"></i>
+                                            <span>{{ $service->delivery_time_estimate['formatted'] }}</span>
+                                        </div>
+                                        @else
                                         <div class="service-id">#{{ $service->id }}</div>
+                                        @endif
                                     </div>
                                     
                                     <div class="service-card-body">
@@ -674,6 +688,34 @@
     border-radius: 20px;
     font-size: 0.65rem;
     font-weight: 600;
+}
+
+.delivery-time-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    cursor: help;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.delivery-time-badge i {
+    font-size: 0.6rem;
+}
+
+@keyframes pulse-glow {
+    0%, 100% {
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    }
+    50% {
+        box-shadow: 0 2px 15px rgba(16, 185, 129, 0.5);
+    }
 }
 
 .service-card-body {

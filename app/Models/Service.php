@@ -158,4 +158,44 @@ class Service extends Model
 
         return $types[$this->type] ?? $this->type;
     }
+
+    /**
+     * Get delivery time estimate based on last completed order
+     * Returns array with 'duration' (minutes), 'measured_at' (Carbon), 'formatted'
+     */
+    public function getDeliveryTimeEstimateAttribute(): ?array
+    {
+        // Get the last completed order for this service
+        $lastCompletedOrder = $this->orders()
+            ->where('status', 'completed')
+            ->whereNotNull('updated_at')
+            ->orderBy('updated_at', 'desc')
+            ->first();
+
+        if (!$lastCompletedOrder) {
+            return null;
+        }
+
+        // Calculate duration from created_at to updated_at (when it became completed)
+        $durationMinutes = $lastCompletedOrder->created_at->diffInMinutes($lastCompletedOrder->updated_at);
+        
+        // Format duration for display
+        if ($durationMinutes < 60) {
+            $formatted = $durationMinutes . ' phút';
+        } elseif ($durationMinutes < 1440) { // Less than 24 hours
+            $hours = floor($durationMinutes / 60);
+            $mins = $durationMinutes % 60;
+            $formatted = $hours . 'h' . ($mins > 0 ? $mins . 'p' : '');
+        } else {
+            $days = floor($durationMinutes / 1440);
+            $formatted = $days . ' ngày';
+        }
+
+        return [
+            'duration' => $durationMinutes,
+            'formatted' => $formatted,
+            'measured_at' => $lastCompletedOrder->updated_at,
+            'measured_ago' => $lastCompletedOrder->updated_at->diffForHumans(),
+        ];
+    }
 }
