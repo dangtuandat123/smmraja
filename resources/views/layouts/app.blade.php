@@ -1120,7 +1120,7 @@
                 $zaloUrl = \App\Models\Setting::get('zalo_url');
             @endphp
             <div class="columns">
-                <div class="column is-4">
+                <div class="column is-3">
                     <h4 class="title is-5 has-text-white">
                         <i class="fas fa-bolt"></i> {{ $siteName }}
                     </h4>
@@ -1129,14 +1129,25 @@
                     </p>
                 </div>
                 <div class="column is-2">
+                    <h6 class="title is-6 has-text-white">Dịch vụ nổi bật</h6>
+                    <ul style="list-style: none; margin: 0;">
+                        <li><a href="{{ route('landing.instagram') }}" class="has-text-grey-light">Tăng Follow Instagram</a></li>
+                        <li><a href="{{ route('landing.facebook') }}" class="has-text-grey-light">Mua Like Facebook</a></li>
+                        <li><a href="{{ route('landing.tiktok') }}" class="has-text-grey-light">Tăng View TikTok</a></li>
+                        <li><a href="{{ route('landing.youtube') }}" class="has-text-grey-light">Tăng View YouTube</a></li>
+                    </ul>
+                </div>
+                <div class="column is-2">
                     <h6 class="title is-6 has-text-white">Liên kết</h6>
                     <ul style="list-style: none; margin: 0;">
                         <li><a href="{{ route('home') }}" class="has-text-grey-light">Trang chủ</a></li>
                         <li><a href="{{ route('services.index') }}" class="has-text-grey-light">Dịch vụ</a></li>
+                        <li><a href="{{ route('landing.smm-panel') }}" class="has-text-grey-light">Giới thiệu</a></li>
+                        <li><a href="{{ route('blog.index') }}" class="has-text-grey-light">Blog</a></li>
                         <li><a href="{{ route('contact') }}" class="has-text-grey-light">Liên hệ</a></li>
                     </ul>
                 </div>
-                <div class="column is-3">
+                <div class="column is-2">
                     <h6 class="title is-6 has-text-white">Hỗ trợ</h6>
                     <p class="has-text-grey-light">
                         @if($contactEmail)
@@ -1453,58 +1464,6 @@
         </div>
     </nav>
     @endguest
-    
-    <!-- Footer -->
-    <footer class="footer" style="background: #1f2937; color: white; padding: 3rem 1.5rem; margin-top: 3rem;">
-        <div class="container">
-            <div class="columns">
-                <div class="column is-4">
-                    <h3 class="title is-5 has-text-white mb-4">
-                        <i class="fas fa-bolt"></i> {{ \App\Models\Setting::get('site_name', 'TikTos') }}
-                    </h3>
-                    <p class="has-text-grey-light">
-                        Dịch vụ SMM Panel uy tín #1 Việt Nam. Cung cấp dịch vụ tăng like, follow, view cho các nền tảng mạng xã hội.
-                    </p>
-                </div>
-                <div class="column is-2">
-                    <h4 class="title is-6 has-text-white mb-3">Dịch vụ</h4>
-                    <ul style="list-style: none; padding: 0;">
-                        <li class="mb-2"><a href="{{ route('landing.instagram') }}" class="has-text-grey-light">Tăng Follow Instagram</a></li>
-                        <li class="mb-2"><a href="{{ route('landing.facebook') }}" class="has-text-grey-light">Mua Like Facebook</a></li>
-                        <li class="mb-2"><a href="{{ route('landing.tiktok') }}" class="has-text-grey-light">Tăng View TikTok</a></li>
-                        <li class="mb-2"><a href="{{ route('landing.youtube') }}" class="has-text-grey-light">Tăng View YouTube</a></li>
-                    </ul>
-                </div>
-                <div class="column is-2">
-                    <h4 class="title is-6 has-text-white mb-3">Liên kết</h4>
-                    <ul style="list-style: none; padding: 0;">
-                        <li class="mb-2"><a href="{{ route('services.index') }}" class="has-text-grey-light">Tất cả dịch vụ</a></li>
-                        <li class="mb-2"><a href="{{ route('landing.smm-panel') }}" class="has-text-grey-light">Giới thiệu</a></li>
-                        <li class="mb-2"><a href="{{ route('blog.index') }}" class="has-text-grey-light">Blog</a></li>
-                        <li class="mb-2"><a href="{{ route('contact') }}" class="has-text-grey-light">Liên hệ</a></li>
-                    </ul>
-                </div>
-                <div class="column is-4">
-                    <h4 class="title is-6 has-text-white mb-3">Liên hệ</h4>
-                    <p class="has-text-grey-light mb-2">
-                        <i class="fas fa-envelope mr-2"></i> {{ \App\Models\Setting::get('contact_email', 'support@tiktos.me') }}
-                    </p>
-                    <p class="has-text-grey-light mb-2">
-                        <i class="fas fa-phone mr-2"></i> {{ \App\Models\Setting::get('contact_phone', 'Zalo/Telegram') }}
-                    </p>
-                    <div class="mt-4">
-                        <a href="#" class="has-text-grey-light mr-3"><i class="fab fa-facebook fa-lg"></i></a>
-                        <a href="#" class="has-text-grey-light mr-3"><i class="fab fa-telegram fa-lg"></i></a>
-                        <a href="#" class="has-text-grey-light"><i class="fab fa-tiktok fa-lg"></i></a>
-                    </div>
-                </div>
-            </div>
-            <hr style="background: #374151; margin: 2rem 0;">
-            <div class="has-text-centered has-text-grey-light">
-                <p>&copy; {{ date('Y') }} {{ \App\Models\Setting::get('site_name', 'TikTos') }}. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
     
     @yield('scripts')
 </body>
