@@ -55,19 +55,54 @@ class ServiceController extends Controller
         // Apply sorting
         switch ($sort) {
             case 'price_asc':
+                // Khi chọn "Tất cả", vẫn nhóm theo category trước
+                if (!$categorySlug) {
+                    $servicesQuery->join('categories', 'services.category_id', '=', 'categories.id')
+                        ->orderBy('categories.sort_order')
+                        ->orderBy('categories.name')
+                        ->select('services.*');
+                }
                 $servicesQuery->orderBy('price_vnd', 'asc');
                 break;
             case 'price_desc':
+                if (!$categorySlug) {
+                    $servicesQuery->join('categories', 'services.category_id', '=', 'categories.id')
+                        ->orderBy('categories.sort_order')
+                        ->orderBy('categories.name')
+                        ->select('services.*');
+                }
                 $servicesQuery->orderBy('price_vnd', 'desc');
                 break;
             case 'name_asc':
-                $servicesQuery->orderBy('name', 'asc');
+                if (!$categorySlug) {
+                    $servicesQuery->join('categories', 'services.category_id', '=', 'categories.id')
+                        ->orderBy('categories.sort_order')
+                        ->orderBy('categories.name')
+                        ->select('services.*');
+                }
+                $servicesQuery->orderBy('services.name', 'asc');
                 break;
             case 'newest':
-                $servicesQuery->orderBy('created_at', 'desc');
+                if (!$categorySlug) {
+                    $servicesQuery->join('categories', 'services.category_id', '=', 'categories.id')
+                        ->orderBy('categories.sort_order')
+                        ->orderBy('categories.name')
+                        ->select('services.*');
+                }
+                $servicesQuery->orderBy('services.created_at', 'desc');
                 break;
             default:
-                $servicesQuery->ordered();
+                // Mặc định: sắp xếp theo category trước, rồi theo sort_order của service
+                if (!$categorySlug) {
+                    $servicesQuery->join('categories', 'services.category_id', '=', 'categories.id')
+                        ->orderBy('categories.sort_order')
+                        ->orderBy('categories.name')
+                        ->orderBy('services.sort_order')
+                        ->orderBy('services.name')
+                        ->select('services.*');
+                } else {
+                    $servicesQuery->ordered();
+                }
                 break;
         }
 

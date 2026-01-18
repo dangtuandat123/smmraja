@@ -153,8 +153,22 @@
         <!-- Services Grid -->
         <div id="servicesContainer">
             @if($services->count() > 0)
+                @php $currentCategoryId = null; @endphp
                 <div class="columns is-multiline">
                     @foreach($services as $service)
+                    @if(!$categorySlug && $service->category_id !== $currentCategoryId)
+                        @php $currentCategoryId = $service->category_id; @endphp
+                        </div>
+                        <!-- Category Header -->
+                        <div class="category-header">
+                            <div class="category-header-icon" style="background: {{ $service->category->icon_color ?? '#667eea' }}">
+                                <i class="{{ $service->category->icon ?? 'fas fa-folder' }}"></i>
+                            </div>
+                            <h2 class="category-header-title">{{ $service->category->name ?? 'Khác' }}</h2>
+                            <span class="category-header-count">{{ $service->category->services_count ?? '' }} dịch vụ</span>
+                        </div>
+                        <div class="columns is-multiline">
+                    @endif
                     <div class="column is-4-desktop is-6-tablet is-12-mobile">
                         @auth
                         <a href="{{ route('orders.create', ['service' => $service->id]) }}" class="service-card-link">
@@ -478,6 +492,48 @@
 
 .category-pill.is-active .pill-count {
     background: rgba(255,255,255,0.2);
+}
+
+/* Category Header - khi hiển thị tất cả */
+.category-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 0;
+    margin: 1.5rem 0 1rem;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.category-header:first-of-type {
+    margin-top: 0;
+}
+
+.category-header-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.25rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.category-header-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+    flex: 1;
+}
+
+.category-header-count {
+    font-size: 0.85rem;
+    color: #6b7280;
+    background: #f3f4f6;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
 }
 
 /* Filter Bar */
