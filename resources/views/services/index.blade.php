@@ -633,8 +633,8 @@
     background: white;
     border-radius: 16px;
     overflow: hidden;
-    border: 2px solid #e5e7eb;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+    border: 2px solid rgb(111, 242, 254);
+    box-shadow: 0 4px 15px rgba(111, 242, 254, 0.2);
     transition: all 0.3s ease;
     height: 100%;
     display: flex;
@@ -644,8 +644,8 @@
 
 .service-card:hover {
     transform: translateY(-8px);
-    border-color: #667eea;
-    box-shadow: 0 12px 40px rgba(102, 126, 234, 0.25);
+    border-color: rgb(80, 220, 240);
+    box-shadow: 0 12px 40px rgba(111, 242, 254, 0.35);
 }
 
 .service-card-header {
