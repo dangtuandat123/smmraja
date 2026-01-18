@@ -180,18 +180,26 @@
                                             <div class="service-icon" style="background: linear-gradient(135deg, {{ $service->icon_color ?? '#667eea' }} 0%, #764ba2 100%);">
                                                 <i class="{{ $service->icon ?? 'fas fa-star' }}"></i>
                                             </div>
-                                            @if($service->delivery_time_estimate)
-                                            <div class="delivery-time-badge" title="Đo lúc: {{ $service->delivery_time_estimate['measured_ago'] }}">
-                                                <i class="fas fa-clock"></i>
-                                                <span>{{ $service->delivery_time_estimate['formatted'] }}</span>
-                                            </div>
-                                            @else
                                             <div class="service-id">#{{ $service->id }}</div>
-                                            @endif
                                         </div>
                                         
                                         <div class="service-card-body">
                                             <h3 class="service-name">{{ $service->name }}</h3>
+                                            
+                                            {{-- Delivery Time Info --}}
+                                            <div class="delivery-info">
+                                                @if($service->delivery_time_estimate)
+                                                <div class="delivery-time-box has-data" title="Đo đạc {{ $service->delivery_time_estimate['measured_ago'] }}">
+                                                    <i class="fas fa-shipping-fast"></i>
+                                                    <span><strong>{{ $service->delivery_time_estimate['formatted'] }}</strong> / {{ number_format($service->delivery_time_estimate['quantity']) }} lượt</span>
+                                                </div>
+                                                @else
+                                                <div class="delivery-time-box no-data">
+                                                    <i class="fas fa-clock"></i>
+                                                    <span>Chưa có dữ liệu giao hàng</span>
+                                                </div>
+                                                @endif
+                                            </div>
                                             
                                             <div class="service-badges">
                                                 @if($service->refill)
@@ -234,18 +242,26 @@
                                         <div class="service-icon" style="background: linear-gradient(135deg, {{ $service->icon_color ?? '#667eea' }} 0%, #764ba2 100%);">
                                             <i class="{{ $service->icon ?? 'fas fa-star' }}"></i>
                                         </div>
-                                        @if($service->delivery_time_estimate)
-                                        <div class="delivery-time-badge" title="Đo lúc: {{ $service->delivery_time_estimate['measured_ago'] }}">
-                                            <i class="fas fa-clock"></i>
-                                            <span>{{ $service->delivery_time_estimate['formatted'] }}</span>
-                                        </div>
-                                        @else
                                         <div class="service-id">#{{ $service->id }}</div>
-                                        @endif
                                     </div>
                                     
                                     <div class="service-card-body">
                                         <h3 class="service-name">{{ $service->name }}</h3>
+                                        
+                                        {{-- Delivery Time Info --}}
+                                        <div class="delivery-info">
+                                            @if($service->delivery_time_estimate)
+                                            <div class="delivery-time-box has-data" title="Đo đạc {{ $service->delivery_time_estimate['measured_ago'] }}">
+                                                <i class="fas fa-shipping-fast"></i>
+                                                <span><strong>{{ $service->delivery_time_estimate['formatted'] }}</strong> / {{ number_format($service->delivery_time_estimate['quantity']) }} lượt</span>
+                                            </div>
+                                            @else
+                                            <div class="delivery-time-box no-data">
+                                                <i class="fas fa-clock"></i>
+                                                <span>Chưa có dữ liệu giao hàng</span>
+                                            </div>
+                                            @endif
+                                        </div>
                                         
                                         <div class="service-badges">
                                             @if($service->refill)
@@ -690,32 +706,42 @@
     font-weight: 600;
 }
 
-.delivery-time-badge {
+.delivery-info {
+    margin-bottom: 0.5rem;
+}
+
+.delivery-time-box {
     display: flex;
     align-items: center;
-    gap: 0.3rem;
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    color: white;
-    padding: 0.25rem 0.6rem;
-    border-radius: 20px;
-    font-size: 0.7rem;
-    font-weight: 600;
+    gap: 0.4rem;
+    padding: 0.4rem 0.6rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
     cursor: help;
-    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
-    animation: pulse-glow 2s ease-in-out infinite;
 }
 
-.delivery-time-badge i {
-    font-size: 0.6rem;
+.delivery-time-box.has-data {
+    background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+    color: #15803d;
+    border: 1px solid #86efac;
 }
 
-@keyframes pulse-glow {
-    0%, 100% {
-        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
-    }
-    50% {
-        box-shadow: 0 2px 15px rgba(16, 185, 129, 0.5);
-    }
+.delivery-time-box.has-data i {
+    color: #16a34a;
+}
+
+.delivery-time-box.no-data {
+    background: #f1f5f9;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+}
+
+.delivery-time-box i {
+    font-size: 0.7rem;
+}
+
+.delivery-time-box strong {
+    font-weight: 700;
 }
 
 .service-card-body {

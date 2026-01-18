@@ -161,7 +161,7 @@ class Service extends Model
 
     /**
      * Get delivery time estimate based on last completed order
-     * Returns array with 'duration' (minutes), 'measured_at' (Carbon), 'formatted'
+     * Returns array with 'duration' (minutes), 'measured_at' (Carbon), 'formatted', 'quantity'
      */
     public function getDeliveryTimeEstimateAttribute(): ?array
     {
@@ -180,20 +180,24 @@ class Service extends Model
         $durationMinutes = $lastCompletedOrder->created_at->diffInMinutes($lastCompletedOrder->updated_at);
         
         // Format duration for display
-        if ($durationMinutes < 60) {
+        if ($durationMinutes < 1) {
+            $formatted = '< 1 phút';
+        } elseif ($durationMinutes < 60) {
             $formatted = $durationMinutes . ' phút';
         } elseif ($durationMinutes < 1440) { // Less than 24 hours
             $hours = floor($durationMinutes / 60);
             $mins = $durationMinutes % 60;
-            $formatted = $hours . 'h' . ($mins > 0 ? $mins . 'p' : '');
+            $formatted = $hours . ' giờ' . ($mins > 0 ? ' ' . $mins . ' phút' : '');
         } else {
             $days = floor($durationMinutes / 1440);
-            $formatted = $days . ' ngày';
+            $hours = floor(($durationMinutes % 1440) / 60);
+            $formatted = $days . ' ngày' . ($hours > 0 ? ' ' . $hours . ' giờ' : '');
         }
 
         return [
             'duration' => $durationMinutes,
             'formatted' => $formatted,
+            'quantity' => $lastCompletedOrder->quantity,
             'measured_at' => $lastCompletedOrder->updated_at,
             'measured_ago' => $lastCompletedOrder->updated_at->diffForHumans(),
         ];
