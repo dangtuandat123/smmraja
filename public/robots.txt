@@ -1,2 +1,31 @@
+# Robots.txt for tiktos.me
+# SMM Panel - Dịch vụ tăng tương tác mạng xã hội
+
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /admin/
+Disallow: /dashboard
+Disallow: /orders
+Disallow: /wallet
+Disallow: /notifications
+Disallow: /api/
+Disallow: /storage/
+Disallow: /_debugbar/
+
+# Sitemap
+Sitemap: https://tiktos.me/sitemap.xml
+
+# Crawl delay (optional - be nice to servers)
+Crawl-delay: 1
+
+# Google Bot
+User-agent: Googlebot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+# Bing Bot
+User-agent: Bingbot
+Allow: /
+Disallow: /admin/
+Disallow: /api/

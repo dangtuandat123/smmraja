@@ -1,0 +1,58 @@
+{
+    "name": "TikTos - SMM Panel",
+    "short_name": "TikTos",
+    "description": "Dịch vụ tăng tương tác mạng xã hội chất lượng cao, giá rẻ. Tăng like, follow, view cho Facebook, Instagram, TikTok, YouTube.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#f3f4f6",
+    "theme_color": "#6366f1",
+    "orientation": "portrait-primary",
+    "scope": "/",
+    "lang": "vi",
+    "icons": [
+        {
+            "src": "/favicon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/favicon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": [
+        "business",
+        "social",
+        "productivity"
+    ],
+    "screenshots": [],
+    "shortcuts": [
+        {
+            "name": "Đặt hàng",
+            "short_name": "Order",
+            "description": "Đặt hàng dịch vụ SMM",
+            "url": "/order",
+            "icons": [
+                {
+                    "src": "/favicon-192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        },
+        {
+            "name": "Dịch vụ",
+            "short_name": "Services",
+            "description": "Xem danh sách dịch vụ",
+            "url": "/services",
+            "icons": [
+                {
+                    "src": "/favicon-192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        }
+    ]
+}

@@ -19,20 +19,56 @@
     <meta name="author" content="{{ $siteName }}">
     <meta name="robots" content="index, follow">
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:title" content="@yield('title', $metaTitle) - {{ $siteName }}">
     <meta property="og:description" content="@yield('meta_description', $metaDescription)">
     <meta property="og:site_name" content="{{ $siteName }}">
+    <meta property="og:image" content="{{ asset('og-image.png') }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="vi_VN">
     
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="@yield('title', $metaTitle) - {{ $siteName }}">
     <meta name="twitter:description" content="@yield('meta_description', $metaDescription)">
+    <meta name="twitter:image" content="{{ asset('og-image.png') }}">
     
     <!-- Canonical URL -->
     <link rel="canonical" href="{{ url()->current() }}">
+    
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "{{ $siteName }}",
+        "url": "{{ url('/') }}",
+        "logo": "{{ asset('logo.png') }}",
+        "description": "{{ $metaDescription }}",
+        "sameAs": [],
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "customer service",
+            "availableLanguage": "Vietnamese"
+        }
+    }
+    </script>
+    @yield('schema')
     
     <!-- Google Analytics -->
     @if($gaCode = \App\Models\Setting::get('google_analytics'))
