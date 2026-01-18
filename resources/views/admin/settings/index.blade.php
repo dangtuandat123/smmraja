@@ -332,7 +332,11 @@
 @endsection
 
 @section('scripts')
-<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<!-- Summernote - 100% Free WYSIWYG Editor -->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/lang/summernote-vi-VN.min.js"></script>
 <script>
     // Tab switching
     document.querySelectorAll('.tabs li').forEach(tab => {
@@ -344,23 +348,37 @@
         });
     });
     
-    // TinyMCE Editor for Announcement
-    tinymce.init({
-        selector: '#announcement_content',
-        height: 400,
-        menubar: false,
-        plugins: [
-            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap',
-            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-            'insertdatetime', 'media', 'table', 'help', 'wordcount'
-        ],
-        toolbar: 'undo redo | blocks | ' +
-            'bold italic forecolor backcolor | alignleft aligncenter ' +
-            'alignright alignjustify | bullist numlist outdent indent | ' +
-            'link image | removeformat | code | help',
-        content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; }',
-        language: 'vi',
-        branding: false
+    // Summernote Editor for Announcement
+    $(document).ready(function() {
+        $('#announcement_content').summernote({
+            height: 350,
+            lang: 'vi-VN',
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
+                ['fontname', ['fontname']],
+                ['fontsize', ['fontsize']],
+                ['color', ['forecolor', 'backcolor']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table', ['table']],
+                ['insert', ['link', 'picture', 'video']],
+                ['view', ['fullscreen', 'codeview', 'help']]
+            ],
+            fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Georgia', 'Helvetica', 'Impact', 'Tahoma', 'Times New Roman', 'Verdana'],
+            fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '24', '28', '32', '36', '48', '64', '82', '150'],
+            placeholder: 'Nhập nội dung thông báo...',
+            callbacks: {
+                onImageUpload: function(files) {
+                    // Chèn ảnh dạng base64
+                    var reader = new FileReader();
+                    reader.onloadend = function() {
+                        var img = $('<img>').attr('src', reader.result);
+                        $('#announcement_content').summernote('insertNode', img[0]);
+                    }
+                    reader.readAsDataURL(files[0]);
+                }
+            }
+        });
     });
 </script>
 @endsection
