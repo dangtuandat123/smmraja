@@ -134,6 +134,7 @@ class ServiceController extends Controller
             'refill' => $service->refill,
             'cancel' => $service->cancel,
             'category' => $service->category->name,
+            'delivery_time_estimate' => $service->delivery_time_estimate,
         ]);
     }
 }

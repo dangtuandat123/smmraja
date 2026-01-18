@@ -32,3 +32,7 @@ Route::prefix('v2')->group(function () {
     Route::post('/wallet/adjust', [WalletApiController::class, 'adjustWithApiKey'])
         ->name('api.v2.wallet.adjust');
 });
+
+// Service API (public)
+Route::get('/services/{service}', [\App\Http\Controllers\ServiceController::class, 'show'])
+    ->name('api.services.show');

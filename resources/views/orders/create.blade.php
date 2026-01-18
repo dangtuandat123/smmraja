@@ -108,6 +108,16 @@
                                 </div>
                             </div>
                             
+                            <!-- Delivery Time Estimate -->
+                            <div id="deliveryTimeBox" class="notification is-success is-light" style="display: none;">
+                                <div class="is-flex is-align-items-center">
+                                    <span class="icon has-text-success mr-2"><i class="fas fa-shipping-fast"></i></span>
+                                    <p class="is-size-7" id="deliveryTimeText">
+                                        <strong>Thời gian giao hàng:</strong> <span id="deliveryTimeValue">--</span>
+                                    </p>
+                                </div>
+                            </div>
+                            
                             <!-- Link Input -->
                             <div class="field">
                                 <label class="label">
@@ -671,6 +681,28 @@
         descText.innerHTML = descHtml;
         descEl.style.display = 'block';
         
+        // Fetch delivery time estimate from API
+        const deliveryTimeBox = document.getElementById('deliveryTimeBox');
+        const deliveryTimeValue = document.getElementById('deliveryTimeValue');
+        
+        fetch(`/api/services/${serviceId}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.delivery_time_estimate) {
+                    const estimate = data.delivery_time_estimate;
+                    deliveryTimeValue.innerHTML = `<strong>${estimate.formatted}</strong> / số lượng ${parseInt(estimate.quantity).toLocaleString('vi-VN')} <span class="has-text-grey is-size-7">(đo ${estimate.measured_ago})</span>`;
+                    deliveryTimeBox.style.display = 'block';
+                } else {
+                    deliveryTimeValue.innerHTML = '<span class="has-text-grey">Chưa có dữ liệu</span>';
+                    deliveryTimeBox.style.display = 'block';
+                    deliveryTimeBox.classList.remove('is-success');
+                    deliveryTimeBox.classList.add('is-warning');
+                }
+            })
+            .catch(() => {
+                deliveryTimeBox.style.display = 'none';
+            });
+        
         // Update quantity help
         document.getElementById('quantityHelp').textContent = `Min: ${selectedService.min.toLocaleString()} - Max: ${selectedService.max.toLocaleString()}`;
         document.getElementById('quantityInput').min = selectedService.min;
@@ -739,6 +771,7 @@
         document.getElementById('submitBtn').disabled = true;
         document.getElementById('extraFields').innerHTML = '';
         document.getElementById('serviceDescription').style.display = 'none';
+        document.getElementById('deliveryTimeBox').style.display = 'none';
     }
     
     function generateExtraFields(type) {
