@@ -4,6 +4,20 @@
 
 @section('styles')
 <style>
+    /* Link truncate trên mọi màn hình */
+    .link-cell {
+        max-width: 400px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: inline-block;
+        vertical-align: middle;
+    }
+    
+    .service-name {
+        display: block;
+    }
+    
     /* Mobile responsive for order details */
     @media screen and (max-width: 768px) {
         .order-table th {
@@ -15,14 +29,9 @@
             font-size: 0.9rem;
         }
         .link-cell {
-            max-width: 200px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            display: block;
+            max-width: 180px;
         }
         .service-name {
-            display: block;
             max-width: 200px;
             overflow: hidden;
             text-overflow: ellipsis;
