@@ -189,7 +189,7 @@
                                             {{-- Delivery Time Info --}}
                                             <div class="delivery-info">
                                                 @if($service->delivery_time_estimate)
-                                                <div class="delivery-time-box has-data" title="Đo đạc {{ $service->delivery_time_estimate['measured_ago'] }}">
+                                                <div class="delivery-time-box has-data" title="Số liệu {{ $service->delivery_time_estimate['measured_ago'] }}">
                                                     <i class="fas fa-shipping-fast"></i>
                                                     <span>Thời gian giao hàng: <strong>{{ $service->delivery_time_estimate['formatted'] }}</strong> / số lượng {{ number_format($service->delivery_time_estimate['quantity']) }}</span>
                                                 </div>
@@ -251,7 +251,7 @@
                                         {{-- Delivery Time Info --}}
                                         <div class="delivery-info">
                                             @if($service->delivery_time_estimate)
-                                            <div class="delivery-time-box has-data" title="Đo đạc {{ $service->delivery_time_estimate['measured_ago'] }}">
+                                            <div class="delivery-time-box has-data" title="Số liệu {{ $service->delivery_time_estimate['measured_ago'] }}">
                                                 <i class="fas fa-shipping-fast"></i>
                                                 <span>Thời gian giao hàng: <strong>{{ $service->delivery_time_estimate['formatted'] }}</strong> / số lượng {{ number_format($service->delivery_time_estimate['quantity']) }}</span>
                                             </div>

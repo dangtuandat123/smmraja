@@ -690,7 +690,7 @@
             .then(data => {
                 if (data.delivery_time_estimate) {
                     const estimate = data.delivery_time_estimate;
-                    deliveryTimeValue.innerHTML = `<strong>${estimate.formatted}</strong> / số lượng ${parseInt(estimate.quantity).toLocaleString('vi-VN')} <span class="has-text-grey is-size-7">(đo ${estimate.measured_ago})</span>`;
+                    deliveryTimeValue.innerHTML = `<strong>${estimate.formatted}</strong> / số lượng ${parseInt(estimate.quantity).toLocaleString('vi-VN')} <span class="has-text-grey is-size-7">(số liệu ${estimate.measured_ago})</span>`;
                     deliveryTimeBox.style.display = 'block';
                 } else {
                     deliveryTimeValue.innerHTML = '<span class="has-text-grey">Chưa có dữ liệu</span>';
