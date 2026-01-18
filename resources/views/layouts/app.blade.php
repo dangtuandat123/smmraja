@@ -923,8 +923,8 @@
                 {!! $announcementContent !!}
             </div>
             <div class="announcement-footer">
-                <button class="button is-light is-fullwidth" onclick="dismissAnnouncement()">
-                    <i class="fas fa-clock mr-2"></i>Tắt thông báo trong 12 giờ
+                <button class="button is-danger is-fullwidth" onclick="dismissAnnouncement()">
+                    <i class="fas fa-bell-slash mr-2"></i>Tắt thông báo trong 12 giờ
                 </button>
             </div>
         </div>
