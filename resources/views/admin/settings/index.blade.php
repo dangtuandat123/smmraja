@@ -8,6 +8,7 @@
 <div class="tabs">
     <ul>
         <li class="is-active" data-tab="general"><a>Chung</a></li>
+        <li data-tab="announcement"><a><i class="fas fa-bullhorn mr-1"></i>Thông báo</a></li>
         <li data-tab="api"><a>API</a></li>
         <li data-tab="telegram"><a><i class="fab fa-telegram mr-1"></i>Telegram</a></li>
         <li data-tab="payment"><a>Thanh toán</a></li>
@@ -52,6 +53,54 @@
                         </span>
                     </div>
                     <p class="help">Khi bật, chỉ Admin mới có thể truy cập website. Người dùng sẽ thấy trang bảo trì.</p>
+                </div>
+                
+                <button type="submit" class="button is-primary"><i class="fas fa-save mr-2"></i> Lưu cài đặt</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Announcement -->
+<div id="tab-announcement" class="tab-content" style="display: none;">
+    <div class="card">
+        <div class="card-content">
+            <form method="POST" action="{{ route('admin.settings.update') }}">
+                @csrf
+                <input type="hidden" name="group" value="announcement">
+                
+                <div class="notification is-info is-light">
+                    <strong><i class="fas fa-bullhorn mr-2"></i>Thông báo nổi:</strong> 
+                    Hiển thị popup thông báo cho tất cả người dùng khi truy cập website.
+                </div>
+                
+                <div class="field">
+                    <label class="label">
+                        <i class="fas fa-toggle-on mr-1"></i>Bật thông báo nổi
+                    </label>
+                    <div class="control">
+                        <label class="switch">
+                            <input type="checkbox" name="announcement_enabled" value="1" 
+                                {{ ($settings['announcement']['announcement_enabled'] ?? false) ? 'checked' : '' }}>
+                            <span class="slider round"></span>
+                        </label>
+                        <span class="ml-3 {{ ($settings['announcement']['announcement_enabled'] ?? false) ? 'has-text-success' : 'has-text-grey' }}">
+                            {{ ($settings['announcement']['announcement_enabled'] ?? false) ? 'Đang bật' : 'Tắt' }}
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="field">
+                    <label class="label">Tiêu đề thông báo</label>
+                    <input class="input" type="text" name="announcement_title" 
+                        value="{{ $settings['announcement']['announcement_title'] ?? 'Thông báo' }}" 
+                        placeholder="Tiêu đề hiển thị trên popup">
+                </div>
+                
+                <div class="field">
+                    <label class="label">Nội dung thông báo</label>
+                    <textarea id="announcement_content" name="announcement_content">{{ $settings['announcement']['announcement_content'] ?? '' }}</textarea>
+                    <p class="help">Sử dụng editor để chỉnh sửa cỡ chữ, màu sắc, chèn link, ảnh,...</p>
                 </div>
                 
                 <button type="submit" class="button is-primary"><i class="fas fa-save mr-2"></i> Lưu cài đặt</button>
@@ -283,7 +332,9 @@
 @endsection
 
 @section('scripts')
+<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
+    // Tab switching
     document.querySelectorAll('.tabs li').forEach(tab => {
         tab.addEventListener('click', function() {
             document.querySelectorAll('.tabs li').forEach(t => t.classList.remove('is-active'));
@@ -291,6 +342,25 @@
             this.classList.add('is-active');
             document.getElementById('tab-' + this.dataset.tab).style.display = 'block';
         });
+    });
+    
+    // TinyMCE Editor for Announcement
+    tinymce.init({
+        selector: '#announcement_content',
+        height: 400,
+        menubar: false,
+        plugins: [
+            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap',
+            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+            'insertdatetime', 'media', 'table', 'help', 'wordcount'
+        ],
+        toolbar: 'undo redo | blocks | ' +
+            'bold italic forecolor backcolor | alignleft aligncenter ' +
+            'alignright alignjustify | bullist numlist outdent indent | ' +
+            'link image | removeformat | code | help',
+        content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; }',
+        language: 'vi',
+        branding: false
     });
 </script>
 @endsection

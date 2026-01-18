@@ -902,6 +902,140 @@
     @yield('styles')
 </head>
 <body>
+    @php
+        $announcementEnabled = \App\Models\Setting::get('announcement_enabled');
+        $announcementTitle = \App\Models\Setting::get('announcement_title', 'Thông báo');
+        $announcementContent = \App\Models\Setting::get('announcement_content');
+    @endphp
+    
+    @if($announcementEnabled && $announcementContent)
+    <!-- Floating Announcement Popup -->
+    <div id="announcementPopup" class="announcement-popup" style="display: none;">
+        <div class="announcement-overlay"></div>
+        <div class="announcement-modal">
+            <div class="announcement-header">
+                <h3 class="title is-5 mb-0">
+                    <i class="fas fa-bullhorn mr-2"></i>{{ $announcementTitle }}
+                </h3>
+                <button class="delete" onclick="closeAnnouncement()"></button>
+            </div>
+            <div class="announcement-content">
+                {!! $announcementContent !!}
+            </div>
+            <div class="announcement-footer">
+                <button class="button is-light is-fullwidth" onclick="dismissAnnouncement()">
+                    <i class="fas fa-clock mr-2"></i>Tắt thông báo trong 12 giờ
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        .announcement-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .announcement-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+        }
+        .announcement-modal {
+            position: relative;
+            background: white;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: popupSlideIn 0.3s ease;
+        }
+        @keyframes popupSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        .announcement-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+        }
+        .announcement-header .title {
+            color: white;
+        }
+        .announcement-header .delete {
+            background: rgba(255,255,255,0.3);
+        }
+        .announcement-header .delete:hover {
+            background: rgba(255,255,255,0.5);
+        }
+        .announcement-content {
+            padding: 1.5rem;
+            max-height: 50vh;
+            overflow-y: auto;
+        }
+        .announcement-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        .announcement-footer {
+            padding: 1rem 1.5rem;
+            background: #f5f5f5;
+            border-top: 1px solid #e5e5e5;
+        }
+    </style>
+    
+    <script>
+        (function() {
+            const dismissKey = 'announcement_dismissed';
+            const dismissedUntil = localStorage.getItem(dismissKey);
+            
+            // Check if dismissed within 12 hours
+            if (dismissedUntil && new Date().getTime() < parseInt(dismissedUntil)) {
+                return; // Don't show popup
+            }
+            
+            // Show popup after page load
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(function() {
+                    document.getElementById('announcementPopup').style.display = 'flex';
+                }, 500);
+            });
+        })();
+        
+        function closeAnnouncement() {
+            document.getElementById('announcementPopup').style.display = 'none';
+        }
+        
+        function dismissAnnouncement() {
+            // Set dismiss for 12 hours
+            const dismissUntil = new Date().getTime() + (12 * 60 * 60 * 1000);
+            localStorage.setItem('announcement_dismissed', dismissUntil);
+            closeAnnouncement();
+        }
+    </script>
+    @endif
+    
     <!-- Navbar -->
     <nav class="navbar is-spaced" role="navigation" aria-label="main navigation">
         <div class="container">
