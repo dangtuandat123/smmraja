@@ -942,11 +942,42 @@
                     <a class="navbar-item" href="{{ route('services.index') }}">
                         <i class="fas fa-list-ul mr-2"></i> Dịch vụ
                     </a>
+                    
+                    {{-- Dropdown Dịch vụ nổi bật --}}
+                    <div class="navbar-item has-dropdown is-hoverable">
+                        <a class="navbar-link">
+                            <i class="fas fa-star mr-2"></i> Nổi bật
+                        </a>
+                        <div class="navbar-dropdown">
+                            <a class="navbar-item" href="{{ route('landing.instagram') }}">
+                                <i class="fab fa-instagram mr-2" style="color: #E1306C;"></i> Tăng Follow Instagram
+                            </a>
+                            <a class="navbar-item" href="{{ route('landing.facebook') }}">
+                                <i class="fab fa-facebook mr-2" style="color: #1877F2;"></i> Mua Like Facebook
+                            </a>
+                            <a class="navbar-item" href="{{ route('landing.tiktok') }}">
+                                <i class="fab fa-tiktok mr-2"></i> Tăng View TikTok
+                            </a>
+                            <a class="navbar-item" href="{{ route('landing.youtube') }}">
+                                <i class="fab fa-youtube mr-2" style="color: #FF0000;"></i> Tăng View YouTube
+                            </a>
+                            <hr class="navbar-divider">
+                            <a class="navbar-item" href="{{ route('landing.smm-panel') }}">
+                                <i class="fas fa-bolt mr-2" style="color: #6366f1;"></i> Giới thiệu SMM Panel
+                            </a>
+                        </div>
+                    </div>
+                    
                     @auth
                         <a class="navbar-item" href="{{ route('orders.create') }}">
                             <i class="fas fa-cart-plus mr-2"></i> Mua hàng
                         </a>
                     @endauth
+                    
+                    <a class="navbar-item" href="{{ route('blog.index') }}">
+                        <i class="fas fa-blog mr-2"></i> Blog
+                    </a>
+                    
                     <a class="navbar-item" href="{{ route('contact') }}">
                         <i class="fas fa-envelope mr-2"></i> Liên hệ
                     </a>
@@ -1422,6 +1453,58 @@
         </div>
     </nav>
     @endguest
+    
+    <!-- Footer -->
+    <footer class="footer" style="background: #1f2937; color: white; padding: 3rem 1.5rem; margin-top: 3rem;">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-4">
+                    <h3 class="title is-5 has-text-white mb-4">
+                        <i class="fas fa-bolt"></i> {{ \App\Models\Setting::get('site_name', 'TikTos') }}
+                    </h3>
+                    <p class="has-text-grey-light">
+                        Dịch vụ SMM Panel uy tín #1 Việt Nam. Cung cấp dịch vụ tăng like, follow, view cho các nền tảng mạng xã hội.
+                    </p>
+                </div>
+                <div class="column is-2">
+                    <h4 class="title is-6 has-text-white mb-3">Dịch vụ</h4>
+                    <ul style="list-style: none; padding: 0;">
+                        <li class="mb-2"><a href="{{ route('landing.instagram') }}" class="has-text-grey-light">Tăng Follow Instagram</a></li>
+                        <li class="mb-2"><a href="{{ route('landing.facebook') }}" class="has-text-grey-light">Mua Like Facebook</a></li>
+                        <li class="mb-2"><a href="{{ route('landing.tiktok') }}" class="has-text-grey-light">Tăng View TikTok</a></li>
+                        <li class="mb-2"><a href="{{ route('landing.youtube') }}" class="has-text-grey-light">Tăng View YouTube</a></li>
+                    </ul>
+                </div>
+                <div class="column is-2">
+                    <h4 class="title is-6 has-text-white mb-3">Liên kết</h4>
+                    <ul style="list-style: none; padding: 0;">
+                        <li class="mb-2"><a href="{{ route('services.index') }}" class="has-text-grey-light">Tất cả dịch vụ</a></li>
+                        <li class="mb-2"><a href="{{ route('landing.smm-panel') }}" class="has-text-grey-light">Giới thiệu</a></li>
+                        <li class="mb-2"><a href="{{ route('blog.index') }}" class="has-text-grey-light">Blog</a></li>
+                        <li class="mb-2"><a href="{{ route('contact') }}" class="has-text-grey-light">Liên hệ</a></li>
+                    </ul>
+                </div>
+                <div class="column is-4">
+                    <h4 class="title is-6 has-text-white mb-3">Liên hệ</h4>
+                    <p class="has-text-grey-light mb-2">
+                        <i class="fas fa-envelope mr-2"></i> {{ \App\Models\Setting::get('contact_email', 'support@tiktos.me') }}
+                    </p>
+                    <p class="has-text-grey-light mb-2">
+                        <i class="fas fa-phone mr-2"></i> {{ \App\Models\Setting::get('contact_phone', 'Zalo/Telegram') }}
+                    </p>
+                    <div class="mt-4">
+                        <a href="#" class="has-text-grey-light mr-3"><i class="fab fa-facebook fa-lg"></i></a>
+                        <a href="#" class="has-text-grey-light mr-3"><i class="fab fa-telegram fa-lg"></i></a>
+                        <a href="#" class="has-text-grey-light"><i class="fab fa-tiktok fa-lg"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr style="background: #374151; margin: 2rem 0;">
+            <div class="has-text-centered has-text-grey-light">
+                <p>&copy; {{ date('Y') }} {{ \App\Models\Setting::get('site_name', 'TikTos') }}. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
     
     @yield('scripts')
 </body>
