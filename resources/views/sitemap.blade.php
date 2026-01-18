@@ -48,4 +48,56 @@
         <priority>0.8</priority>
     </url>
     @endforeach
+    
+    {{-- Landing Pages --}}
+    <url>
+        <loc>{{ route('landing.instagram') }}</loc>
+        <lastmod>{{ now()->toW3cString() }}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>{{ route('landing.facebook') }}</loc>
+        <lastmod>{{ now()->toW3cString() }}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>{{ route('landing.tiktok') }}</loc>
+        <lastmod>{{ now()->toW3cString() }}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>{{ route('landing.youtube') }}</loc>
+        <lastmod>{{ now()->toW3cString() }}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>{{ route('landing.smm-panel') }}</loc>
+        <lastmod>{{ now()->toW3cString() }}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    
+    {{-- Blog --}}
+    <url>
+        <loc>{{ route('blog.index') }}</loc>
+        <lastmod>{{ now()->toW3cString() }}</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    {{-- Blog Posts --}}
+    @if(isset($posts))
+    @foreach($posts as $post)
+    <url>
+        <loc>{{ route('blog.show', $post->slug) }}</loc>
+        <lastmod>{{ $post->updated_at->toW3cString() }}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    @endforeach
+    @endif
 </urlset>

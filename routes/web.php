@@ -30,6 +30,19 @@ Route::post('/contact', [ContactController::class, 'send'])->name('contact.send'
 // SEO routes
 Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
 
+// Landing Pages (SEO)
+Route::prefix('dich-vu')->group(function () {
+    Route::get('/tang-follow-instagram', [\App\Http\Controllers\LandingPageController::class, 'instagram'])->name('landing.instagram');
+    Route::get('/mua-like-facebook', [\App\Http\Controllers\LandingPageController::class, 'facebook'])->name('landing.facebook');
+    Route::get('/tang-view-tiktok', [\App\Http\Controllers\LandingPageController::class, 'tiktok'])->name('landing.tiktok');
+    Route::get('/tang-view-youtube', [\App\Http\Controllers\LandingPageController::class, 'youtube'])->name('landing.youtube');
+    Route::get('/smm-panel', [\App\Http\Controllers\LandingPageController::class, 'smmPanel'])->name('landing.smm-panel');
+});
+
+// Blog routes
+Route::get('/blog', [\App\Http\Controllers\BlogController::class, 'index'])->name('blog.index');
+Route::get('/blog/{slug}', [\App\Http\Controllers\BlogController::class, 'show'])->name('blog.show');
+
 // Guest routes (only for non-authenticated users)
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -104,4 +117,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
     // Exchange rate
     Route::get('/exchange-rate', [AdminDashboardController::class, 'exchangeRate'])->name('exchangeRate');
     Route::post('/exchange-rate/refresh', [AdminDashboardController::class, 'refreshExchangeRate'])->name('exchangeRate.refresh');
+    
+    // Blog Posts
+    Route::resource('posts', \App\Http\Controllers\Admin\PostController::class);
 });
