@@ -101,6 +101,14 @@
                                 </div>
                             </div>
                             
+                            <!-- reCAPTCHA -->
+                            <div class="field">
+                                <div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.site_key') }}"></div>
+                                @error('g-recaptcha-response')
+                                    <p class="help is-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            
                             <div class="field">
                                 <button type="submit" class="button is-primary is-medium is-fullwidth">
                                     <span class="icon"><i class="fas fa-user-plus"></i></span>
@@ -123,4 +131,8 @@
         </div>
     </div>
 </section>
+@endsection
+
+@section('scripts')
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 @endsection

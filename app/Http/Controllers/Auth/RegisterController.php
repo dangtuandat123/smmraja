@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\Rules\Password;
 
 class RegisterController extends Controller
@@ -29,6 +30,7 @@ class RegisterController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'phone' => ['nullable', 'string', 'max:20'],
             'password' => ['required', 'confirmed', Password::min(6)],
+            'g-recaptcha-response' => ['required'],
         ], [
             'name.required' => 'Vui lòng nhập họ tên.',
             'email.required' => 'Vui lòng nhập email.',
@@ -37,7 +39,21 @@ class RegisterController extends Controller
             'password.required' => 'Vui lòng nhập mật khẩu.',
             'password.confirmed' => 'Xác nhận mật khẩu không khớp.',
             'password.min' => 'Mật khẩu phải có ít nhất 6 ký tự.',
+            'g-recaptcha-response.required' => 'Vui lòng xác nhận bạn không phải robot.',
         ]);
+
+        // Verify reCAPTCHA
+        $recaptchaResponse = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret' => config('services.recaptcha.secret_key'),
+            'response' => $request->input('g-recaptcha-response'),
+            'remoteip' => $request->ip(),
+        ]);
+
+        if (!$recaptchaResponse->json('success')) {
+            return back()
+                ->withInput()
+                ->withErrors(['g-recaptcha-response' => 'Xác nhận CAPTCHA không hợp lệ. Vui lòng thử lại.']);
+        }
 
         $user = User::create([
             'name' => $request->name,
@@ -55,3 +71,4 @@ class RegisterController extends Controller
             ->with('success', 'Đăng ký thành công! Chào mừng bạn đến với SMM Panel.');
     }
 }
+
