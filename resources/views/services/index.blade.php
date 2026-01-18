@@ -191,12 +191,12 @@
                                                 @if($service->delivery_time_estimate)
                                                 <div class="delivery-time-box has-data" title="Đo đạc {{ $service->delivery_time_estimate['measured_ago'] }}">
                                                     <i class="fas fa-shipping-fast"></i>
-                                                    <span><strong>{{ $service->delivery_time_estimate['formatted'] }}</strong> / {{ number_format($service->delivery_time_estimate['quantity']) }} lượt</span>
+                                                    <span>Thời gian giao hàng: <strong>{{ $service->delivery_time_estimate['formatted'] }}</strong> / {{ number_format($service->delivery_time_estimate['quantity']) }} lượt</span>
                                                 </div>
                                                 @else
                                                 <div class="delivery-time-box no-data">
                                                     <i class="fas fa-clock"></i>
-                                                    <span>Chưa có dữ liệu giao hàng</span>
+                                                    <span>Thời gian giao hàng: Chưa có dữ liệu</span>
                                                 </div>
                                                 @endif
                                             </div>
@@ -253,12 +253,12 @@
                                             @if($service->delivery_time_estimate)
                                             <div class="delivery-time-box has-data" title="Đo đạc {{ $service->delivery_time_estimate['measured_ago'] }}">
                                                 <i class="fas fa-shipping-fast"></i>
-                                                <span><strong>{{ $service->delivery_time_estimate['formatted'] }}</strong> / {{ number_format($service->delivery_time_estimate['quantity']) }} lượt</span>
+                                                <span>Thời gian giao hàng: <strong>{{ $service->delivery_time_estimate['formatted'] }}</strong> / {{ number_format($service->delivery_time_estimate['quantity']) }} lượt</span>
                                             </div>
                                             @else
                                             <div class="delivery-time-box no-data">
                                                 <i class="fas fa-clock"></i>
-                                                <span>Chưa có dữ liệu giao hàng</span>
+                                                <span>Thời gian giao hàng: Chưa có dữ liệu</span>
                                             </div>
                                             @endif
                                         </div>
