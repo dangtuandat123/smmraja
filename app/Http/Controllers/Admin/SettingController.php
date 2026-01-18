@@ -16,6 +16,7 @@ class SettingController extends Controller
     {
         $settings = [
             'general' => Setting::getByGroup('general'),
+            'announcement' => Setting::getByGroup('announcement'),
             'api' => Setting::getByGroup('api'),
             'telegram' => Setting::getByGroup('telegram'),
             'seo' => Setting::getByGroup('seo'),
@@ -114,6 +115,11 @@ class SettingController extends Controller
                 'vietqr_account_name' => ['type' => 'text', 'label' => 'Tên chủ tài khoản'],
                 'vietqr_template' => ['type' => 'text', 'label' => 'VietQR Template'],
                 'min_deposit' => ['type' => 'number', 'label' => 'Nạp tối thiểu (VND)'],
+            ],
+            'announcement' => [
+                'announcement_enabled' => ['type' => 'boolean', 'label' => 'Bật thông báo'],
+                'announcement_title' => ['type' => 'text', 'label' => 'Tiêu đề'],
+                'announcement_content' => ['type' => 'textarea', 'label' => 'Nội dung'],
             ],
         ];
     }
