@@ -153,68 +153,112 @@
         <!-- Services Grid -->
         <div id="servicesContainer">
             @if($services->count() > 0)
-                @php $currentCategoryId = null; @endphp
-                <div class="columns is-multiline">
-                    @foreach($services as $service)
-                    @if(!$categorySlug && $service->category_id !== $currentCategoryId)
-                        @php $currentCategoryId = $service->category_id; @endphp
-                        </div>
+                @if(!$categorySlug)
+                    {{-- Hiển thị theo nhóm danh mục khi chọn "Tất cả" --}}
+                    @php 
+                        $groupedServices = $services->groupBy('category_id');
+                    @endphp
+                    @foreach($groupedServices as $catId => $catServices)
+                        @php $category = $catServices->first()->category; @endphp
                         <!-- Category Header -->
                         <div class="category-header">
-                            <div class="category-header-icon" style="background: {{ $service->category->icon_color ?? '#667eea' }}">
-                                <i class="{{ $service->category->icon ?? 'fas fa-folder' }}"></i>
+                            <div class="category-header-icon" style="background: {{ $category->icon_color ?? '#667eea' }}">
+                                <i class="{{ $category->icon ?? 'fas fa-folder' }}"></i>
                             </div>
-                            <h2 class="category-header-title">{{ $service->category->name ?? 'Khác' }}</h2>
-                            <span class="category-header-count">{{ $service->category->services_count ?? '' }} dịch vụ</span>
+                            <h2 class="category-header-title">{{ $category->name ?? 'Khác' }}</h2>
                         </div>
                         <div class="columns is-multiline">
-                    @endif
-                    <div class="column is-4-desktop is-6-tablet is-12-mobile">
-                        @auth
-                        <a href="{{ route('orders.create', ['service' => $service->id]) }}" class="service-card-link">
-                        @else
-                        <a href="{{ route('login') }}" class="service-card-link">
-                        @endauth
-                            <div class="service-card">
-                                <div class="service-card-header">
-                                    <div class="service-icon" style="background: linear-gradient(135deg, {{ $service->icon_color ?? '#667eea' }} 0%, #764ba2 100%);">
-                                        <i class="{{ $service->icon ?? 'fas fa-star' }}"></i>
+                            @foreach($catServices as $service)
+                            <div class="column is-4-desktop is-6-tablet is-12-mobile">
+                                @auth
+                                <a href="{{ route('orders.create', ['service' => $service->id]) }}" class="service-card-link">
+                                @else
+                                <a href="{{ route('login') }}" class="service-card-link">
+                                @endauth
+                                    <div class="service-card">
+                                        <div class="service-card-header">
+                                            <div class="service-icon" style="background: linear-gradient(135deg, {{ $service->icon_color ?? '#667eea' }} 0%, #764ba2 100%);">
+                                                <i class="{{ $service->icon ?? 'fas fa-star' }}"></i>
+                                            </div>
+                                            <div class="service-id">#{{ $service->id }}</div>
+                                        </div>
+                                        
+                                        <div class="service-card-body">
+                                            <h3 class="service-name">{{ $service->name }}</h3>
+                                            
+                                            <div class="service-badges">
+                                                @if($service->refill)
+                                                <span class="badge badge-success">✓ Bảo hành</span>
+                                                @endif
+                                                @if($service->cancel)
+                                                <span class="badge badge-warning">✓ Hủy được</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="service-card-footer">
+                                            <div class="service-price">
+                                                <span class="price-value">{{ number_format($service->price_vnd, 0, ',', '.') }}đ</span>
+                                                <span class="price-unit">/ 1000 lượt</span>
+                                            </div>
+                                            <span class="order-btn">
+                                                <i class="fas fa-cart-plus"></i>
+                                                <span>@auth Đặt hàng @else Đăng nhập @endauth</span>
+                                            </span>
+                                        </div>
                                     </div>
-                                    <div class="service-id">#{{ $service->id }}</div>
-                                </div>
-                                
-                                <div class="service-card-body">
-                                    <h3 class="service-name">{{ $service->name }}</h3>
-                                    
-                                    <div class="service-badges">
-                                        @if($service->refill)
-                                        <span class="badge badge-success">
-                                            ✓ Bảo hành
-                                        </span>
-                                        @endif
-                                        @if($service->cancel)
-                                        <span class="badge badge-warning">
-                                            ✓ Hủy được
-                                        </span>
-                                        @endif
-                                    </div>
-                                </div>
-                                
-                                <div class="service-card-footer">
-                                    <div class="service-price">
-                                        <span class="price-value">{{ number_format($service->price_vnd, 0, ',', '.') }}đ</span>
-                                        <span class="price-unit">/ 1000 lượt</span>
-                                    </div>
-                                    <span class="order-btn">
-                                        <i class="fas fa-cart-plus"></i>
-                                        <span>@auth Đặt hàng @else Đăng nhập @endauth</span>
-                                    </span>
-                                </div>
+                                </a>
                             </div>
-                        </a>
-                    </div>
+                            @endforeach
+                        </div>
                     @endforeach
-                </div>
+                @else
+                    {{-- Hiển thị bình thường khi chọn 1 danh mục cụ thể --}}
+                    <div class="columns is-multiline">
+                        @foreach($services as $service)
+                        <div class="column is-4-desktop is-6-tablet is-12-mobile">
+                            @auth
+                            <a href="{{ route('orders.create', ['service' => $service->id]) }}" class="service-card-link">
+                            @else
+                            <a href="{{ route('login') }}" class="service-card-link">
+                            @endauth
+                                <div class="service-card">
+                                    <div class="service-card-header">
+                                        <div class="service-icon" style="background: linear-gradient(135deg, {{ $service->icon_color ?? '#667eea' }} 0%, #764ba2 100%);">
+                                            <i class="{{ $service->icon ?? 'fas fa-star' }}"></i>
+                                        </div>
+                                        <div class="service-id">#{{ $service->id }}</div>
+                                    </div>
+                                    
+                                    <div class="service-card-body">
+                                        <h3 class="service-name">{{ $service->name }}</h3>
+                                        
+                                        <div class="service-badges">
+                                            @if($service->refill)
+                                            <span class="badge badge-success">✓ Bảo hành</span>
+                                            @endif
+                                            @if($service->cancel)
+                                            <span class="badge badge-warning">✓ Hủy được</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="service-card-footer">
+                                        <div class="service-price">
+                                            <span class="price-value">{{ number_format($service->price_vnd, 0, ',', '.') }}đ</span>
+                                            <span class="price-unit">/ 1000 lượt</span>
+                                        </div>
+                                        <span class="order-btn">
+                                            <i class="fas fa-cart-plus"></i>
+                                            <span>@auth Đặt hàng @else Đăng nhập @endauth</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        @endforeach
+                    </div>
+                @endif
                 
                 <!-- Pagination -->
                 @if($services->hasPages())
