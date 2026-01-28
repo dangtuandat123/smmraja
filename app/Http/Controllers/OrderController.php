@@ -76,6 +76,16 @@ class OrderController extends Controller
         $pricePerUnit = $service->price_per_unit;
         $totalPrice = $service->calculateOrderTotal($quantity);
 
+        // Check for idempotency
+        $idempotencyKey = $request->input('idempotency_key');
+        if ($idempotencyKey) {
+            $existingOrder = Order::where('idempotency_key', $idempotencyKey)->first();
+            if ($existingOrder) {
+                return redirect()->route('orders.show', $existingOrder)
+                    ->with('info', 'Đơn hàng này đã được tạo trước đó.');
+            }
+        }
+
         DB::beginTransaction();
         try {
             // Lock user record to prevent race condition
@@ -105,6 +115,7 @@ class OrderController extends Controller
                 'total_price' => $totalPrice,
                 'status' => 'pending',
                 'extra_data' => $extraData,
+                'idempotency_key' => $idempotencyKey,
             ]);
 
             // Try to place order via API

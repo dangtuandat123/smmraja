@@ -26,6 +26,7 @@ class Order extends Model
         'error_message',
         'refill_requested_at',
         'cancel_requested_at',
+        'idempotency_key',
     ];
 
     protected $casts = [
