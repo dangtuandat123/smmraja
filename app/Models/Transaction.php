@@ -20,6 +20,7 @@ class Transaction extends Model
         'order_id',
         'admin_note',
         'admin_id',
+        'transaction_code',
     ];
 
     protected $casts = [

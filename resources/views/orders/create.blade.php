@@ -45,9 +45,7 @@
                                         </div>
                                         <div class="dropdown-menu is-fullwidth" role="menu">
                                             <div class="dropdown-content">
-                                                <div class="dropdown-search">
-                                                    <input class="input" type="text" placeholder="Tìm danh mục...">
-                                                </div>
+
                                                 <hr class="dropdown-divider">
                                                 <div class="dropdown-items">
                                                     @foreach($categories as $category)
@@ -86,9 +84,7 @@
                                         </div>
                                         <div class="dropdown-menu is-fullwidth" role="menu">
                                             <div class="dropdown-content">
-                                                <div class="dropdown-search">
-                                                    <input class="input" type="text" placeholder="Tìm dịch vụ...">
-                                                </div>
+
                                                 <hr class="dropdown-divider">
                                                 <div class="dropdown-items">
                                                     <!-- Populated by JS -->
@@ -325,16 +321,7 @@
         overflow: hidden;
         padding: 0;
     }
-    .searchable-dropdown .dropdown-search {
-        padding: 0.75rem;
-        position: sticky;
-        top: 0;
-        background: white;
-        z-index: 1;
-    }
-    .searchable-dropdown .dropdown-search input {
-        width: 100%;
-    }
+
     .searchable-dropdown .dropdown-items {
         max-height: 250px;
         overflow-y: auto;
@@ -437,14 +424,13 @@
         });
     });
 
-    // Searchable Dropdown Class
+    // Searchable Dropdown Class (Search Removed)
     class SearchableDropdown {
         constructor(element, options = {}) {
             this.element = element;
             this.options = options;
             this.button = element.querySelector('.dropdown-btn');
             this.selectedText = element.querySelector('.selected-text');
-            this.searchInput = element.querySelector('.dropdown-search input');
             this.itemsContainer = element.querySelector('.dropdown-items');
             this.hiddenInput = options.hiddenInput;
             this.value = null;
@@ -459,11 +445,6 @@
                 if (!this.button.disabled) {
                     this.toggle();
                 }
-            });
-            
-            // Search filter
-            this.searchInput.addEventListener('input', () => {
-                this.filter(this.searchInput.value);
             });
             
             // Close on click outside
@@ -485,50 +466,14 @@
         
         toggle() {
             this.element.classList.toggle('is-active');
-            if (this.element.classList.contains('is-active')) {
-                setTimeout(() => this.searchInput.focus(), 50);
-            }
         }
         
         open() {
             this.element.classList.add('is-active');
-            setTimeout(() => this.searchInput.focus(), 50);
         }
         
         close() {
             this.element.classList.remove('is-active');
-            this.searchInput.value = '';
-            this.filter('');
-        }
-        
-        filter(query) {
-            const items = this.itemsContainer.querySelectorAll('.dropdown-item');
-            const q = query.toLowerCase();
-            let found = false;
-            
-            items.forEach(item => {
-                const text = item.textContent.toLowerCase();
-                if (text.includes(q)) {
-                    item.style.display = '';
-                    found = true;
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-            
-            // Show no results message
-            let noResults = this.itemsContainer.querySelector('.no-results');
-            if (!found) {
-                if (!noResults) {
-                    noResults = document.createElement('div');
-                    noResults.className = 'no-results';
-                    noResults.textContent = 'Không tìm thấy';
-                    this.itemsContainer.appendChild(noResults);
-                }
-                noResults.style.display = '';
-            } else if (noResults) {
-                noResults.style.display = 'none';
-            }
         }
         
         select(value, text) {
