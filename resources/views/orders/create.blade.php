@@ -426,6 +426,18 @@
     }
     document.getElementById('idempotencyKey').value = generateUUID();
     
+    // Disable submit button on form submit
+    document.getElementById('orderForm').addEventListener('submit', function(e) {
+        const btn = document.getElementById('submitBtn');
+        if (btn.disabled) {
+            e.preventDefault();
+            return;
+        }
+        btn.disabled = true;
+        btn.classList.add('is-loading');
+        btn.innerHTML = '<span class="icon"><i class="fas fa-spinner fa-spin"></i></span><span>Đang xử lý...</span>';
+    });
+    
     // Build services map
     const servicesMap = {};
     categories.forEach(cat => {
