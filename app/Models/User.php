@@ -77,7 +77,7 @@ class User extends Authenticatable
     /**
      * Add balance to user
      */
-    public function addBalance(float $amount, string $type, string $description, ?int $orderId = null, ?string $adminNote = null, ?int $adminId = null): Transaction
+    public function addBalance(float $amount, string $type, string $description, ?int $orderId = null, ?string $adminNote = null, ?int $adminId = null, ?string $transactionCode = null): Transaction
     {
         $balanceBefore = $this->balance;
         $this->balance += $amount;
@@ -92,6 +92,7 @@ class User extends Authenticatable
             'order_id' => $orderId,
             'admin_note' => $adminNote,
             'admin_id' => $adminId,
+            'transaction_code' => $transactionCode,
         ]);
     }
 
@@ -100,7 +101,7 @@ class User extends Authenticatable
      */
     public function deductBalance(float $amount, string $type, string $description, ?int $orderId = null): Transaction
     {
-        return $this->addBalance(-abs($amount), $type, $description, $orderId);
+        return $this->addBalance(-abs($amount), $type, $description, $orderId, null, null, null);
     }
 
     /**

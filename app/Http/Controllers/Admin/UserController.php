@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -114,22 +115,18 @@ class UserController extends Controller
         $type = $request->type;
         $note = $request->note ?? '';
 
-        if ($type === 'withdraw') {
-            $amount = -abs($amount);
-            
-            if ($user->balance < abs($amount)) {
-                return back()->withErrors(['amount' => 'Số dư không đủ để trừ.']);
+        DB::transaction(function () use ($user, $amount, $type, $description, $note) {
+            // Lock user for update
+            $user = User::where('id', $user->id)->lockForUpdate()->first();
+
+            if ($type === 'withdraw') {
+                if ($user->balance < abs($amount)) {
+                    throw new \Exception('Số dư không đủ để trừ.');
+                }
             }
-        }
 
-        $description = match ($type) {
-            'deposit' => 'Admin nạp tiền' . ($note ? ": {$note}" : ''),
-            'withdraw' => 'Admin trừ tiền' . ($note ? ": {$note}" : ''),
-            'admin_adjust' => 'Điều chỉnh' . ($note ? ": {$note}" : ''),
-            default => $note ?: 'Giao dịch',
-        };
-
-        $user->addBalance($amount, $type, $description, null, $note, auth()->id());
+            $user->addBalance($amount, $type, $description, null, $note, auth()->id());
+        });
 
         return back()->with('success', 'Số dư đã được cập nhật!');
     }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Services\SmmRajaService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Exception;
 
 class OrderController extends Controller
@@ -157,45 +158,52 @@ class OrderController extends Controller
      */
     public function approveRefund(Request $request, Order $order)
     {
-        if (!in_array($order->status, ['cancel_pending', 'partial', 'canceled'])) {
-            return back()->withErrors(['error' => 'Đơn hàng này không trong trạng thái cần hoàn tiền.']);
-        }
-        
-        $refundType = $request->get('refund_type', 'full'); // full or partial
-        $refundAmount = 0;
-        
-        if ($refundType === 'full') {
-            $refundAmount = $order->total_price;
-        } else {
-            // Partial refund based on remains or custom amount
-            $remains = $order->remains ?? 0;
-            if ($remains > 0) {
-                $refundAmount = $order->price_per_unit * $remains;
-            } else {
-                $refundAmount = (float) $request->get('refund_amount', 0);
+        DB::transaction(function () use ($order, $request) {
+            // Lock order to prevent double processing
+            $order = Order::where('id', $order->id)->lockForUpdate()->first();
+
+            if (!in_array($order->status, ['cancel_pending', 'partial', 'canceled'])) {
+                throw new \Exception('Đơn hàng này không trong trạng thái cần hoàn tiền.');
             }
-        }
+            
+            $refundType = $request->get('refund_type', 'full'); // full or partial
+            $refundAmount = 0;
+            
+            if ($refundType === 'full') {
+                $refundAmount = $order->total_price;
+            } else {
+                // Partial refund based on remains or custom amount
+                $remains = $order->remains ?? 0;
+                if ($remains > 0) {
+                    $refundAmount = $order->price_per_unit * $remains;
+                } else {
+                    $refundAmount = (float) $request->get('refund_amount', 0);
+                }
+            }
+            
+            if ($refundAmount <= 0) {
+                throw new \Exception('Số tiền hoàn không hợp lệ.');
+            }
+            
+            // Lock user before adding balance
+            $user = User::where('id', $order->user_id)->lockForUpdate()->first();
+            
+            // Add balance to user
+            $user->addBalance(
+                $refundAmount,
+                'refund',
+                "Hoàn tiền đơn hàng #{$order->id}",
+                $order->id
+            );
+            
+            // Update order status
+            $order->update(['status' => 'refunded']);
+            
+            // Send notification
+            \App\Models\Notification::depositSuccess($user->id, $refundAmount);
+        });
         
-        if ($refundAmount <= 0) {
-            return back()->withErrors(['error' => 'Số tiền hoàn không hợp lệ.']);
-        }
-        
-        // Add balance to user
-        $user = $order->user;
-        $user->addBalance(
-            $refundAmount,
-            'refund',
-            "Hoàn tiền đơn hàng #{$order->id}",
-            $order->id
-        );
-        
-        // Update order status
-        $order->update(['status' => 'refunded']);
-        
-        // Send notification
-        \App\Models\Notification::depositSuccess($user->id, $refundAmount);
-        
-        return back()->with('success', "Đã hoàn " . number_format($refundAmount, 0) . " VND cho đơn hàng #{$order->id}.");
+        return back()->with('success', "Đã hoàn tiền thành công.");
     }
     
     /**

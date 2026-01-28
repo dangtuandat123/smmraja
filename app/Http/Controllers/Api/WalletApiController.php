@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Notification;
 use App\Models\Setting;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class WalletApiController extends Controller
@@ -137,34 +138,63 @@ class WalletApiController extends Controller
         $type = $request->type;
         $note = $request->note ?? '';
 
-        // For withdraw, make amount negative and check balance
-        if ($type === 'withdraw') {
-            $amount = -abs($amount);
-            
-            if ($user->balance < abs($amount)) {
+        // Check transaction code for idempotency
+        $transactionCode = $request->transaction_code;
+        if ($transactionCode) {
+            $exists = \App\Models\Transaction::where('transaction_code', $transactionCode)->exists();
+            if ($exists) {
                 return response()->json([
-                    'success' => false,
-                    'error' => 'Insufficient balance',
-                    'current_balance' => $user->balance,
-                ], 400);
+                    'success' => true,
+                    'message' => 'Transaction already processed',
+                    'transaction_code' => $transactionCode,
+                ]);
             }
         }
 
-        $description = match ($type) {
-            'deposit' => 'Nạp tiền' . ($note ? ": {$note}" : ''),
-            'withdraw' => 'Rút tiền' . ($note ? ": {$note}" : ''),
-            'admin_adjust' => 'Điều chỉnh' . ($note ? ": {$note}" : ''),
-            default => $note ?: 'Giao dịch',
-        };
+        DB::beginTransaction();
+        try {
+            // Lock user for update
+            $user = User::where('id', $user->id)->lockForUpdate()->first();
 
-        $transaction = $user->addBalance(
-            $amount,
-            $type,
-            $description,
-            null,
-            $note,
-            null
-        );
+            // For withdraw, make amount negative and check balance
+            if ($type === 'withdraw') {
+                $amount = -abs($amount);
+                
+                if ($user->balance < abs($amount)) {
+                    DB::rollBack();
+                    return response()->json([
+                        'success' => false,
+                        'error' => 'Insufficient balance',
+                        'current_balance' => $user->balance,
+                    ], 400);
+                }
+            }
+
+            $description = match ($type) {
+                'deposit' => 'Nạp tiền' . ($note ? ": {$note}" : ''),
+                'withdraw' => 'Rút tiền' . ($note ? ": {$note}" : ''),
+                'admin_adjust' => 'Điều chỉnh' . ($note ? ": {$note}" : ''),
+                default => $note ?: 'Giao dịch',
+            };
+
+            $transaction = $user->addBalance(
+                $amount,
+                $type,
+                $description,
+                null,
+                $note,
+                null,
+                $transactionCode
+            );
+            
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'error' => 'Transaction failed: ' . $e->getMessage(),
+            ], 500);
+        }
 
         // Send notification for deposits
         if ($type === 'deposit') {

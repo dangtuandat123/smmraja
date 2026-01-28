@@ -76,16 +76,19 @@ class OrderController extends Controller
         $pricePerUnit = $service->price_per_unit;
         $totalPrice = $service->calculateOrderTotal($quantity);
 
-        // Check user balance
-        $user = auth()->user();
-        if (!$user->hasBalance($totalPrice)) {
-            return back()->withErrors([
-                'balance' => 'Số dư không đủ. Vui lòng nạp thêm tiền.'
-            ])->withInput();
-        }
-
         DB::beginTransaction();
         try {
+            // Lock user record to prevent race condition
+            $user = \App\Models\User::where('id', auth()->id())->lockForUpdate()->first();
+
+            // Check user balance again after locking
+            if (!$user->hasBalance($totalPrice)) {
+                DB::rollBack();
+                return back()->withErrors([
+                    'balance' => 'Số dư không đủ. Vui lòng nạp thêm tiền.'
+                ])->withInput();
+            }
+
             // Deduct balance
             $user->deductBalance($totalPrice, 'order', "Đặt hàng dịch vụ: {$service->name}");
 
